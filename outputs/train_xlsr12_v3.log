@@ -1,0 +1,39 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/230 [00:00<?, ?it/s]Loading weights: 100%|##########| 230/230 [00:00<00:00, 23692.56it/s]
+[transformers] [1mWav2Vec2Model LOAD REPORT[0m from: facebook/wav2vec2-xls-r-300m
+Key                                                                      | Status     |  | 
+-------------------------------------------------------------------------+------------+--+-
+wav2vec2.encoder.layers.{12...23}.feed_forward.intermediate_dense.bias   | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.q_proj.bias                  | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.final_layer_norm.bias                  | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.feed_forward.intermediate_dense.weight | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.v_proj.bias                  | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.k_proj.bias                  | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.layer_norm.bias                        | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.v_proj.weight                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.final_layer_norm.weight                | UNEXPECTED |  | 
+quantizer.codevectors                                                    | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.feed_forward.output_dense.weight       | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.out_proj.bias                | UNEXPECTED |  | 
+quantizer.weight_proj.bias                                               | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.feed_forward.output_dense.bias         | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.k_proj.weight                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.q_proj.weight                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.out_proj.weight              | UNEXPECTED |  | 
+project_q.bias                                                           | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.layer_norm.weight                      | UNEXPECTED |  | 
+project_hid.weight                                                       | UNEXPECTED |  | 
+quantizer.weight_proj.weight                                             | UNEXPECTED |  | 
+project_q.weight                                                         | UNEXPECTED |  | 
+project_hid.bias                                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+step 50 loss 0.6342 116s
+step 100 loss 0.7299 298s
+step 150 loss 0.1146 578s
+step 200 loss 0.0434 877s
+step 250 loss 0.1319 961s
+step 300 loss 0.0085 1245s
+step 350 loss 0.0877 1571s
+step 400 loss 0.0610 1614s

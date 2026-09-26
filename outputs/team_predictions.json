@@ -3,13 +3,13 @@
   "bonafide_high_variant": "outputs\\team_predictions_bonafide_high.tsv",
   "n": 1671,
   "model_dir": "C:\\Users\\jayan\\GeorgiaTech\\AI Code Completions\\HackGT13\\models\\selected",
-  "model_sha1": "cd2a866997467e357be85e39615bf25ea94aa7ac",
+  "model_sha1": "fe6232932852f9e370e22445f186d91ca945a122",
   "meta": {
-    "step": 2500,
-    "val_minDCF": 0.1533743681236991,
+    "step": 1500,
+    "val_minDCF": 0.1315712161760333,
     "args": {
       "backbone": "facebook/wav2vec2-xls-r-300m",
-      "out": "models/xlsr12_v1",
+      "out": "models/xlsr12_v2_lj30",
       "steps": 3000,
       "bs": 8,
       "accum": 2,
@@ -20,26 +20,27 @@
       "seed": 0,
       "exclude_generators": [],
       "grad_ckpt": false,
+      "lj_share": 0.3,
       "num_layers": 12
     },
     "backbone": "facebook/wav2vec2-xls-r-300m",
-    "name": "ProofVoice XLS-R-12L v1",
-    "version": "xlsr12_v1"
+    "name": "ProofVoice XLS-R-12L v2",
+    "version": "xlsr12_v2_lj30"
   },
   "calibration": {
-    "a": 1.2959087490624022,
-    "b": 10.17505311213558,
-    "decision_threshold": 0.1796827307039276,
-    "val_minDCF": 0.1533743681236991,
+    "a": 1.8577184080192495,
+    "b": 13.240593015166409,
+    "decision_threshold": 0.17216546727953697,
+    "val_minDCF": 0.13112994350282486,
     "fitted_on": "validation manifest, test-like crops, class-balanced (equal priors)",
-    "val_ECE_10bin": 0.04486102961046256
+    "val_ECE_10bin": 0.027931332537859867
   },
   "device": "cuda",
-  "seconds": 59.3,
+  "seconds": 608.5,
   "score_stats": {
-    "mean": 0.2999571612192416,
-    "median": 0.04035850986838341,
-    "frac_above_threshold": 0.3303411131059246
+    "mean": 0.3815406868076381,
+    "median": 0.08731849491596222,
+    "frac_above_threshold": 0.44763614602034707
   },
   "orientation": "cm-score = p_synthetic (1.0 = synthetic); *_bonafide_high.tsv = 1 - p"
 }

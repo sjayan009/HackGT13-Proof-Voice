@@ -79,6 +79,33 @@ Error analysis at step 500: hardest spoofs are **elevenlabs (0.47) and playht (0
 speakers → part of the model's power is speaker identity (only 8 cloned voices in training). **LJ bona fide scores
 higher than Libri bona fide** (p95 0.089 vs 0.005) → if held-out reals are LJ, false alarms come from there.
 Next: `--lj-share` bona fide sampling (v2), unseen-generator run, AASIST fine-tune (family 2).
+
+**Phase 3 exit gate MET** (v1): val minDCF 0.1534 via serving path, TSV generated + validated (1,671 rows).
+
+| Run | change | best val minDCF | EER | AUC | notes |
+|---|---|---|---|---|---|
+| xlsr12_v1 | baseline recipe | 0.1534 (step 2500) | 4.35 % | 0.9932 | LJ bona fide p99 0.0135 |
+| xlsr12_v2_lj30 | 30 % of bona fide draws from LJ | **0.1311** (step 1500) | 3.02 % | 0.9961 | LJ p99 0.0015; better unit_speech/xtts/your_tts; elevenlabs still 0.34 |
+| v1+v2 logit average | ensemble | 0.1347 | | | not better than v2 → not used |
+
+Checkpoint-to-checkpoint noise within a run is ~±0.03 minDCF, so v1→v2 is suggestive, not conclusive.
+**Selected: v2** (`models/selected`). Held-out sanity (no labels): v2 flags 45 % of held-out at its val threshold
+(v1: 33 %; organizers state ~30 % synthetic) → the val-optimal *threshold* transfers imperfectly; ranking between v1
+and v2 agrees (Spearman 0.94, top-500 overlap 466). minDCF is threshold-free, so the TSV is unaffected; the UI
+status threshold may be aggressive on out-of-domain audio (documented limitation).
+
+Integration found: full-length 9.7 s LJ bona fide clip scored 0.56 and 2 s windows up to 0.99 → out-of-regime
+inputs. Timeline windows raised to 3 s (≥ held-out min); v3 trains on 2.5–6 s crops + 5,803 extra train-only
+bona fide (LibriSpeech dev-other/test-other); `ml/aggregation.py` measures long-clip aggregation.
+
+Phase 5 (forensic breadth) — branch standalone + fusion ablation in `outputs/results/fusion.json`:
+weighted-logit fusion, weight chosen on 4 folds, evaluated on the 5th (mean per-fold minDCF):
+primary 0.068 · +all branches 0.064 · +spectral 0.065 · +prosody 0.066 · +quality 0.066 · +splice 0.070 ·
++compression 0.077. Gains ≤ 0.004 with unstable weights → **score path = primary only**; branches = evidence/routing.
+(An earlier OOF-refit protocol was discarded: its per-fold recalibration alone cost 0.15 minDCF.)
+
+Phase 10 Grok red team: verified in the browser end-to-end — live Grok Voice → same detector → 83 % synthetic,
+likely_synthetic, analysis confidence 0.97, source honestly labelled "Grok Voice (realtime)".
 The 10 cloned speakers are all LibriSpeech **train-clean-360** (23 GB); deliberately not downloaded (size, and
 targeted overlap with possible held-out reals).
 
