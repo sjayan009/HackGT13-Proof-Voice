@@ -103,6 +103,9 @@ def main():
     ap.add_argument("--grad-ckpt", action="store_true")
     ap.add_argument("--lj-share", type=float, default=None,
                     help="fraction of bona fide draws taken from LJ clips (default: uniform over bona fide)")
+    ap.add_argument("--extra-train", nargs="*", default=[], help="extra TRAIN-ONLY bona fide caches, e.g. train_extra")
+    ap.add_argument("--crop-min", type=float, default=TESTLIKE_MIN_S)
+    ap.add_argument("--crop-max", type=float, default=TESTLIKE_MAX_S)
     ap.add_argument("--num-layers", type=int, default=None, help="keep only the first N transformer layers")
     a = ap.parse_args()
 
@@ -121,6 +124,22 @@ def main():
     bona_idx = tr_idx[ytr[tr_idx] == 0]
     lj_idx = bona_idx[(mtr.generator.to_numpy()[bona_idx] == "bonafide_lj")]
     other_bona_idx = bona_idx[(mtr.generator.to_numpy()[bona_idx] != "bonafide_lj")]
+    extra = [Cache(n) for n in a.extra_train]  # indices >= len(ctr) address these, in order
+    offs, off = [], len(ctr)
+    for ce in extra:
+        offs.append(off)
+        ext = np.arange(off, off + len(ce))
+        bona_idx = np.concatenate([bona_idx, ext])
+        other_bona_idx = np.concatenate([other_bona_idx, ext])
+        off += len(ce)
+
+    def get_train(i):
+        if i < len(ctr):
+            return ctr.get(i)
+        for ce, o in zip(extra, offs):
+            if o <= i < o + len(ce):
+                return ce.get(i - o)
+        raise IndexError(i)
     spoof_by_gen = {g: tr_idx[(mtr.generator.to_numpy()[tr_idx] == g)] for g in mtr[mtr.y == 1].generator.unique()
                     if g not in a.exclude_generators}
     gens = sorted(spoof_by_gen)
@@ -153,8 +172,8 @@ def main():
                 i, y = int(rng.choice(pool)), 0
             else:
                 i, y = int(rng.choice(spoof_by_gen[gens[rng.integers(len(gens))]])), 1
-            x = ctr.get(i)
-            n = int(rng.uniform(TESTLIKE_MIN_S, TESTLIKE_MAX_S) * SR)
+            x = get_train(i)
+            n = int(rng.uniform(a.crop_min, a.crop_max) * SR)
             if len(x) > n:
                 o = int(rng.integers(0, len(x) - n))
                 x = x[o:o + n]

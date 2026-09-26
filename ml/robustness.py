@@ -82,12 +82,13 @@ def main():
     ap.add_argument("--model-dir", default="models/selected")
     ap.add_argument("--n", type=int, default=1400)
     ap.add_argument("--only", nargs="*")
+    ap.add_argument("--device", default=None)
     a = ap.parse_args()
     import torch
     from concurrent.futures import ThreadPoolExecutor
     from app.detectors.primary import PrimaryDetector
 
-    det = PrimaryDetector(ROOT / a.model_dir, "cuda" if torch.cuda.is_available() else "cpu")
+    det = PrimaryDetector(ROOT / a.model_dir, a.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     m = manifest("val")
     c = Cache("val")
     rng = np.random.default_rng(3)

@@ -63,16 +63,35 @@ def main():
                                              "AUC": round(r["AUC"], 4), "EER": round(r["EER"], 4)}
         print("standalone", b, res["standalone_train_to_val"][b], flush=True)
 
+    # Weighted-logit fusion: s = primary_logit + w * branch_logit, branch LR fitted on TRAIN (branch features are
+    # not overfit, unlike the primary's train logits). w chosen on 4 val folds, evaluated on the 5th; the reported
+    # number is the mean per-fold minDCF (no cross-fold score mixing). primary_only uses the identical folds.
     lg = np.load(ROOT / a.primary / "val_logits.npy")
-    base = fast_mindcf(yva, 1 / (1 + np.exp(-lg)))[0]
-    p0 = oof(lg[:, None], yva, groups)
-    res["fusion_oof_on_val"]["primary_only"] = round(fast_mindcf(yva, p0)[0], 4)
-    res["primary_raw_minDCF"] = round(base, 4)
+    res["primary_raw_minDCF"] = round(fast_mindcf(yva, 1 / (1 + np.exp(-lg)))[0], 4)
+    from sklearn.model_selection import StratifiedGroupKFold
+    folds = list(StratifiedGroupKFold(5, shuffle=True, random_state=0).split(lg, yva, groups))
+    sig = lambda z: 1 / (1 + np.exp(-z))  # noqa: E731
+    W = [0.0, 0.05, 0.1, 0.25, 0.5, 1.0, 2.0]
+
+    def perfold(z_branch):
+        vals, ws = [], []
+        for tr, te in folds:
+            best_w = min(W, key=lambda w: fast_mindcf(yva[tr], sig(lg[tr] + w * z_branch[tr]))[0])
+            ws.append(best_w)
+            vals.append(fast_mindcf(yva[te], sig(lg[te] + best_w * z_branch[te]))[0])
+        return round(float(np.mean(vals)), 4), ws
+
+    res["fusion_oof_on_val"]["primary_only"] = round(float(np.mean([fast_mindcf(yva[te], sig(lg[te]))[0]
+                                                                     for _, te in folds])), 4)
+    res["fusion_weights_chosen"] = {}
     for b in BRANCHES + ["all_branches"]:
-        cols = [c for c in Bva.columns if b == "all_branches" or c.startswith(b + ".")]
-        X = np.column_stack([lg, Bva[cols].to_numpy()])
-        res["fusion_oof_on_val"][f"primary+{b}"] = round(fast_mindcf(yva, oof(X, yva, groups))[0], 4)
-        print("fusion", b, res["fusion_oof_on_val"][f"primary+{b}"], flush=True)
+        cols = [c for c in Btr.columns if b == "all_branches" or c.startswith(b + ".")]
+        mdl = lr().fit(Btr[cols].to_numpy(), ytr)
+        z = mdl.decision_function(Bva[cols].to_numpy())
+        v, ws = perfold(z)
+        res["fusion_oof_on_val"][f"primary+{b}"] = v
+        res["fusion_weights_chosen"][b] = ws
+        print("fusion", b, v, ws, flush=True)
     best = min(res["fusion_oof_on_val"], key=res["fusion_oof_on_val"].get)
     res["best_config"] = best
     res["decision"] = ("keep primary only: no fusion beat primary_only out-of-fold"

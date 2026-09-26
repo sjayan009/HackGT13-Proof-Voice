@@ -1,7 +1,7 @@
 """Streaming analysis: ring buffer at 16 kHz, hop-driven scoring, rolling decision, time-to-confidence.
 
-Per hop (default 0.5 s of new audio, once >= 1.5 s buffered):
-  * synthetic_probability: detector on the most recent 2 s window (local evidence -> timeline)
+Per hop (default 0.5 s of new audio, once >= 2.0 s buffered):
+  * synthetic_probability: detector on the most recent window (default 3 s; local evidence -> timeline)
   * rolling_probability:   detector on the most recent <= 8 s (accumulated evidence, same regime as file scoring)
   * status / analysis_confidence from the rolling score, speech duration and window agreement
   * time_to_confidence_ms: stream time at which the current decisive status began, if it has held since
@@ -27,7 +27,7 @@ class StreamAnalyzer:
         self.rs = soxr.ResampleStream(self.in_sr, SR, 1, dtype="float32", quality="HQ") if self.in_sr != SR else None
         self.buf = np.zeros(0, np.float32)
         self.win, self.hop = int(SR * win_ms / 1000), int(SR * hop_ms / 1000)
-        self.next_at = int(1.5 * SR)
+        self.next_at = int(2.0 * SR)  # first estimate at 2 s; confidence reflects < 3 s of evidence
         self.speech_samples = 0
         self.window_ps: list[float] = []
         self.ttc_start: int | None = None
@@ -67,7 +67,7 @@ class StreamAnalyzer:
         recent = np.array(self.window_ps[-6:])
         agree = float(np.mean((recent >= thr) == (p_roll >= thr)))
         margin = float(np.clip(abs(p_roll - thr) / max(thr, 1 - thr) * 1.5, 0, 1))
-        conf = round(0.35 * min(1.0, speech_s / 3.0) + 0.4 * margin + 0.25 * agree, 3)
+        conf = round((0.35 * min(1.0, speech_s / 3.0) + 0.4 * margin + 0.25 * agree) * min(1.0, n / (3.0 * SR)), 3)
         status = status_for(p_roll, thr, speech_s, conf) if lvl > SILENCE_DBFS or speech_s >= 1 else "insufficient_evidence"
         t_ms = int(n * 1000 / SR)
         if status in ("likely_human", "likely_synthetic") and conf >= 0.5:

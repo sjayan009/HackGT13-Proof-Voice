@@ -132,7 +132,7 @@ def analyze(audio: np.ndarray, detector, path: str | None = None, file_name: str
     # 3. primary detector
     t = time.perf_counter()
     res = detector.score(audio, SR)
-    windows = detector.score_windows(audio, win_ms, hop_ms) if len(audio) > int(1.25 * win_ms * SR / 1000) else []
+    windows = detector.score_windows(audio, win_ms, hop_ms) if len(audio) >= int(win_ms * SR / 1000) else []
     thr = detector.threshold
     p = res.synthetic_probability
     det_ms = round((time.perf_counter() - t) * 1000, 2)
