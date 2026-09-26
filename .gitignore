@@ -1,0 +1,31 @@
+# secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.local
+
+# data / weights / outputs (large, organizer-licensed)
+data/
+models/**/*.pt
+models/**/*.pth
+models/**/*.safetensors
+models/**/*.bin
+models/hf_cache/
+tmp/
+outputs/cache/
+outputs/embeddings/
+*.zip
+*.tar
+*.pdf
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# node
+node_modules/
+.next/
+web/out/

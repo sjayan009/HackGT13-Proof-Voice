@@ -1,0 +1,45 @@
+{
+  "pooled": {
+    "minDCF": 1.0,
+    "EER": 0.43980961938745167,
+    "CLLR": 1.087608593643614,
+    "actDCF": 1.0,
+    "minDCF_threshold": 0.999999,
+    "AUC": 0.6380265388046387,
+    "log_loss": 7.812060326787981,
+    "brier": 0.664161066647058,
+    "FRR_bonafide_at_minDCF": 0.3960749330954505,
+    "FAR_spoof_at_minDCF": 0.43983333333333335,
+    "p_synth_threshold_at_minDCF": 1.0000000000287557e-06,
+    "n_bonafide": 1121,
+    "n_spoof": 6000
+  },
+  "per_generator_minDCF": {
+    "diffgan_tts": 0.107,
+    "elevenlabs": 0.9831,
+    "grad_tts": 0.9857,
+    "openvoicev2": 0.1674,
+    "playht": 1.0,
+    "pro_diff": 0.9341,
+    "unit_speech": 0.9875,
+    "wavegrad2": 0.992,
+    "xtts_v2": 0.8967,
+    "your_tts": 0.0691
+  },
+  "lj_bonafide_vs_lj_voice_spoofs_minDCF": 0.5729,
+  "libri_bonafide_vs_cloned_spoofs_minDCF": 1.0,
+  "bonafide_p_by_source": {
+    "librispeech": [
+      0.0,
+      0.0001,
+      0.0367
+    ],
+    "ljreal": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "model": "AASIST (ASVspoof5 organizer checkpoint, zero-shot)",
+  "ms_per_clip_batched": 19.47
+}

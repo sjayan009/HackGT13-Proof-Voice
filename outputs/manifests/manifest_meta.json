@@ -1,0 +1,47 @@
+{
+  "seed": 1337,
+  "cap_train": 2500,
+  "cap_val": 600,
+  "val_speakers": [
+    "speaker_2061",
+    "speaker_6167"
+  ],
+  "train": {
+    "n": 29444,
+    "by_generator": {
+      "bonafide_libri_dev-clean": 2304,
+      "bonafide_libri_test-clean": 1942,
+      "bonafide_lj": 198,
+      "diffgan_tts": 2500,
+      "elevenlabs": 2500,
+      "grad_tts": 2500,
+      "openvoicev2": 2500,
+      "playht": 2500,
+      "pro_diff": 2500,
+      "unit_speech": 2500,
+      "wavegrad2": 2500,
+      "xtts_v2": 2500,
+      "your_tts": 2500
+    },
+    "sha1": "d74b939d799b0eb7610f4359d4decb327539f91f"
+  },
+  "val": {
+    "n": 7121,
+    "by_generator": {
+      "bonafide_libri_dev-clean": 399,
+      "bonafide_libri_test-clean": 678,
+      "bonafide_lj": 44,
+      "diffgan_tts": 600,
+      "elevenlabs": 600,
+      "grad_tts": 600,
+      "openvoicev2": 600,
+      "playht": 600,
+      "pro_diff": 600,
+      "unit_speech": 600,
+      "wavegrad2": 600,
+      "xtts_v2": 600,
+      "your_tts": 600
+    },
+    "sha1": "de7204d795a2f3b993dc2f995c8c5f64daaf113d"
+  }
+}

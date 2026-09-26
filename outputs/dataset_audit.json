@@ -1,0 +1,331 @@
+{
+  "training": {
+    "bonafide_libri_dev-clean": {
+      "n": 2703,
+      "unreadable": 0,
+      "sample_rates": {
+        "16000": 2703
+      },
+      "channels": {
+        "1": 2703
+      },
+      "subtypes": {
+        "PCM_16": 2703
+      },
+      "duration_s": {
+        "min": 1.445,
+        "p10": 2.726,
+        "median": 5.92,
+        "p90": 13.329,
+        "max": 32.645,
+        "mean": 7.176,
+        "total_h": 5.39
+      },
+      "n_speakers": 40
+    },
+    "bonafide_libri_test-clean": {
+      "n": 2620,
+      "unreadable": 0,
+      "sample_rates": {
+        "16000": 2620
+      },
+      "channels": {
+        "1": 2620
+      },
+      "subtypes": {
+        "PCM_16": 2620
+      },
+      "duration_s": {
+        "min": 1.285,
+        "p10": 2.69,
+        "median": 5.79,
+        "p90": 14.562,
+        "max": 34.955,
+        "mean": 7.425,
+        "total_h": 5.4
+      },
+      "n_speakers": 40
+    },
+    "bonafide_lj": {
+      "n": 242,
+      "unreadable": 0,
+      "sample_rates": {
+        "16000": 242
+      },
+      "channels": {
+        "1": 242
+      },
+      "subtypes": {
+        "PCM_16": 242
+      },
+      "duration_s": {
+        "min": 4.013,
+        "p10": 4.665,
+        "median": 7.095,
+        "p90": 9.29,
+        "max": 10.027,
+        "mean": 7.02,
+        "total_h": 0.47
+      },
+      "n_speakers": 1
+    },
+    "diffgan_tts": {
+      "n": 5000,
+      "unreadable": 0,
+      "sample_rates": {
+        "22050": 5000
+      },
+      "channels": {
+        "1": 5000
+      },
+      "subtypes": {
+        "PCM_16": 5000
+      },
+      "duration_s": {
+        "min": 1.474,
+        "p10": 3.819,
+        "median": 5.863,
+        "p90": 8.847,
+        "max": 13.235,
+        "mean": 6.117,
+        "total_h": 8.5
+      },
+      "n_speakers": 1
+    },
+    "elevenlabs": {
+      "n": 5000,
+      "unreadable": 0,
+      "sample_rates": {
+        "44100": 5000
+      },
+      "channels": {
+        "1": 5000
+      },
+      "subtypes": {
+        "MPEG_LAYER_III": 5000
+      },
+      "duration_s": {
+        "min": 2.775,
+        "p10": 5.263,
+        "median": 7.37,
+        "p90": 12.149,
+        "max": 17.071,
+        "mean": 8.035,
+        "total_h": 11.16
+      },
+      "n_speakers": 10
+    },
+    "grad_tts": {
+      "n": 5000,
+      "unreadable": 0,
+      "sample_rates": {
+        "22050": 5000
+      },
+      "channels": {
+        "1": 5000
+      },
+      "subtypes": {
+        "PCM_16": 5000
+      },
+      "duration_s": {
+        "min": 1.463,
+        "p10": 3.947,
+        "median": 6.084,
+        "p90": 9.369,
+        "max": 15.824,
+        "mean": 6.387,
+        "total_h": 8.87
+      },
+      "n_speakers": 1
+    },
+    "openvoicev2": {
+      "n": 25000,
+      "unreadable": 0,
+      "sample_rates": {
+        "22050": 25000
+      },
+      "channels": {
+        "1": 25000
+      },
+      "subtypes": {
+        "PCM_16": 25000
+      },
+      "duration_s": {
+        "min": 0.035,
+        "p10": 5.55,
+        "median": 7.523,
+        "p90": 11.54,
+        "max": 14.687,
+        "mean": 8.088,
+        "total_h": 56.17
+      },
+      "n_speakers": 10
+    },
+    "playht": {
+      "n": 5000,
+      "unreadable": 0,
+      "sample_rates": {
+        "24000": 5000
+      },
+      "channels": {
+        "1": 5000
+      },
+      "subtypes": {
+        "MPEG_LAYER_III": 5000
+      },
+      "duration_s": {
+        "min": 2.827,
+        "p10": 5.291,
+        "median": 7.328,
+        "p90": 11.787,
+        "max": 17.824,
+        "mean": 8.053,
+        "total_h": 11.18
+      },
+      "n_speakers": 10
+    },
+    "pro_diff": {
+      "n": 5000,
+      "unreadable": 0,
+      "sample_rates": {
+        "22050": 5000
+      },
+      "channels": {
+        "1": 5000
+      },
+      "subtypes": {
+        "PCM_16": 5000
+      },
+      "duration_s": {
+        "min": 1.37,
+        "p10": 3.913,
+        "median": 6.142,
+        "p90": 9.288,
+        "max": 14.745,
+        "mean": 6.412,
+        "total_h": 8.91
+      },
+      "n_speakers": 1
+    },
+    "unit_speech": {
+      "n": 5000,
+      "unreadable": 0,
+      "sample_rates": {
+        "22050": 5000
+      },
+      "channels": {
+        "1": 5000
+      },
+      "subtypes": {
+        "PCM_16": 5000
+      },
+      "duration_s": {
+        "min": 3.355,
+        "p10": 5.619,
+        "median": 7.732,
+        "p90": 12.736,
+        "max": 18.75,
+        "mean": 8.581,
+        "total_h": 11.92
+      },
+      "n_speakers": 10
+    },
+    "wavegrad2": {
+      "n": 5000,
+      "unreadable": 0,
+      "sample_rates": {
+        "22050": 5000
+      },
+      "channels": {
+        "1": 5000
+      },
+      "subtypes": {
+        "PCM_16": 5000
+      },
+      "duration_s": {
+        "min": 1.537,
+        "p10": 4.19,
+        "median": 6.313,
+        "p90": 9.838,
+        "max": 16.014,
+        "mean": 6.691,
+        "total_h": 9.29
+      },
+      "n_speakers": 1
+    },
+    "xtts_v2": {
+      "n": 5000,
+      "unreadable": 0,
+      "sample_rates": {
+        "24000": 5000
+      },
+      "channels": {
+        "1": 5000
+      },
+      "subtypes": {
+        "PCM_16": 5000
+      },
+      "duration_s": {
+        "min": 3.659,
+        "p10": 5.707,
+        "median": 7.937,
+        "p90": 12.257,
+        "max": 27.489,
+        "mean": 8.539,
+        "total_h": 11.86
+      },
+      "n_speakers": 10
+    },
+    "your_tts": {
+      "n": 5000,
+      "unreadable": 0,
+      "sample_rates": {
+        "16000": 5000
+      },
+      "channels": {
+        "1": 5000
+      },
+      "subtypes": {
+        "PCM_16": 5000
+      },
+      "duration_s": {
+        "min": 3.313,
+        "p10": 6.225,
+        "median": 8.881,
+        "p90": 13.425,
+        "max": 19.297,
+        "mean": 9.388,
+        "total_h": 13.04
+      },
+      "n_speakers": 10
+    }
+  },
+  "totals": {
+    "bonafide": 5565,
+    "spoof": 70000
+  },
+  "heldout_test": {
+    "n": 1671,
+    "unreadable": 0,
+    "sample_rates": {
+      "16000": 1671
+    },
+    "channels": {
+      "1": 1671
+    },
+    "subtypes": {
+      "PCM_16": 1671
+    },
+    "duration_s": {
+      "min": 3.019,
+      "p10": 3.088,
+      "median": 3.413,
+      "p90": 4.574,
+      "max": 13.584,
+      "mean": 3.689,
+      "total_h": 1.71
+    },
+    "n_speakers": 1,
+    "note": "format only; no labels inspected"
+  }
+}

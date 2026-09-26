@@ -1,0 +1,7 @@
+{
+  "text": "Hi, it's me, I need you to wire money right away, it's an emergency and I can't talk long.",
+  "source": "grok_voice",
+  "model": "grok-voice-latest",
+  "sample_rate": 24000,
+  "created_at": "2026-09-26T18:34:08.498660+00:00"
+}
