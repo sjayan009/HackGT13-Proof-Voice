@@ -1,37 +1,130 @@
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/230 [00:00<?, ?it/s]Loading weights: 100%|##########| 230/230 [00:00<00:00, 22945.86it/s]
+Loading weights:   0%|          | 0/230 [00:00<?, ?it/s]Loading weights: 100%|##########| 230/230 [00:00<00:00, 18758.43it/s]
 [transformers] [1mWav2Vec2Model LOAD REPORT[0m from: facebook/wav2vec2-xls-r-300m
 Key                                                                      | Status     |  | 
 -------------------------------------------------------------------------+------------+--+-
-wav2vec2.encoder.layers.{12...23}.attention.v_proj.bias                  | UNEXPECTED |  | 
-wav2vec2.encoder.layers.{12...23}.attention.v_proj.weight                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.final_layer_norm.weight                | UNEXPECTED |  | 
 wav2vec2.encoder.layers.{12...23}.layer_norm.weight                      | UNEXPECTED |  | 
-wav2vec2.encoder.layers.{12...23}.feed_forward.intermediate_dense.weight | UNEXPECTED |  | 
-wav2vec2.encoder.layers.{12...23}.attention.out_proj.bias                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.k_proj.bias                  | UNEXPECTED |  | 
 wav2vec2.encoder.layers.{12...23}.attention.q_proj.weight                | UNEXPECTED |  | 
 wav2vec2.encoder.layers.{12...23}.feed_forward.intermediate_dense.bias   | UNEXPECTED |  | 
-quantizer.weight_proj.bias                                               | UNEXPECTED |  | 
-wav2vec2.encoder.layers.{12...23}.attention.k_proj.bias                  | UNEXPECTED |  | 
-quantizer.weight_proj.weight                                             | UNEXPECTED |  | 
 wav2vec2.encoder.layers.{12...23}.feed_forward.output_dense.bias         | UNEXPECTED |  | 
-wav2vec2.encoder.layers.{12...23}.layer_norm.bias                        | UNEXPECTED |  | 
-wav2vec2.encoder.layers.{12...23}.feed_forward.output_dense.weight       | UNEXPECTED |  | 
-wav2vec2.encoder.layers.{12...23}.attention.out_proj.weight              | UNEXPECTED |  | 
-project_hid.weight                                                       | UNEXPECTED |  | 
-wav2vec2.encoder.layers.{12...23}.final_layer_norm.weight                | UNEXPECTED |  | 
 wav2vec2.encoder.layers.{12...23}.attention.q_proj.bias                  | UNEXPECTED |  | 
-wav2vec2.encoder.layers.{12...23}.final_layer_norm.bias                  | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.out_proj.weight              | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.out_proj.bias                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.layer_norm.bias                        | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.v_proj.weight                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.feed_forward.intermediate_dense.weight | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.feed_forward.output_dense.weight       | UNEXPECTED |  | 
 wav2vec2.encoder.layers.{12...23}.attention.k_proj.weight                | UNEXPECTED |  | 
-quantizer.codevectors                                                    | UNEXPECTED |  | 
-project_q.bias                                                           | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.v_proj.bias                  | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.final_layer_norm.bias                  | UNEXPECTED |  | 
+quantizer.weight_proj.bias                                               | UNEXPECTED |  | 
 project_hid.bias                                                         | UNEXPECTED |  | 
+quantizer.codevectors                                                    | UNEXPECTED |  | 
+project_hid.weight                                                       | UNEXPECTED |  | 
+project_q.bias                                                           | UNEXPECTED |  | 
+quantizer.weight_proj.weight                                             | UNEXPECTED |  | 
 project_q.weight                                                         | UNEXPECTED |  | 
 
 Notes:
 - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-step 50 loss 0.6589 32s
-step 100 loss 0.2732 59s
-step 150 loss 0.1061 87s
-step 200 loss 0.0126 115s
-step 250 loss 0.0379 143s
-step 300 loss 0.0416 171s
+step 50 loss 0.6589 30s
+step 100 loss 0.2735 58s
+step 150 loss 0.1055 86s
+step 200 loss 0.0128 114s
+step 250 loss 0.0375 143s
+step 300 loss 0.0414 171s
+step 350 loss 0.0028 199s
+step 400 loss 0.0037 227s
+step 450 loss 0.0003 255s
+step 500 loss 0.0215 283s
+EVAL {'step': 500, 'val_minDCF': 0.3135, 'elapsed_s': 381}
+step 550 loss 0.0172 411s
+step 600 loss 0.0018 439s
+step 650 loss 0.0775 468s
+step 700 loss 0.0069 496s
+step 750 loss 0.0005 524s
+step 800 loss 0.0002 552s
+step 850 loss 0.0029 580s
+step 900 loss 0.2796 608s
+step 950 loss 0.0004 636s
+step 1000 loss 0.0009 665s
+EVAL {'step': 1000, 'val_minDCF': 0.2219, 'elapsed_s': 762}
+step 1050 loss 0.0104 791s
+step 1100 loss 0.0004 819s
+step 1150 loss 0.0022 847s
+step 1200 loss 0.0550 874s
+step 1250 loss 0.1170 902s
+step 1300 loss 0.0052 930s
+step 1350 loss 0.0007 958s
+step 1400 loss 0.0002 986s
+step 1450 loss 0.0092 1014s
+step 1500 loss 0.0001 1042s
+EVAL {'step': 1500, 'val_minDCF': 0.1657, 'elapsed_s': 1138}
+step 1550 loss 0.0309 1167s
+step 1600 loss 0.0004 1195s
+step 1650 loss 0.0001 1223s
+step 1700 loss 0.0002 1251s
+step 1750 loss 0.5383 1284s
+step 1800 loss 0.1881 1312s
+step 1850 loss 0.0008 1340s
+step 1900 loss 0.0000 1368s
+step 1950 loss 0.0042 1396s
+step 2000 loss 0.0003 1424s
+EVAL {'step': 2000, 'val_minDCF': 0.1581, 'elapsed_s': 1520}
+step 2050 loss 0.0005 1548s
+step 2100 loss 0.0001 1576s
+step 2150 loss 0.0000 1604s
+step 2200 loss 0.0001 1632s
+step 2250 loss 0.0004 1660s
+step 2300 loss 0.0002 1687s
+step 2350 loss 0.0002 1716s
+step 2400 loss 0.0006 1745s
+step 2450 loss 0.0134 1772s
+step 2500 loss 0.7500 1800s
+EVAL {'step': 2500, 'val_minDCF': 0.1534, 'elapsed_s': 1898}
+step 2550 loss 0.0019 1927s
+step 2600 loss 0.0003 1955s
+step 2650 loss 0.0016 1983s
+step 2700 loss 0.0029 2011s
+step 2750 loss 0.0891 2039s
+step 2800 loss 0.2120 2067s
+step 2850 loss 0.0003 2095s
+step 2900 loss 0.0001 2123s
+step 2950 loss 0.0955 2151s
+step 3000 loss 0.0002 2179s
+EVAL {'step': 3000, 'val_minDCF': 0.1545, 'elapsed_s': 2274}
+{
+ "best": [
+  0.1533743681236991,
+  2500
+ ],
+ "pooled": {
+  "minDCF": 0.1533743681236991,
+  "EER": 0.043522152839726436,
+  "CLLR": 0.8417512301635288,
+  "actDCF": 1.0,
+  "minDCF_threshold": 0.9998794635102968,
+  "AUC": 0.9932120874219448,
+  "log_loss": 1.2317316341750233,
+  "brier": 0.2029412271627529,
+  "FRR_bonafide_at_minDCF": 0.07404103479036575,
+  "FAR_spoof_at_minDCF": 0.019833333333333335,
+  "p_synth_threshold_at_minDCF": 0.00012053648970322683,
+  "n_bonafide": 1121,
+  "n_spoof": 6000
+ },
+ "per_gen": {
+  "diffgan_tts": 0.0,
+  "elevenlabs": 0.3168,
+  "grad_tts": 0.0,
+  "openvoicev2": 0.0076,
+  "playht": 0.22,
+  "pro_diff": 0.0,
+  "unit_speech": 0.152,
+  "wavegrad2": 0.0,
+  "xtts_v2": 0.0423,
+  "your_tts": 0.0299
+ }
+}

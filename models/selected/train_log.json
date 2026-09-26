@@ -1,0 +1,32 @@
+[
+ {
+  "step": 500,
+  "val_minDCF": 0.3135,
+  "elapsed_s": 381
+ },
+ {
+  "step": 1000,
+  "val_minDCF": 0.2219,
+  "elapsed_s": 762
+ },
+ {
+  "step": 1500,
+  "val_minDCF": 0.1657,
+  "elapsed_s": 1138
+ },
+ {
+  "step": 2000,
+  "val_minDCF": 0.1581,
+  "elapsed_s": 1520
+ },
+ {
+  "step": 2500,
+  "val_minDCF": 0.1534,
+  "elapsed_s": 1898
+ },
+ {
+  "step": 3000,
+  "val_minDCF": 0.1545,
+  "elapsed_s": 2274
+ }
+]

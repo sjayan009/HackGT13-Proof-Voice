@@ -73,6 +73,7 @@ def batchify(clips, device):
 def predict(model, clips, device, bs=8):
     model.eval()
     torch.cuda.empty_cache()
+    torch.backends.cudnn.enabled = False  # cuDNN conv workspace allocation failed on this 8 GB WDDM GPU at eval
     order = np.argsort([len(c) for c in clips])
     out = np.zeros(len(clips), np.float32)
     for b in range(0, len(order), bs):
@@ -81,6 +82,7 @@ def predict(model, clips, device, bs=8):
         with torch.autocast("cuda", dtype=torch.float16):
             out[ids] = model(xb, lens).float().cpu().numpy()
     model.train()
+    torch.backends.cudnn.enabled = True
     torch.cuda.empty_cache()
     return out  # logits
 
@@ -99,12 +101,15 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--exclude-generators", nargs="*", default=[])
     ap.add_argument("--grad-ckpt", action="store_true")
+    ap.add_argument("--lj-share", type=float, default=None,
+                    help="fraction of bona fide draws taken from LJ clips (default: uniform over bona fide)")
     ap.add_argument("--num-layers", type=int, default=None, help="keep only the first N transformer layers")
     a = ap.parse_args()
 
     torch.manual_seed(a.seed)
     rng = np.random.default_rng(a.seed)
     dev = torch.device("cuda")
+    torch.cuda.set_per_process_memory_fraction(0.9)  # fail fast instead of spilling to shared memory (WDDM)
     out_dir = ROOT / a.out
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -114,6 +119,8 @@ def main():
     tr_idx = np.flatnonzero(keep)
     ytr = mtr.y.to_numpy()
     bona_idx = tr_idx[ytr[tr_idx] == 0]
+    lj_idx = bona_idx[(mtr.generator.to_numpy()[bona_idx] == "bonafide_lj")]
+    other_bona_idx = bona_idx[(mtr.generator.to_numpy()[bona_idx] != "bonafide_lj")]
     spoof_by_gen = {g: tr_idx[(mtr.generator.to_numpy()[tr_idx] == g)] for g in mtr[mtr.y == 1].generator.unique()
                     if g not in a.exclude_generators}
     gens = sorted(spoof_by_gen)
@@ -139,7 +146,11 @@ def main():
         clips, ys = [], []
         for _ in range(a.bs):
             if rng.random() < 0.5:
-                i, y = int(rng.choice(bona_idx)), 0
+                if a.lj_share is not None:
+                    pool = lj_idx if rng.random() < a.lj_share else other_bona_idx
+                else:
+                    pool = bona_idx
+                i, y = int(rng.choice(pool)), 0
             else:
                 i, y = int(rng.choice(spoof_by_gen[gens[rng.integers(len(gens))]])), 1
             x = ctr.get(i)

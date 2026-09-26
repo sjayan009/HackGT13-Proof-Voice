@@ -31,6 +31,10 @@ sys.path.insert(0, str(ROOT / "ml"))
 
 
 def find_wavs(inp: Path, tmp: Path) -> dict[str, Path]:
+    if inp.is_dir() and not any(inp.rglob("*.wav")):
+        zips = sorted(inp.glob("*.zip"))
+        if zips:
+            inp = zips[0]
     if inp.is_file() and inp.suffix == ".zip":
         with zipfile.ZipFile(inp) as z:
             z.extractall(tmp)

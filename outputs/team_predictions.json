@@ -1,0 +1,45 @@
+{
+  "output": "outputs\\team_predictions.tsv",
+  "bonafide_high_variant": "outputs\\team_predictions_bonafide_high.tsv",
+  "n": 1671,
+  "model_dir": "C:\\Users\\jayan\\GeorgiaTech\\AI Code Completions\\HackGT13\\models\\selected",
+  "model_sha1": "cd2a866997467e357be85e39615bf25ea94aa7ac",
+  "meta": {
+    "step": 2500,
+    "val_minDCF": 0.1533743681236991,
+    "args": {
+      "backbone": "facebook/wav2vec2-xls-r-300m",
+      "out": "models/xlsr12_v1",
+      "steps": 3000,
+      "bs": 8,
+      "accum": 2,
+      "lr": 1e-05,
+      "head_lr": 0.0005,
+      "eval_every": 500,
+      "aug": 1.0,
+      "seed": 0,
+      "exclude_generators": [],
+      "grad_ckpt": false,
+      "num_layers": 12
+    },
+    "backbone": "facebook/wav2vec2-xls-r-300m",
+    "name": "ProofVoice XLS-R-12L v1",
+    "version": "xlsr12_v1"
+  },
+  "calibration": {
+    "a": 1.2959087490624022,
+    "b": 10.17505311213558,
+    "decision_threshold": 0.1796827307039276,
+    "val_minDCF": 0.1533743681236991,
+    "fitted_on": "validation manifest, test-like crops, class-balanced (equal priors)",
+    "val_ECE_10bin": 0.04486102961046256
+  },
+  "device": "cuda",
+  "seconds": 59.3,
+  "score_stats": {
+    "mean": 0.2999571612192416,
+    "median": 0.04035850986838341,
+    "frac_above_threshold": 0.3303411131059246
+  },
+  "orientation": "cm-score = p_synthetic (1.0 = synthetic); *_bonafide_high.tsv = 1 - p"
+}

@@ -1,0 +1,91 @@
+{
+  "pooled": {
+    "minDCF": 0.1533743681236991,
+    "EER": 0.043522152839726436,
+    "CLLR": 0.8417512301635288,
+    "actDCF": 1.0,
+    "minDCF_threshold": 0.9998794635102968,
+    "AUC": 0.9932120874219448,
+    "log_loss": 1.2317316341750233,
+    "brier": 0.2029412271627529,
+    "FRR_bonafide_at_minDCF": 0.07404103479036575,
+    "FAR_spoof_at_minDCF": 0.019833333333333335,
+    "p_synth_threshold_at_minDCF": 0.00012053648970322683,
+    "n_bonafide": 1121,
+    "n_spoof": 6000
+  },
+  "per_generator_minDCF": {
+    "diffgan_tts": 0.0,
+    "elevenlabs": 0.3168,
+    "grad_tts": 0.0,
+    "openvoicev2": 0.0076,
+    "playht": 0.22,
+    "pro_diff": 0.0,
+    "unit_speech": 0.152,
+    "wavegrad2": 0.0,
+    "xtts_v2": 0.0423,
+    "your_tts": 0.0299
+  },
+  "lj_bonafide_vs_lj_voice_spoofs_minDCF": 0.0,
+  "libri_bonafide_vs_cloned_spoofs_minDCF": 0.1616,
+  "bonafide_p_by_source": {
+    "librispeech": [
+      0.0,
+      0.0001,
+      0.0002
+    ],
+    "ljreal": [
+      0.0007,
+      0.0033,
+      0.0135
+    ]
+  },
+  "best_step": 2500,
+  "log": [
+    {
+      "step": 500,
+      "val_minDCF": 0.3135,
+      "elapsed_s": 381
+    },
+    {
+      "step": 1000,
+      "val_minDCF": 0.2219,
+      "elapsed_s": 762
+    },
+    {
+      "step": 1500,
+      "val_minDCF": 0.1657,
+      "elapsed_s": 1138
+    },
+    {
+      "step": 2000,
+      "val_minDCF": 0.1581,
+      "elapsed_s": 1520
+    },
+    {
+      "step": 2500,
+      "val_minDCF": 0.1534,
+      "elapsed_s": 1898
+    },
+    {
+      "step": 3000,
+      "val_minDCF": 0.1545,
+      "elapsed_s": 2274
+    }
+  ],
+  "args": {
+    "backbone": "facebook/wav2vec2-xls-r-300m",
+    "out": "models/xlsr12_v1",
+    "steps": 3000,
+    "bs": 8,
+    "accum": 2,
+    "lr": 1e-05,
+    "head_lr": 0.0005,
+    "eval_every": 500,
+    "aug": 1.0,
+    "seed": 0,
+    "exclude_generators": [],
+    "grad_ckpt": false,
+    "num_layers": 12
+  }
+}

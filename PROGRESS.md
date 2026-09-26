@@ -67,7 +67,20 @@ Validation uses seeded **test-like crops (3.0–4.6 s)** matching the held-out d
 |---|---|---|---|---|
 | AASIST (organizer ASVspoof5 ckpt), zero-shot | **1.000** | 0.638 | 44.0 % | fails on DiffSSD; ok only on diffgan/your_tts/openvoicev2 |
 
-Next: frozen SSL (XLS-R-300M / WavLM) linear probes → fine-tune best → first valid held-out TSV.
+| Hand-crafted forensic features (38, LR, train→val) | 0.506 | 0.900 | 17.6 % | spectral alone 0.570; splice/compression ≈ chance for detection |
+| XLS-R-300M (first 12 layers) fine-tuned, step 500 | **0.314** | 0.976 | 9.5 % | LJ-voice subset 0.12; cloned-Libri subset 0.34 |
+
+Engineering blockers hit & fixed: full 24-layer XLS-R + AdamW exceeds 8 GB (WDDM spills to shared memory → 10× slower)
+→ truncated to first 12 transformer layers; cuDNN conv workspace failures at eval → eval without cuDNN, per-process
+memory cap 90 %; frozen-embedding probe (`ml/extract_ssl.py`/`probe.py`) OOM'd and was deprioritised in favour of
+fine-tuning (scripts kept; not part of results).
+
+Error analysis at step 500: hardest spoofs are **elevenlabs (0.47) and playht (0.44)** clones of the two *held-out*
+speakers → part of the model's power is speaker identity (only 8 cloned voices in training). **LJ bona fide scores
+higher than Libri bona fide** (p95 0.089 vs 0.005) → if held-out reals are LJ, false alarms come from there.
+Next: `--lj-share` bona fide sampling (v2), unseen-generator run, AASIST fine-tune (family 2).
+The 10 cloned speakers are all LibriSpeech **train-clean-360** (23 GB); deliberately not downloaded (size, and
+targeted overlap with possible held-out reals).
 
 ## Subagent workstreams (Sonnet) — delivered
 

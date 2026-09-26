@@ -51,8 +51,18 @@ class PrimaryDetector:
     def calibrate(self, logit: np.ndarray | float) -> np.ndarray | float:
         return 1.0 / (1.0 + np.exp(-(self.cal["a"] * np.asarray(logit) + self.cal["b"])))
 
-    @torch.no_grad()
     def logits(self, clips: list[np.ndarray], bs: int = 16) -> np.ndarray:
+        try:
+            return self._logits(clips, bs)
+        except RuntimeError as e:  # cuDNN workspace failures seen on 8 GB WDDM GPUs -> retry without cuDNN
+            if self.device.type != "cuda":
+                raise
+            torch.cuda.empty_cache()
+            torch.backends.cudnn.enabled = False
+            return self._logits(clips, max(1, bs // 2))
+
+    @torch.no_grad()
+    def _logits(self, clips: list[np.ndarray], bs: int = 16) -> np.ndarray:
         out = np.zeros(len(clips), np.float32)
         order = np.argsort([len(c) for c in clips])
         dtype = torch.float16 if self.device.type == "cuda" else torch.float32

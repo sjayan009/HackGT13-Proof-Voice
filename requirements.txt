@@ -1,0 +1,22 @@
+# Core inference + API (CPU/GPU agnostic; torch installed separately, see Dockerfile / README)
+numpy==2.4.6
+scipy==1.17.1
+pandas==3.0.6
+scikit-learn==1.9.1
+soundfile==0.14.0
+soxr==1.1.0
+librosa==0.11.0
+transformers==5.17.0
+safetensors==0.8.0
+huggingface_hub==1.33.0
+imageio-ffmpeg==0.6.0
+fastapi==0.141.1
+uvicorn==0.54.0
+python-multipart==0.0.32
+pydantic==2.13.5
+websockets==17.1
+httpx==0.28.1
+python-dotenv==1.2.3
+pyarrow
+pytest
+pytest-timeout

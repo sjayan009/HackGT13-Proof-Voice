@@ -1,0 +1,22 @@
+{
+  "step": 2500,
+  "val_minDCF": 0.1533743681236991,
+  "args": {
+    "backbone": "facebook/wav2vec2-xls-r-300m",
+    "out": "models/xlsr12_v1",
+    "steps": 3000,
+    "bs": 8,
+    "accum": 2,
+    "lr": 1e-05,
+    "head_lr": 0.0005,
+    "eval_every": 500,
+    "aug": 1.0,
+    "seed": 0,
+    "exclude_generators": [],
+    "grad_ckpt": false,
+    "num_layers": 12
+  },
+  "backbone": "facebook/wav2vec2-xls-r-300m",
+  "name": "ProofVoice XLS-R-12L v1",
+  "version": "xlsr12_v1"
+}
