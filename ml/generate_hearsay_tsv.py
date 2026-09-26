@@ -46,8 +46,10 @@ def find_wavs(inp: Path, tmp: Path) -> dict[str, Path]:
         inp = tmp
     found: dict[str, Path] = {}
     for p in sorted(inp.rglob("*")):
-        if p.suffix.lower() in {".wav", ".flac", ".mp3", ".ogg", ".m4a"} and p.name not in found:
-            found[p.name] = p
+        if p.suffix.lower() in {".wav", ".flac", ".mp3", ".ogg", ".m4a"}:
+            if p.name in found and found[p.name].read_bytes() != p.read_bytes():
+                raise SystemExit(f"two different files share the basename {p.name}: {found[p.name]} vs {p}")
+            found.setdefault(p.name, p)
     return found
 
 

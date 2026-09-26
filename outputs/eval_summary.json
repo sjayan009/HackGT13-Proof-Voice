@@ -1,0 +1,242 @@
+{
+  "notes": [
+    "minDCF = official organizer scorer (ASVspoof5 Track 1 code, Pspoof=0.5, Cmiss=1, Cfa=4); lower is better.",
+    "Validation = group-disjoint split of organizer DiffSSD + LJRealResampled + public LibriSpeech dev/test-clean bona fide, scored on test-like 3.0-4.6 s crops.",
+    "Multi-speaker spoofs in validation are from 2 cloned speakers never seen in training.",
+    "Unseen-generator rows: generator removed from training entirely."
+  ],
+  "model_selection": [
+    {
+      "model": "AASIST (organizer ASVspoof5 ckpt), zero-shot",
+      "val_minDCF": 1.0,
+      "EER": 0.4398,
+      "AUC": 0.638
+    },
+    {
+      "model": "Hand-crafted forensic branches (38 feats, logistic regression)",
+      "val_minDCF": 0.5057,
+      "EER": 0.176,
+      "AUC": 0.8999
+    },
+    {
+      "model": "xlsr12_v1",
+      "val_minDCF": 0.1534,
+      "EER": 0.0436,
+      "AUC": 0.9932,
+      "LJ_bona_vs_LJ_voice_spoofs_minDCF": 0.0,
+      "Libri_bona_vs_cloned_spoofs_minDCF": 0.1616
+    },
+    {
+      "model": "xlsr12_v2_lj30",
+      "val_minDCF": 0.1311,
+      "EER": 0.0302,
+      "AUC": 0.9961,
+      "LJ_bona_vs_LJ_voice_spoofs_minDCF": 0.0,
+      "Libri_bona_vs_cloned_spoofs_minDCF": 0.1584
+    }
+  ],
+  "selected_model": {
+    "name": "ProofVoice XLS-R-12L v2",
+    "backbone": "facebook/wav2vec2-xls-r-300m",
+    "val_minDCF": 0.1311,
+    "EER": 0.0302,
+    "AUC": 0.9961,
+    "actDCF": 1.0,
+    "decision_threshold": 0.1722,
+    "FRR_bonafide_at_minDCF": 0.0678,
+    "FAR_spoof_at_minDCF": 0.0158
+  },
+  "per_generator_minDCF": [
+    {
+      "generator": "diffgan_tts",
+      "minDCF": 0.0
+    },
+    {
+      "generator": "elevenlabs",
+      "minDCF": 0.3441
+    },
+    {
+      "generator": "grad_tts",
+      "minDCF": 0.0
+    },
+    {
+      "generator": "openvoicev2",
+      "minDCF": 0.0085
+    },
+    {
+      "generator": "playht",
+      "minDCF": 0.2165
+    },
+    {
+      "generator": "pro_diff",
+      "minDCF": 0.0
+    },
+    {
+      "generator": "unit_speech",
+      "minDCF": 0.0303
+    },
+    {
+      "generator": "wavegrad2",
+      "minDCF": 0.0
+    },
+    {
+      "generator": "xtts_v2",
+      "minDCF": 0.0
+    },
+    {
+      "generator": "your_tts",
+      "minDCF": 0.0036
+    }
+  ],
+  "histograms": {
+    "validation_synthetic_probability": {
+      "bins": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95
+      ],
+      "bonafide": [
+        952,
+        51,
+        30,
+        22,
+        15,
+        6,
+        9,
+        11,
+        5,
+        2,
+        5,
+        0,
+        4,
+        5,
+        0,
+        0,
+        2,
+        2,
+        0,
+        0
+      ],
+      "spoof": [
+        40,
+        27,
+        22,
+        24,
+        26,
+        20,
+        19,
+        20,
+        14,
+        17,
+        26,
+        17,
+        17,
+        25,
+        22,
+        26,
+        31,
+        40,
+        53,
+        5514
+      ]
+    }
+  },
+  "forensic_branches_standalone": [
+    {
+      "branch": "spectral",
+      "n_features": 11,
+      "minDCF": 0.5701,
+      "AUC": 0.8689,
+      "EER": 0.2097
+    },
+    {
+      "branch": "prosody",
+      "n_features": 11,
+      "minDCF": 0.7606,
+      "AUC": 0.8197,
+      "EER": 0.2534
+    },
+    {
+      "branch": "compression",
+      "n_features": 5,
+      "minDCF": 0.9671,
+      "AUC": 0.6748,
+      "EER": 0.3798
+    },
+    {
+      "branch": "splice",
+      "n_features": 4,
+      "minDCF": 0.9982,
+      "AUC": 0.6204,
+      "EER": 0.4113
+    },
+    {
+      "branch": "quality",
+      "n_features": 7,
+      "minDCF": 0.831,
+      "AUC": 0.7456,
+      "EER": 0.34
+    },
+    {
+      "branch": "all_branches",
+      "n_features": 38,
+      "minDCF": 0.5057,
+      "AUC": 0.8999,
+      "EER": 0.176
+    }
+  ],
+  "fusion_ablation_oof": [
+    {
+      "config": "primary_only",
+      "minDCF": 0.068
+    },
+    {
+      "config": "primary+spectral",
+      "minDCF": 0.0646
+    },
+    {
+      "config": "primary+prosody",
+      "minDCF": 0.0658
+    },
+    {
+      "config": "primary+compression",
+      "minDCF": 0.0765
+    },
+    {
+      "config": "primary+splice",
+      "minDCF": 0.0703
+    },
+    {
+      "config": "primary+quality",
+      "minDCF": 0.0659
+    },
+    {
+      "config": "primary+all_branches",
+      "minDCF": 0.0637
+    }
+  ],
+  "fusion_decision": "keep primary only: no fusion beat primary_only out-of-fold",
+  "heldout_prediction_stats": {
+    "mean": 0.3815406868076381,
+    "median": 0.08731849491596222,
+    "frac_above_threshold": 0.44763614602034707,
+    "model_sha1": "fe6232932852f9e370e22445f186d91ca945a122"
+  }
+}

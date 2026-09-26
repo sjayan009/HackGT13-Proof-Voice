@@ -97,7 +97,7 @@ def main():
     held = load(ROOT / "outputs/team_predictions.json")
     if held:
         S["heldout_prediction_stats"] = held["score_stats"] | {"model_sha1": held["model_sha1"]}
-    (ROOT / "outputs/eval_summary.json").write_text(json.dumps(S, indent=2))
+    (ROOT / "outputs/eval_summary.json").write_text(json.dumps(S, indent=2), encoding="utf-8")
     write_results_md(S)
     print("wrote outputs/eval_summary.json and RESULTS.md")
 
@@ -130,7 +130,7 @@ def write_results_md(S: dict):
         parts += [f"**Fusion decision:** {S['fusion_decision']}", ""]
     if "latency" in S:
         parts += ["## Latency", "```json", json.dumps(S["latency"], indent=1), "```", ""]
-    (ROOT / "RESULTS.md").write_text("\n".join(parts))
+    (ROOT / "RESULTS.md").write_text("\n".join(parts), encoding="utf-8")
 
 
 if __name__ == "__main__":

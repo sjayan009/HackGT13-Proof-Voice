@@ -192,3 +192,38 @@ def test_redteam_falls_back_to_cached_fixture(client, monkeypatch):
 def test_eval_summary_404_or_json(client):
     r = client.get("/eval/summary")
     assert r.status_code in (200, 404)
+
+
+def test_stream_keeps_emitting_after_buffer_cap(detector, monkeypatch):
+    """Regression: windows must keep coming after the ring buffer reaches its cap (was a silent stall)."""
+    from app.services import stream
+
+    monkeypatch.setattr(stream, "MAX_BUFFER_S", 4.0)
+    sa = stream.StreamAnalyzer(detector, 16000, 3000, 500)
+    x = (0.1 * np.random.default_rng(0).standard_normal(16000 * 8)).astype(np.float32)
+    ts = []
+    for i in range(0, len(x), 8000):
+        sa.push(x[i:i + 8000])
+        while sa.ready():
+            ts.append(sa.step()["t_ms"])
+    assert ts[-1] == 8000 and len(ts) == 13  # 2.0 s .. 8.0 s every 0.5 s
+
+
+def test_validator_catches_problems(tmp_path):
+    import sys
+    from pathlib import Path
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "ml"))
+    from validate_hearsay_tsv import validate
+
+    t = tmp_path / "t.tsv"
+    t.write_bytes(b"filename\tcm-score\na.wav\t0.5\nb.wav\t0.5\n")
+    ok = tmp_path / "ok.tsv"
+    ok.write_bytes(b"filename\tcm-score\na.wav\t0.1\nb.wav\t0.9\n")
+    assert validate(ok, t, expected_rows=None) == []
+    for bad in ["filename\tcm-score\na.wav\t0.1\na.wav\t0.9\n", "filename\tcm-score\na.wav\t0.1\n",
+                "filename\tcm-score\na.wav\t1.5\nb.wav\t0.9\n", "filename\tscore\na.wav\t0.1\nb.wav\t0.9\n",
+                "filename\tcm-score\na.wav\tnan\nb.wav\t0.9\n", "filename,cm-score\na.wav,0.1\nb.wav,0.9\n"]:
+        p = tmp_path / "bad.tsv"
+        p.write_bytes(bad.encode())
+        assert validate(p, t, expected_rows=None), bad

@@ -54,7 +54,8 @@ def validate(pred: Path, template: Path, test_dir: Path | None = None, expected_
     pnames = [r[0] for r in prows if len(r) >= 1]
     if len(prows) != len(trows):
         errs.append(f"row count {len(prows)} != template {len(trows)}")
-    dups = {n for n in pnames if pnames.count(n) > 1} if len(pnames) < 5000 else set()
+    from collections import Counter
+    dups = {n for n, k in Counter(pnames).items() if k > 1}
     if dups:
         errs.append(f"{len(dups)} duplicate filenames, e.g. {sorted(dups)[:3]}")
     missing = set(tnames) - set(pnames)
