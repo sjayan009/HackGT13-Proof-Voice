@@ -36,6 +36,9 @@ export default function RedTeam({
   const playerRef = useRef<PcmStreamPlayer | null>(null);
 
   const reset = () => {
+    // Dispose the previous run's player (not on ws close: audio arrives faster than real time and may still be playing).
+    playerRef.current?.close();
+    playerRef.current = null;
     setEvents([]);
     setReport(null);
     setSource(null);

@@ -1,6 +1,6 @@
 {
-  "step": 500,
-  "val_minDCF": 0.08429200118941421,
+  "step": 2000,
+  "val_minDCF": 0.06563484983645554,
   "args": {
     "backbone": "facebook/wav2vec2-xls-r-300m",
     "out": "models/xlsr12_v3",
@@ -22,5 +22,7 @@
     "crop_max": 6.0,
     "num_layers": 12
   },
-  "backbone": "facebook/wav2vec2-xls-r-300m"
+  "backbone": "facebook/wav2vec2-xls-r-300m",
+  "name": "ProofVoice XLS-R-12L v3",
+  "version": "xlsr12_v3"
 }

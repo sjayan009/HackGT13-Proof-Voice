@@ -1,32 +1,32 @@
 [
  {
   "step": 500,
-  "val_minDCF": 0.1796,
-  "elapsed_s": 679
+  "val_minDCF": 0.0843,
+  "elapsed_s": 1866
  },
  {
   "step": 1000,
-  "val_minDCF": 0.2135,
-  "elapsed_s": 1069
+  "val_minDCF": 0.1115,
+  "elapsed_s": 2344
  },
  {
   "step": 1500,
-  "val_minDCF": 0.1316,
-  "elapsed_s": 1452
+  "val_minDCF": 0.0981,
+  "elapsed_s": 2828
  },
  {
   "step": 2000,
-  "val_minDCF": 0.1699,
-  "elapsed_s": 1837
+  "val_minDCF": 0.0656,
+  "elapsed_s": 3299
  },
  {
   "step": 2500,
-  "val_minDCF": 0.1599,
-  "elapsed_s": 2217
+  "val_minDCF": 0.0763,
+  "elapsed_s": 3728
  },
  {
   "step": 3000,
-  "val_minDCF": 0.1563,
-  "elapsed_s": 2608
+  "val_minDCF": 0.0757,
+  "elapsed_s": 4157
  }
 ]

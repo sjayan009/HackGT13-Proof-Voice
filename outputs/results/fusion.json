@@ -38,59 +38,59 @@
     }
   },
   "fusion_oof_on_val": {
-    "primary_only": 0.068,
-    "primary+spectral": 0.0646,
-    "primary+prosody": 0.0658,
-    "primary+compression": 0.0765,
-    "primary+splice": 0.0703,
-    "primary+quality": 0.0659,
-    "primary+all_branches": 0.0637
+    "primary_only": 0.0332,
+    "primary+spectral": 0.0332,
+    "primary+prosody": 0.0332,
+    "primary+compression": 0.0345,
+    "primary+splice": 0.0331,
+    "primary+quality": 0.0336,
+    "primary+all_branches": 0.0343
   },
-  "primary_raw_minDCF": 0.1534,
+  "primary_raw_minDCF": 0.0656,
   "fusion_weights_chosen": {
     "spectral": [
-      0.25,
-      0.1,
-      0.25,
-      0.25,
-      0.25
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
     ],
     "prosody": [
-      0.1,
-      0.05,
+      0.25,
+      0.0,
       0.0,
       0.0,
       0.0
     ],
     "compression": [
-      1.0,
-      2.0,
-      0.1,
-      1.0,
-      0.25
-    ],
-    "splice": [
-      1.0,
-      0.05,
       0.0,
-      0.5,
+      1.0,
+      0.0,
+      0.0,
       0.0
     ],
+    "splice": [
+      2.0,
+      0.0,
+      1.0,
+      1.0,
+      1.0
+    ],
     "quality": [
-      0.25,
-      0.05,
-      0.25,
-      0.25,
-      0.25
+      1.0,
+      0.0,
+      0.5,
+      0.5,
+      0.5
     ],
     "all_branches": [
-      0.1,
+      0.0,
       0.25,
       0.0,
-      0.05,
+      0.0,
       0.0
     ]
   },
-  "best_config": "primary+all_branches",
+  "best_config": "primary+splice",
   "decision": "keep primary only: no fusion beat primary_only out-of-fold"
 }

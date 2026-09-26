@@ -1,9 +1,9 @@
 {
-  "step": 1500,
-  "val_minDCF": 0.1315712161760333,
+  "step": 2000,
+  "val_minDCF": 0.06563484983645554,
   "args": {
     "backbone": "facebook/wav2vec2-xls-r-300m",
-    "out": "models/xlsr12_v2_lj30",
+    "out": "models/xlsr12_v3",
     "steps": 3000,
     "bs": 8,
     "accum": 2,
@@ -15,9 +15,14 @@
     "exclude_generators": [],
     "grad_ckpt": false,
     "lj_share": 0.3,
+    "extra_train": [
+      "train_extra"
+    ],
+    "crop_min": 2.5,
+    "crop_max": 6.0,
     "num_layers": 12
   },
   "backbone": "facebook/wav2vec2-xls-r-300m",
-  "name": "ProofVoice XLS-R-12L v2",
-  "version": "xlsr12_v2_lj30"
+  "name": "ProofVoice XLS-R-12L v3",
+  "version": "xlsr12_v3"
 }
