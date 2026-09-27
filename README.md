@@ -11,11 +11,13 @@
 | 🐳 Reproduce the TSV | [Docker, offline, 3 commands](#hearsay-tsv-offline-no-internet-no-xai) |
 | 🔬 Forensic techniques | [7 families, with code links](#forensic-techniques-distinct-families) |
 | 🗺️ Architecture (1 picture) | [`docs/architecture.svg`](docs/architecture.svg) |
-| 🎬 Demo video (1:40) | [`00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4) |
+| 🎬 **Demo video (1:40)** | **[▶ Watch on YouTube](https://youtu.be/hpHuJdQuLgU)** · [MP4 in repo](00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4) |
 
 Everything is also summarized on one page: **[00_NSA_HEARSAY_SUBMISSION/README.md](00_NSA_HEARSAY_SUBMISSION/README.md)**.
 
 ---
+
+**▶ [Watch the 1:40 demo video](https://youtu.be/hpHuJdQuLgU)**
 
 > Three seconds of speech can be enough to clone a voice. ProofVoice asks: **how quickly can we know that the voice
 > we're hearing is synthetic — and what evidence supports that?**

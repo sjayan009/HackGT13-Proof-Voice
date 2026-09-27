@@ -6,7 +6,7 @@
 |---|---|
 | **[`ProofVoice_final.tsv`](ProofVoice_final.tsv)** | **Final predictions for all 1,671 held-out test files.** `cm-score` = probability the clip is **synthetic** (1.0 = synthetic, 0.0 = real), as the challenge instructions specify. |
 | [`ProofVoice_final_bonafide_high.tsv`](ProofVoice_final_bonafide_high.tsv) | The same scores flipped (`1 − p`), for a scorer that expects **higher = bona fide** (the ASVspoof5 `calculate_metrics.py` convention). Use one or the other, not both. |
-| [`ProofVoice_demo_video.mp4`](ProofVoice_demo_video.mp4) | 1:40 demo of the full system (file analysis, live streaming, Grok Voice red team). |
+| **[▶ Demo video on YouTube](https://youtu.be/hpHuJdQuLgU)** · [`ProofVoice_demo_video.mp4`](ProofVoice_demo_video.mp4) | 1:40 demo of the full system (file analysis, live streaming, Grok Voice red team). |
 
 Both TSVs have the organizer template's exact header (`filename`, `cm-score`) and filename set, and pass
 [`ml/validate_hearsay_tsv.py`](../ml/validate_hearsay_tsv.py). 31.4% of test files score above the decision
