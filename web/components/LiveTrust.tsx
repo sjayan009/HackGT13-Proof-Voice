@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { AnalysisReport, AnalysisWindowEvent, StreamServerEvent } from "@/lib/types";
 import { analyzeStreamUrl, wsBase } from "@/lib/api";
-import { startMicCapture, type MicCaptureHandle } from "@/lib/mic";
-import { ms, pct } from "@/lib/format";
+import { startClipCapture, startMicCapture, type MicCaptureHandle } from "@/lib/mic";
+import { loadSampleManifest, type Sample } from "@/lib/samples";
+import { leaning, ms, pct } from "@/lib/format";
 import StatusChip from "./StatusChip";
 import RollingProbabilityChart from "./RollingProbabilityChart";
 import LevelMeter from "./LevelMeter";
@@ -13,6 +14,12 @@ import Callout from "./Callout";
 import Icon from "./Icon";
 
 type SessionState = "idle" | "connecting" | "live" | "stopping" | "error";
+type InputMode = "mic" | "clip";
+interface Clip {
+  name: string;
+  blob: Blob;
+  sampleId?: string;
+}
 
 const FINALIZE_TIMEOUT_MS = 20_000;
 
@@ -42,6 +49,28 @@ export default function LiveTrust({
   const [error, setError] = useState<string | null>(null);
   const [levelDbfs, setLevelDbfs] = useState<number | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [mode, setMode] = useState<InputMode>("mic");
+  const [clip, setClip] = useState<Clip | null>(null);
+  const [clipProgress, setClipProgress] = useState<{ t: number; d: number } | null>(null);
+  const [samples, setSamples] = useState<Sample[]>([]);
+  const clipInputRef = useRef<HTMLInputElement>(null);
+  const stopRef = useRef<() => void>(() => {});
+  const sessionModeRef = useRef<InputMode>("mic");
+
+  useEffect(() => {
+    loadSampleManifest().then((m) => setSamples(m?.samples ?? []));
+  }, []);
+
+  const pickSample = async (smp: Sample) => {
+    try {
+      const res = await fetch(smp.file);
+      if (!res.ok) throw new Error(String(res.status));
+      setClip({ name: smp.title, blob: await res.blob(), sampleId: smp.id });
+      setError(null);
+    } catch {
+      setError("Could not load that sample.");
+    }
+  };
 
   const wsRef = useRef<WebSocket | null>(null);
   const micRef = useRef<MicCaptureHandle | null>(null);
@@ -96,13 +125,23 @@ export default function LiveTrust({
     setFinalReport(null);
     setSession("connecting");
 
-    if (!window.isSecureContext) {
-      fail("Microphone capture needs a secure context (https or localhost).");
+    const sessionMode = mode;
+    const sessionClip = clip;
+    sessionModeRef.current = sessionMode;
+    setClipProgress(null);
+    if (sessionMode === "clip" && !sessionClip) {
+      fail("Choose a clip to stream first.");
       return;
     }
-    if (!navigator.mediaDevices?.getUserMedia) {
-      fail("This browser does not support microphone capture.");
-      return;
+    if (sessionMode === "mic") {
+      if (!window.isSecureContext) {
+        fail("Microphone capture needs a secure context (https or localhost).");
+        return;
+      }
+      if (!navigator.mediaDevices?.getUserMedia) {
+        fail("This browser does not support microphone capture.");
+        return;
+      }
     }
 
     let ws: WebSocket;
@@ -139,7 +178,8 @@ export default function LiveTrust({
         setEvents((prev) => [...prev, data]);
       } else if (data.type === "analysis.final") {
         setFinalReport(data.report);
-        onReportReady?.(data.report);
+        // Only a microphone session is "your voice" — the human baseline Red Team compares against.
+        if (sessionModeRef.current === "mic") onReportReady?.(data.report);
         setSession("idle");
         cleanup();
       } else if (data.type === "error") {
@@ -149,26 +189,39 @@ export default function LiveTrust({
 
     ws.onopen = async () => {
       try {
-        const mic = await startMicCapture({
-          onChunk: (chunk) => {
+        const tap = {
+          onChunk: (chunk: Float32Array) => {
             if (ws.readyState === WebSocket.OPEN) ws.send(chunk.buffer);
           },
-          onLevel: (dbfs) => setLevelDbfs(dbfs),
-        });
+          onLevel: (dbfs: number) => setLevelDbfs(dbfs),
+        };
+        const mic =
+          sessionMode === "mic"
+            ? await startMicCapture(tap)
+            : await startClipCapture(sessionClip!.blob, {
+                ...tap,
+                onProgress: (t, d) => setClipProgress({ t, d }),
+                onEnded: () => stopRef.current(),
+              });
         if (wsRef.current !== ws) {
           mic.stop(); // session was cancelled while the permission prompt was open
           return;
         }
         micRef.current = mic;
         ws.send(
-          JSON.stringify({ type: "start", sample_rate: mic.sampleRate, encoding: "f32le", source: "mic" })
+          JSON.stringify({
+            type: "start",
+            sample_rate: mic.sampleRate,
+            encoding: "f32le",
+            source: sessionMode === "mic" ? "mic" : "file",
+          })
         );
         setSession("live");
       } catch (err) {
-        fail(micErrorMessage(err));
+        fail(sessionMode === "mic" ? micErrorMessage(err) : err instanceof Error ? err.message : String(err));
       }
     };
-  }, [cleanup, fail, onReportReady]);
+  }, [cleanup, fail, onReportReady, mode, clip]);
 
   const stop = useCallback(() => {
     try {
@@ -189,6 +242,7 @@ export default function LiveTrust({
       cleanup();
     }
   }, [cleanup, fail]);
+  stopRef.current = stop;
 
   const latest = events[events.length - 1];
   const busy = state === "connecting" || state === "live" || state === "stopping";
@@ -198,18 +252,104 @@ export default function LiveTrust({
       <div className="page-intro">
         <h2>Live Trust</h2>
         <p>
-          Speak into your microphone. Every half second the detector scores the last two seconds and updates a
-          rolling probability, so you can see how fast the evidence becomes conclusive.
+          Every half second the detector scores the newest audio and updates a rolling probability, so you can
+          watch how fast the evidence becomes conclusive. Speak into your microphone, or stream a clip to see
+          an AI voice analyzed in real time.
         </p>
       </div>
 
       <section className="panel" aria-label="Live session controls">
+        <div className="mode-switch" role="radiogroup" aria-label="Input">
+          {(
+            [
+              ["mic", "Microphone", "mic"],
+              ["clip", "Stream a clip", "file"],
+            ] as const
+          ).map(([m, label, icon]) => (
+            <button
+              key={m}
+              type="button"
+              role="radio"
+              aria-checked={mode === m}
+              className="mode-option"
+              disabled={busy}
+              onClick={() => setMode(m)}
+            >
+              <Icon name={icon} size={14} />
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {mode === "mic" ? (
+          <p className="panel-sub" style={{ margin: "12px 0 16px", maxWidth: "70ch" }}>
+            <strong style={{ color: "var(--text-dim)" }}>Testing an AI voice?</strong> Don&rsquo;t play it from a
+            phone into the microphone. The speaker, room echo and mic reshape the audio into a channel this model
+            wasn&rsquo;t trained on (a <em>replay</em> attack), and results become unreliable in both directions.
+            Use{" "}
+            <button type="button" className="link-btn" onClick={() => setMode("clip")} disabled={busy}>
+              Stream a clip
+            </button>{" "}
+            instead: it plays through your speakers and sends the same samples to the detector digitally.
+          </p>
+        ) : (
+          <div className="clip-picker">
+            <div className="clip-picker-row" role="list" aria-label="Clips to stream">
+              {samples.map((smp) => (
+                <button
+                  type="button"
+                  role="listitem"
+                  key={smp.id}
+                  className={`clip-option ${clip?.sampleId === smp.id ? "active" : ""}`}
+                  onClick={() => pickSample(smp)}
+                  disabled={busy}
+                  aria-pressed={clip?.sampleId === smp.id}
+                >
+                  <span
+                    className="dot"
+                    aria-hidden
+                    style={{ background: smp.truth === "bonafide" ? "var(--green)" : "var(--red)" }}
+                  />
+                  {smp.title}
+                </button>
+              ))}
+              <button
+                type="button"
+                role="listitem"
+                className={`clip-option ${clip && !clip.sampleId ? "active" : ""}`}
+                onClick={() => clipInputRef.current?.click()}
+                disabled={busy}
+              >
+                <Icon name="upload" size={13} />
+                {clip && !clip.sampleId ? clip.name : "Your own file…"}
+              </button>
+            </div>
+            <input
+              ref={clipInputRef}
+              type="file"
+              accept="audio/*,.wav,.mp3,.m4a,.ogg,.flac"
+              hidden
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) setClip({ name: f.name, blob: f });
+                e.target.value = "";
+              }}
+            />
+          </div>
+        )}
+
         <div className="control-bar">
           <div className="control-group">
             {!busy ? (
-              <button className="btn btn-primary btn-lg" onClick={start}>
-                <Icon name="mic" size={18} />
-                {finalReport || events.length ? "Start new session" : "Start listening"}
+              <button className="btn btn-primary btn-lg" onClick={start} disabled={mode === "clip" && !clip}>
+                <Icon name={mode === "mic" ? "mic" : "play"} size={18} />
+                {mode === "mic"
+                  ? finalReport || events.length
+                    ? "Start new session"
+                    : "Start listening"
+                  : clip
+                  ? `Stream “${clip.name}”`
+                  : "Choose a clip above"}
               </button>
             ) : (
               <button
@@ -223,10 +363,16 @@ export default function LiveTrust({
             )}
             <span className={`live-indicator ${state === "live" ? "on" : ""}`} role="status" aria-live="polite">
               <span className="dot" aria-hidden />
-              {state === "connecting" && "Connecting — allow microphone access if prompted"}
+              {state === "connecting" &&
+                (mode === "mic" ? "Connecting — allow microphone access if prompted" : "Connecting…")}
               {state === "live" && (
                 <>
-                  Live <span className="num">{clock(elapsed)}</span>
+                  {sessionModeRef.current === "clip" ? "Streaming" : "Live"}{" "}
+                  <span className="num">
+                    {sessionModeRef.current === "clip" && clipProgress
+                      ? `${clock(clipProgress.t * 1000)} / ${clock(clipProgress.d * 1000)}`
+                      : clock(elapsed)}
+                  </span>
                 </>
               )}
               {state === "stopping" && "Building final report…"}
@@ -259,8 +405,10 @@ export default function LiveTrust({
           <RollingProbabilityChart events={events} />
           <div className="stat-grid">
             <div className="stat">
-              <div className="stat-label">Rolling probability</div>
-              <div className="stat-value lg">{latest ? pct(latest.rolling_probability) : "—"}</div>
+              <div className="stat-label">Current reading</div>
+              <div className="stat-value lg">
+                {latest ? `${leaning(latest.rolling_probability)!.text} ${leaning(latest.rolling_probability)!.side}` : "—"}
+              </div>
             </div>
             <div className="stat">
               <div className="stat-label">Analysis confidence</div>
@@ -284,7 +432,11 @@ export default function LiveTrust({
             <h3 className="section-title" style={{ fontSize: "1rem" }}>
               Final report
             </h3>
-            <span className="panel-sub">Used as the human baseline in Red Team</span>
+            <span className="panel-sub">
+              {sessionModeRef.current === "mic"
+                ? "Used as the human baseline in Red Team"
+                : "Streamed clip (not used as your human baseline)"}
+            </span>
           </div>
           <ReportView report={finalReport} />
         </div>

@@ -18,7 +18,10 @@ type IconName =
   | "pause"
   | "check"
   | "x"
-  | "arrow";
+  | "arrow"
+  | "sun"
+  | "moon"
+  | "back";
 
 const PATHS: Record<IconName, JSX.Element> = {
   logo: (
@@ -95,6 +98,14 @@ const PATHS: Record<IconName, JSX.Element> = {
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
   x: <path d="M7 7l10 10M17 7 7 17" />,
   arrow: <path d="M5 12h14M13 6l6 6-6 6" />,
+  back: <path d="M15 5l-7 7 7 7" />,
+  sun: (
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" />
+    </>
+  ),
+  moon: <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" />,
   wand: (
     <>
       <path d="m4 20 11-11M14 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1zM19 11l.7 1.3L21 13l-1.3.7L19 15l-.7-1.3L17 13l1.3-.7z" />

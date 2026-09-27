@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { apiBase, isApiOverridden } from "@/lib/api";
 import { useHealth } from "@/lib/useHealth";
 import Icon from "./Icon";
+import ThemeSwitch from "./ThemeSwitch";
 
 function HealthPill() {
   const health = useHealth();
@@ -63,6 +64,7 @@ export default function Header({ onOpenEval }: { onOpenEval: () => void }) {
       </div>
       <div className="header-actions">
         <HealthPill />
+        <ThemeSwitch />
         <button className="btn" onClick={onOpenEval} aria-haspopup="dialog">
           <Icon name="chart" size={15} />
           <span className="vh-sm">Evaluation</span>

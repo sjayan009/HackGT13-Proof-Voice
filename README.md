@@ -193,6 +193,10 @@ The organizer scorer treats a **higher score as more bona fide**; the HEARSAY in
 - Only 44 LJ bona fide clips exist in validation, so LJ-specific numbers are noisy.
 - Scores are probabilities under equal priors (Platt scaling on validation), not proof. Metadata can be forged.
 - Speaker similarity is not liveness; no watermark does not mean human.
+- **Replay (loudspeaker → room → microphone) is out of domain.** The detector is trained on digital audio (logical
+  access). Streamed digitally, 6/6 synthetic demo clips are flagged; played through a simulated phone speaker in a
+  room, several synthetic clips drift to human/inconclusive and real speech can flip to synthetic. Live Trust's
+  "Stream a clip" mode sends audio digitally for this reason; replay-augmented training is the fix.
 
 ## Sponsor tracks
 

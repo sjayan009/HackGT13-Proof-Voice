@@ -12,7 +12,7 @@ import {
   reportFilename,
   verdictSentence,
 } from "@/lib/format";
-import Gauge from "./Gauge";
+import EvidenceScale, { LeaningValue } from "./EvidenceScale";
 import StatusChip from "./StatusChip";
 import TrustTimelineChart from "./TrustTimelineChart";
 import EvidenceCard from "./EvidenceCard";
@@ -187,9 +187,11 @@ export default function ReportView({
       )}
       <section className="panel" aria-label="Verdict">
         <div className="verdict">
-          <Gauge probability={report.synthetic_probability} status={report.status} />
-          <div className="verdict-body">
+          <div className="verdict-reading">
             <StatusChip status={report.status} />
+            <LeaningValue probability={report.synthetic_probability} status={report.status} />
+          </div>
+          <div className="verdict-body">
             <h2 className="verdict-headline">
               {STATUS_LABEL[report.status] ?? report.status}
               {report.file?.name ? (
@@ -207,7 +209,18 @@ export default function ReportView({
             </div>
           </div>
         </div>
+        <EvidenceScale
+          probability={report.synthetic_probability}
+          threshold={report.decision_threshold}
+          status={report.status}
+        />
         <div className="stat-grid">
+          <div className="stat">
+            <div className="stat-label">p(synthetic)</div>
+            <div className="stat-value">
+              {isFiniteNumber(report.synthetic_probability) ? report.synthetic_probability.toFixed(4) : "—"}
+            </div>
+          </div>
           <div className="stat">
             <div className="stat-label">Analysis confidence</div>
             <div className="stat-value">{pct(report.analysis_confidence)}</div>

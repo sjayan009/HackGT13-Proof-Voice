@@ -14,6 +14,7 @@ import { useHealth } from "@/lib/useHealth";
 import RollingProbabilityChart from "./RollingProbabilityChart";
 import ReportView from "./ReportView";
 import StatusChip from "./StatusChip";
+import { LeaningValue } from "./EvidenceScale";
 import Callout from "./Callout";
 import Icon from "./Icon";
 
@@ -29,7 +30,7 @@ function CompareCard({ title, report }: { title: string; report: AnalysisReport 
   return (
     <div className="panel compare-card">
       <span className="eyebrow">{title}</span>
-      <div className="compare-value">{pct(report.synthetic_probability)}</div>
+      <LeaningValue probability={report.synthetic_probability} status={report.status} size="md" />
       <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
         <StatusChip status={report.status} />
         <span className="panel-sub">confidence {pct(report.analysis_confidence)}</span>

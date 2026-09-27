@@ -47,6 +47,35 @@ export default function ForensicLab({
 
   useEffect(() => () => ctrlRef.current?.abort(), []);
 
+  // A result is its own history entry, so the browser's Back button returns to the library.
+  const inResult = useRef(false);
+
+  const clearResult = useCallback(() => {
+    ctrlRef.current?.abort();
+    inResult.current = false;
+    setLoading(false);
+    setError(null);
+    setReport(null);
+    setFile(null);
+    setSample(null);
+    setPrecomputedNote(null);
+    setWaveformPeaks(null);
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
+  }, []);
+
+  useEffect(() => {
+    const onPop = (e: PopStateEvent) => {
+      if (inResult.current && !(e.state && e.state.pvResult)) clearResult();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [clearResult]);
+
+  const goBack = () => {
+    if (history.state && history.state.pvResult) history.back(); // popstate -> clearResult
+    else clearResult();
+  };
+
   // Object URL for listen-along playback; revoked when replaced or on unmount.
   useEffect(() => {
     if (!file || file.size === 0) {
@@ -81,6 +110,10 @@ export default function ForensicLab({
       }
 
       setLoading(true);
+      if (!inResult.current) {
+        inResult.current = true;
+        history.pushState({ ...(history.state ?? {}), pvResult: true }, "");
+      }
       decodeAudioFileForWaveform(f)
         .then((res) => {
           if (!ctrl.signal.aborted && res) setWaveformPeaks(res.peaks);
@@ -196,6 +229,15 @@ export default function ForensicLab({
 
       {compact ? (
         <div className={`dropzone compact ${dragActive ? "active" : ""}`} {...dropHandlers}>
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm back-btn"
+            onClick={goBack}
+            aria-label="Back to samples and upload"
+          >
+            <Icon name="back" size={16} strokeWidth={2.2} />
+            <span className="vh-sm">Back</span>
+          </button>
           <div className="file-chip">
             <span className="dropzone-icon" style={{ width: 40, height: 40, borderRadius: 12 }}>
               <Icon name="file" size={20} />

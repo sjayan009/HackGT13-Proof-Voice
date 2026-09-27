@@ -74,11 +74,25 @@ export function clamp01(v: number): number {
   return Math.max(0, Math.min(1, v));
 }
 
+/** Mirrors the backend's status bands (api/app/orchestration/pipeline.py: status_for). */
+export function decisionBands(threshold: number) {
+  return { human: threshold * 0.5, synthetic: Math.max(threshold, threshold + (1 - threshold) * 0.35) };
+}
+
+/** Probability of the side the evidence leans toward, e.g. p=0.003 → "99.7%" human. */
+export function leaning(p: number | null | undefined): { text: string; side: "human" | "synthetic" } | null {
+  if (!isFiniteNumber(p)) return null;
+  const side = p < 0.5 ? "human" : "synthetic";
+  const v = (side === "human" ? 1 - p : p) * 100;
+  const text = v >= 99.95 ? ">99.9%" : v >= 99 ? `${v.toFixed(1)}%` : `${Math.round(v)}%`;
+  return { text, side };
+}
+
 /** One plain-language sentence restating fields already in the report (no inference). */
 export function verdictSentence(r: AnalysisReport): string {
-  const p = pct(r.synthetic_probability);
+  const l = leaning(r.synthetic_probability);
+  const reading = l ? `${l.text} ${l.side}` : "unavailable";
   const conf = pct(r.analysis_confidence);
-  const thr = isFiniteNumber(r.decision_threshold) ? r.decision_threshold.toFixed(2) : "—";
   const regions = r.suspicious_regions?.length ?? 0;
   const regionText =
     regions === 0
@@ -88,9 +102,9 @@ export function verdictSentence(r: AnalysisReport): string {
     case "insufficient_evidence":
       return `Not enough usable speech to reach a decision (analysis confidence ${conf}). ${regionText}`;
     case "inconclusive":
-      return `Synthetic probability ${p} is close to the decision threshold of ${thr}; treat as unresolved. ${regionText}`;
+      return `The evidence reads ${reading}, which falls in the inconclusive zone: not strong enough either way, so it should go to a human analyst. ${regionText}`;
     default:
-      return `Synthetic probability ${p} against a decision threshold of ${thr}, at ${conf} analysis confidence. ${regionText}`;
+      return `The evidence reads ${reading} at ${conf} analysis confidence. ${regionText}`;
   }
 }
 

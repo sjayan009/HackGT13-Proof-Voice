@@ -48,7 +48,7 @@ export default function Home() {
   const select = useCallback((t: Tab, focus = false) => {
     setTab(t);
     if (window.location.hash !== `#${t}`) {
-      history.replaceState(null, "", t === "forensic" ? window.location.pathname : `#${t}`);
+      history.replaceState(history.state, "", t === "forensic" ? window.location.pathname : `#${t}`);
     }
     if (focus) tabRefs.current[t]?.focus();
   }, []);
