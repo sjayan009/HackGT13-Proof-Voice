@@ -116,3 +116,41 @@ targeted overlap with possible held-out reals).
 - G xAI `api/app/services/grok.py` — Grok Voice realtime (`wss://api.x.ai/v1/realtime`, model grok-voice-latest)
   **verified live**; xAI TTS fallback verified; cached fixture `api/app/fixtures/grok_fixture.wav`; 5 real Grok samples
   in `data/grok_samples/` for OOD testing; 8 tests pass; key never written anywhere.
+
+## Phase 4 — model race — COMPLETE (within time budget)
+
+| Run | change vs previous | best val minDCF | EER | AUC |
+|---|---|---|---|---|
+| AASIST organizer ckpt, zero-shot | — | 1.000 | 44.0 % | 0.638 |
+| hand-crafted branches (LR) | — | 0.506 | 17.6 % | 0.900 |
+| xlsr12_v1 | fine-tuned XLS-R (12 L) | 0.153 | 4.4 % | 0.993 |
+| xlsr12_v2_lj30 | + 30 % LJ bona fide draws | 0.131 | 3.0 % | 0.996 |
+| **xlsr12_v3 (SELECTED)** | + train-only LibriSpeech dev/test-other bona fide, 2.5–6 s crops | **0.066** | **1.5 %** | **0.999** |
+
+v3 beats v2 at every checkpoint (0.084/0.112/0.098/0.066/0.076/0.076), well beyond the ±0.03 checkpoint noise.
+Per-generator (v3): 0.000 for 7 generators; unit_speech 0.007, playht 0.062, **elevenlabs 0.207** (weakest; val
+elevenlabs clips are clones of speakers never seen in training). Calibration ECE 0.015.
+Held-out sanity (no labels): v3 flags 30.8 % of held-out clips at its validation threshold ≈ organizers' ~30 % prior.
+Not done (time): AASIST fine-tune (`ml/train_aasist.py` ready), unseen-generator retrain (`ml/unseen.py` ready).
+
+## Phase 5/6 — forensic breadth + orchestration — COMPLETE
+Fusion re-run against v3: primary 0.0332 per-fold; no branch improves it (chosen weights mostly 0) →
+score = primary only; spectral/prosody/compression/splice/quality/metadata are routed evidence (branch_log explains).
+
+## Phase 7 — robustness — COMPLETE (`outputs/results/robustness.json`, n=1400)
+clean 0.054 · AAC-48k 0.073 · Opus-24k 0.096 · MP3-64k 0.123 · clipping 0.127 · MP3→Opus→MP3 0.133 ·
+μ-law 8 kHz 0.133 (+ noise/gain rows in the file). MP3 mainly raises bona fide false alarms (FRR 2.6 %→14.7 % at the
+clean threshold): two MP3-sourced spoof generators taught "MP3 artefacts ⇒ synthetic". Next fix: MP3/Opus codec
+augmentation on bona fide during training.
+
+## Phase 10 — Grok red team — COMPLETE
+Live Grok Voice → same detector verified in browser (83 %, likely_synthetic, v1). OOD with v3: **6/6 real Grok Voice
+clips flagged** (p 0.91–1.00) — a generator never seen in training (`outputs/results/grok_ood.json`).
+Latency: 23 ms per 4 s clip on RTX 4060 fp16, 345 ms on CPU (`latency.json`).
+
+## Phase 13 — Docker — image builds; offline TSV run verified (see HANDOFF for result)
+
+## Phase 8 — temporal aggregation — COMPLETE
+Full-length val subsample (n=2000): mean of 4 s window logits 0.016 vs full clip 0.021 vs median 0.023 vs max 0.026
+→ clips > 4 s now scored as the mean of 4 s windows (`PrimaryDetector.clip_logits`, used by API and TSV).
+Final TSV regenerated with this rule (31.4 % of held-out above threshold).

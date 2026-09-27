@@ -11,6 +11,11 @@ explicitly representing uncertainty. One forensic core powers:
 - **Live Trust** (microphone → rolling probability, time-to-confidence, uncertainty)
 - **Grok Red Team** (Grok Voice speaks → the *same* audio bytes stream through the *same* detector, live)
 
+**Headline (validation, official organizer minDCF, lower is better):** fine-tuned XLS-R detector
+**minDCF 0.066 · EER 1.5 % · AUC 0.999** — vs 1.000 for the organizer's AASIST checkpoint zero-shot and 0.506 for
+hand-crafted forensic features alone. **6/6** live Grok Voice clips (a generator never seen in training) flagged.
+23 ms per 4 s clip on a laptop RTX 4060.
+
 All measured numbers live in **[RESULTS.md](RESULTS.md)** (auto-generated from result files; nothing typed by hand)
 and in the app's Evaluation drawer. Engineering log: **[PROGRESS.md](PROGRESS.md)**.
 

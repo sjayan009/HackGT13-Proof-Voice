@@ -37,6 +37,21 @@ GPU notes (RTX 4060 8 GB, WDDM): never exceed ~7 GB or it silently spills to sha
 GPU job at a time. Training uses XLS-R truncated to 12 layers, bs 8 × accum 2, ~40 min / 3000 steps incl. evals.
 Do not run heavy CPU jobs during training (augmentation is CPU-bound).
 
-## Status (update as you go)
+## Status at hand-off
 
-See PROGRESS.md "Phase" sections. Current selected model is recorded in `models/selected/meta.json`.
+- **Selected model: xlsr12_v3** — val minDCF 0.066, EER 1.5 %, AUC 0.999 (official scorer, group-disjoint val).
+- `outputs/team_predictions.tsv` (+ `_bonafide_high.tsv`, `.json` sidecar) generated from v3 and validated.
+- 86 tests pass. Web UI + API verified end-to-end in a browser (Forensic Lab, Red Team with live Grok Voice).
+- Robustness, Grok-OOD (6/6 flagged), latency, fusion ablation, eval summary: done (RESULTS.md).
+- QA audit: `outputs/qa_audit.md`; bugs B-1..B-5 fixed (stream stall, TSV dup checks, red-team player).
+
+## Not done (in priority order)
+1. Confirm score orientation with organizers; decide on the one-time NSA review (draft ready, nothing sent).
+2. Publish `models/selected/model.pt` (LFS / release) so a fresh clone can `docker build`.
+3. Record the 90–120 s demo video; push public repo; Devpost write-up.
+4. Live Trust with a real microphone was not exercised in a browser (WebSocket path is covered by tests).
+   **Try it before demoing**: on-device mic audio is out of domain and may read "inconclusive"/synthetic;
+   the MP3 robustness result (bona fide FRR 2.6 %→14.7 %) suggests codec/channel shift raises false alarms.
+5. Optional experiments with ready scripts: `ml/train_aasist.py` (family 2), unseen-generator retrain
+   (`ml/train.py --exclude-generators elevenlabs xtts_v2 grad_tts` then `ml/unseen.py`), codec augmentation on
+   bona fide to fix the MP3 false-alarm shift.

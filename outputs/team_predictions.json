@@ -41,11 +41,11 @@
     "val_ECE_10bin": 0.014892224450535915
   },
   "device": "cuda",
-  "seconds": 46.0,
+  "seconds": 26.7,
   "score_stats": {
-    "mean": 0.2973858890818585,
-    "median": 0.007451426237821579,
-    "frac_above_threshold": 0.3081986834230999
+    "mean": 0.301181904566998,
+    "median": 0.008910533040761948,
+    "frac_above_threshold": 0.31358467983243565
   },
   "orientation": "cm-score = p_synthetic (1.0 = synthetic); *_bonafide_high.tsv = 1 - p"
 }

@@ -96,7 +96,7 @@ def main(argv=None) -> int:
         audio = [load_audio(wavs[n])[0] for n in names]
         scores = np.zeros(len(names))
         for b in range(0, len(names), 256):
-            scores[b:b + 256] = det.calibrate(det.logits(audio[b:b + 256], bs=a.bs))
+            scores[b:b + 256] = det.calibrate(det.clip_logits(audio[b:b + 256], bs=a.bs))
     scores = np.clip(np.nan_to_num(scores, nan=0.5), 0.0, 1.0)
     assert len(scores) == len(names) == len(set(names))
     a.output.parent.mkdir(parents=True, exist_ok=True)

@@ -8,7 +8,7 @@
 ## Selected model
 | name | backbone | val_minDCF | EER | AUC | actDCF | decision_threshold | FRR_bonafide_at_minDCF | FAR_spoof_at_minDCF |
 |---|---|---|---|---|---|---|---|---|
-| ProofVoice XLS-R-12L v2 | facebook/wav2vec2-xls-r-300m | 0.1311 | 0.0302 | 0.9961 | 1.0 | 0.1722 | 0.0678 | 0.0158 |
+| ProofVoice XLS-R-12L v3 | facebook/wav2vec2-xls-r-300m | 0.0656 | 0.0153 | 0.9986 | 1.0 | 0.2537 | 0.0223 | 0.0113 |
 
 ## Model selection (validation)
 | model | val_minDCF | EER | AUC | LJ_bona_vs_LJ_voice_spoofs_minDCF | Libri_bona_vs_cloned_spoofs_minDCF |
@@ -17,20 +17,21 @@
 | Hand-crafted forensic branches (38 feats, logistic regression) | 0.5057 | 0.176 | 0.8999 |  |  |
 | xlsr12_v1 | 0.1534 | 0.0436 | 0.9932 | 0.0 | 0.1616 |
 | xlsr12_v2_lj30 | 0.1311 | 0.0302 | 0.9961 | 0.0 | 0.1584 |
+| xlsr12_v3 | 0.0656 | 0.0153 | 0.9986 | 0.0 | 0.0879 |
 
 ## Per-generator minDCF (each generator vs all bona fide)
 | generator | minDCF |
 |---|---|
 | diffgan_tts | 0.0 |
-| elevenlabs | 0.3441 |
+| elevenlabs | 0.2068 |
 | grad_tts | 0.0 |
-| openvoicev2 | 0.0085 |
-| playht | 0.2165 |
+| openvoicev2 | 0.0 |
+| playht | 0.0623 |
 | pro_diff | 0.0 |
-| unit_speech | 0.0303 |
+| unit_speech | 0.0067 |
 | wavegrad2 | 0.0 |
 | xtts_v2 | 0.0 |
-| your_tts | 0.0036 |
+| your_tts | 0.0 |
 
 ## Forensic branches — standalone (train → val)
 | branch | n_features | minDCF | AUC | EER |
@@ -45,12 +46,55 @@
 ## Fusion ablation — out-of-fold on validation
 | config | minDCF |
 |---|---|
-| primary_only | 0.068 |
-| primary+spectral | 0.0646 |
-| primary+prosody | 0.0658 |
-| primary+compression | 0.0765 |
-| primary+splice | 0.0703 |
-| primary+quality | 0.0659 |
-| primary+all_branches | 0.0637 |
+| primary_only | 0.0332 |
+| primary+spectral | 0.0332 |
+| primary+prosody | 0.0332 |
+| primary+compression | 0.0345 |
+| primary+splice | 0.0331 |
+| primary+quality | 0.0336 |
+| primary+all_branches | 0.0343 |
+
+## Robustness / laundering
+| condition | minDCF | EER | AUC | FRR_bonafide_at_clean_thr | FAR_spoof_at_clean_thr | mean_abs_score_drift | bonafide_mean_p | spoof_mean_p |
+|---|---|---|---|---|---|---|---|---|
+| clean | 0.0543 | 0.0143 | 0.9992 | 0.0257 | 0.0071 | 0.0 | 0.0231 | 0.9808 |
+| mp3_64k | 0.1229 | 0.0314 | 0.9964 | 0.1471 | 0.0057 | 0.0514 | 0.1199 | 0.9868 |
+| opus_24k | 0.0957 | 0.0257 | 0.998 | 0.0614 | 0.01 | 0.0155 | 0.0475 | 0.9789 |
+| aac_48k | 0.0729 | 0.0157 | 0.9983 | 0.0557 | 0.0071 | 0.0176 | 0.0481 | 0.9884 |
+| mp3_opus_mp3_chain | 0.1329 | 0.0329 | 0.996 | 0.1457 | 0.01 | 0.054 | 0.1234 | 0.9863 |
+| telephone_mulaw_8k | 0.1329 | 0.03 | 0.9958 | 0.0943 | 0.0171 | 0.0318 | 0.0752 | 0.9739 |
+| noise_20dB | 0.1529 | 0.05 | 0.9929 | 0.3986 | 0.0 | 0.1526 | 0.3089 | 0.994 |
+| noise_10dB | 0.2471 | 0.0929 | 0.9739 | 0.9043 | 0.0 | 0.3826 | 0.7692 | 0.9998 |
+| gain_-18dB | 0.0529 | 0.0143 | 0.9992 | 0.0257 | 0.0071 | 0.0 | 0.0231 | 0.9808 |
+| clipping | 0.1271 | 0.03 | 0.9967 | 0.02 | 0.0357 | 0.0232 | 0.0185 | 0.9484 |
+
+## Out-of-distribution: live Grok Voice samples
+| file | source | duration_s | synthetic_probability | flagged_at_threshold | min_window_p | max_window_p | text |
+|---|---|---|---|---|---|---|---|
+| sample_01_urgent_relative.wav | grok_voice | 4.15 | 1.0 | True | 0.8776 | 1.0 | Grandma, it's me, I'm in trouble and I need gift cards fast. |
+| sample_02_ceo_wire.wav | grok_voice | 5.11 | 0.9798 | True | 0.6572 | 0.9946 | Hi, this is your CEO, please process the wire transfer before noon today. |
+| sample_03_bank_alert.wav | grok_voice | 4.39 | 0.9083 | True | 0.6661 | 0.9809 | This is an automated alert from your bank, your account has been locked. |
+| sample_04_calm_greeting.wav | grok_voice | 4.07 | 0.9979 | True | 0.5174 | 0.9997 | Good morning, thanks so much for calling, how can I help you today? |
+| sample_05_delivery_scam.wav | grok_voice | 4.79 | 0.9997 | True | 0.4974 | 0.9999 | Your package could not be delivered, please confirm your address and payment details. |
+| grok_fixture.wav | grok_voice | 5.6 | 1.0 | True | 0.9638 | 1.0 | Hi, it's me, I need you to wire money right away, it's an emergency and I can't talk long. |
+
+## Long-clip aggregation (full-length val subsample, n=2000)
+| aggregation | minDCF_all_full_length | minDCF_clips_gt_6s |
+|---|---|---|
+| full | 0.021 | 0.0156 |
+| mean | 0.016 | 0.0144 |
+| median | 0.023 | 0.0287 |
+| max | 0.026 | 0.0349 |
+| top2 | 0.033 | 0.032 |
 
 **Fusion decision:** keep primary only: no fusion beat primary_only out-of-fold
+
+## Latency
+```json
+{
+ "gpu_fp16_2s_clip_ms_median": 23.1,
+ "gpu_fp16_4s_clip_ms_median": 23.0,
+ "cpu_fp32_2s_clip_ms_median": 220.2,
+ "cpu_fp32_4s_clip_ms_median": 344.8
+}
+```

@@ -1,0 +1,31 @@
+{
+  "n": 2000,
+  "n_long_gt6s": 1183,
+  "rows": [
+    {
+      "aggregation": "full",
+      "minDCF_all_full_length": 0.021,
+      "minDCF_clips_gt_6s": 0.0156
+    },
+    {
+      "aggregation": "mean",
+      "minDCF_all_full_length": 0.016,
+      "minDCF_clips_gt_6s": 0.0144
+    },
+    {
+      "aggregation": "median",
+      "minDCF_all_full_length": 0.023,
+      "minDCF_clips_gt_6s": 0.0287
+    },
+    {
+      "aggregation": "max",
+      "minDCF_all_full_length": 0.026,
+      "minDCF_clips_gt_6s": 0.0349
+    },
+    {
+      "aggregation": "top2",
+      "minDCF_all_full_length": 0.033,
+      "minDCF_clips_gt_6s": 0.032
+    }
+  ]
+}

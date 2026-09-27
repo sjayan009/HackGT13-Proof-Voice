@@ -1,0 +1,6 @@
+{
+  "gpu_fp16_2s_clip_ms_median": 23.1,
+  "gpu_fp16_4s_clip_ms_median": 23.0,
+  "cpu_fp32_2s_clip_ms_median": 220.2,
+  "cpu_fp32_4s_clip_ms_median": 344.8
+}

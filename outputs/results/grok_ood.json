@@ -1,0 +1,66 @@
+{
+  "threshold": 0.25372197088405857,
+  "rows": [
+    {
+      "file": "sample_01_urgent_relative.wav",
+      "source": "grok_voice",
+      "duration_s": 4.15,
+      "synthetic_probability": 1.0,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.8776,
+      "max_window_p": 1.0,
+      "text": "Grandma, it's me, I'm in trouble and I need gift cards fast."
+    },
+    {
+      "file": "sample_02_ceo_wire.wav",
+      "source": "grok_voice",
+      "duration_s": 5.11,
+      "synthetic_probability": 0.9798,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.6572,
+      "max_window_p": 0.9946,
+      "text": "Hi, this is your CEO, please process the wire transfer before noon today."
+    },
+    {
+      "file": "sample_03_bank_alert.wav",
+      "source": "grok_voice",
+      "duration_s": 4.39,
+      "synthetic_probability": 0.9083,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.6661,
+      "max_window_p": 0.9809,
+      "text": "This is an automated alert from your bank, your account has been locked."
+    },
+    {
+      "file": "sample_04_calm_greeting.wav",
+      "source": "grok_voice",
+      "duration_s": 4.07,
+      "synthetic_probability": 0.9979,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.5174,
+      "max_window_p": 0.9997,
+      "text": "Good morning, thanks so much for calling, how can I help you today?"
+    },
+    {
+      "file": "sample_05_delivery_scam.wav",
+      "source": "grok_voice",
+      "duration_s": 4.79,
+      "synthetic_probability": 0.9997,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.4974,
+      "max_window_p": 0.9999,
+      "text": "Your package could not be delivered, please confirm your address and payment details."
+    },
+    {
+      "file": "grok_fixture.wav",
+      "source": "grok_voice",
+      "duration_s": 5.6,
+      "synthetic_probability": 1.0,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.9638,
+      "max_window_p": 1.0,
+      "text": "Hi, it's me, I need you to wire money right away, it's an emergency and I can't talk long."
+    }
+  ],
+  "flagged": "6/6"
+}

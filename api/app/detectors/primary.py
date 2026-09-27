@@ -78,10 +78,29 @@ class PrimaryDetector:
                 out[ids] = self.model(xb, lens).float().cpu().numpy()
         return out
 
+    def clip_logits(self, clips: list[np.ndarray], bs: int = 16) -> np.ndarray:
+        """Clip-level logit: clips <= 4 s scored whole; longer clips = mean logit of 4 s windows (hop 2 s).
+        Chosen on full-length validation clips (outputs/results/aggregation.json): mean 0.016 vs full 0.021 minDCF."""
+        w, h = 4 * SR, 2 * SR
+        segs, owner = [], []
+        for k, x in enumerate(clips):
+            if len(x) <= w:
+                starts = [0]
+            else:
+                starts = list(range(0, len(x) - w + 1, h))
+                if starts[-1] + w < len(x):
+                    starts.append(len(x) - w)
+            for s in starts:
+                segs.append(x[s:s + w])
+                owner.append(k)
+        lg = self.logits(segs, bs)
+        owner = np.array(owner)
+        return np.array([lg[owner == k].mean() for k in range(len(clips))], np.float32)
+
     def score(self, audio: np.ndarray, sr: int = SR) -> DetectorResult:
         assert sr == SR, "resample to 16 kHz first"
         t = time.perf_counter()
-        lg = float(self.logits([audio])[0])
+        lg = float(self.clip_logits([audio])[0])
         return DetectorResult(float(self.calibrate(lg)), lg, (time.perf_counter() - t) * 1000)
 
     def score_windows(self, audio: np.ndarray, win_ms: int = 2000, hop_ms: int = 500) -> list[dict]:

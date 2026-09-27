@@ -33,18 +33,26 @@
       "AUC": 0.9961,
       "LJ_bona_vs_LJ_voice_spoofs_minDCF": 0.0,
       "Libri_bona_vs_cloned_spoofs_minDCF": 0.1584
+    },
+    {
+      "model": "xlsr12_v3",
+      "val_minDCF": 0.0656,
+      "EER": 0.0153,
+      "AUC": 0.9986,
+      "LJ_bona_vs_LJ_voice_spoofs_minDCF": 0.0,
+      "Libri_bona_vs_cloned_spoofs_minDCF": 0.0879
     }
   ],
   "selected_model": {
-    "name": "ProofVoice XLS-R-12L v2",
+    "name": "ProofVoice XLS-R-12L v3",
     "backbone": "facebook/wav2vec2-xls-r-300m",
-    "val_minDCF": 0.1311,
-    "EER": 0.0302,
-    "AUC": 0.9961,
+    "val_minDCF": 0.0656,
+    "EER": 0.0153,
+    "AUC": 0.9986,
     "actDCF": 1.0,
-    "decision_threshold": 0.1722,
-    "FRR_bonafide_at_minDCF": 0.0678,
-    "FAR_spoof_at_minDCF": 0.0158
+    "decision_threshold": 0.2537,
+    "FRR_bonafide_at_minDCF": 0.0223,
+    "FAR_spoof_at_minDCF": 0.0113
   },
   "per_generator_minDCF": [
     {
@@ -53,7 +61,7 @@
     },
     {
       "generator": "elevenlabs",
-      "minDCF": 0.3441
+      "minDCF": 0.2068
     },
     {
       "generator": "grad_tts",
@@ -61,11 +69,11 @@
     },
     {
       "generator": "openvoicev2",
-      "minDCF": 0.0085
+      "minDCF": 0.0
     },
     {
       "generator": "playht",
-      "minDCF": 0.2165
+      "minDCF": 0.0623
     },
     {
       "generator": "pro_diff",
@@ -73,7 +81,7 @@
     },
     {
       "generator": "unit_speech",
-      "minDCF": 0.0303
+      "minDCF": 0.0067
     },
     {
       "generator": "wavegrad2",
@@ -85,7 +93,7 @@
     },
     {
       "generator": "your_tts",
-      "minDCF": 0.0036
+      "minDCF": 0.0
     }
   ],
   "histograms": {
@@ -113,48 +121,48 @@
         0.95
       ],
       "bonafide": [
-        952,
-        51,
-        30,
-        22,
-        15,
-        6,
+        1018,
+        44,
+        17,
+        8,
         9,
-        11,
-        5,
-        2,
-        5,
-        0,
         4,
-        5,
-        0,
-        0,
         2,
+        4,
+        3,
+        1,
         2,
+        4,
+        3,
         0,
+        1,
+        0,
+        0,
+        0,
+        1,
         0
       ],
       "spoof": [
-        40,
-        27,
-        22,
-        24,
-        26,
-        20,
-        19,
-        20,
+        32,
+        15,
+        4,
+        9,
+        5,
+        15,
+        9,
+        8,
+        10,
+        13,
+        13,
         14,
-        17,
+        12,
+        8,
+        9,
+        14,
         26,
-        17,
-        17,
-        25,
-        22,
-        26,
-        31,
-        40,
-        53,
-        5514
+        15,
+        36,
+        5733
       ]
     }
   },
@@ -205,38 +213,245 @@
   "fusion_ablation_oof": [
     {
       "config": "primary_only",
-      "minDCF": 0.068
+      "minDCF": 0.0332
     },
     {
       "config": "primary+spectral",
-      "minDCF": 0.0646
+      "minDCF": 0.0332
     },
     {
       "config": "primary+prosody",
-      "minDCF": 0.0658
+      "minDCF": 0.0332
     },
     {
       "config": "primary+compression",
-      "minDCF": 0.0765
+      "minDCF": 0.0345
     },
     {
       "config": "primary+splice",
-      "minDCF": 0.0703
+      "minDCF": 0.0331
     },
     {
       "config": "primary+quality",
-      "minDCF": 0.0659
+      "minDCF": 0.0336
     },
     {
       "config": "primary+all_branches",
-      "minDCF": 0.0637
+      "minDCF": 0.0343
     }
   ],
   "fusion_decision": "keep primary only: no fusion beat primary_only out-of-fold",
+  "robustness": [
+    {
+      "condition": "clean",
+      "minDCF": 0.0543,
+      "EER": 0.0143,
+      "AUC": 0.9992,
+      "FRR_bonafide_at_clean_thr": 0.0257,
+      "FAR_spoof_at_clean_thr": 0.0071,
+      "mean_abs_score_drift": 0.0,
+      "bonafide_mean_p": 0.0231,
+      "spoof_mean_p": 0.9808
+    },
+    {
+      "condition": "mp3_64k",
+      "minDCF": 0.1229,
+      "EER": 0.0314,
+      "AUC": 0.9964,
+      "FRR_bonafide_at_clean_thr": 0.1471,
+      "FAR_spoof_at_clean_thr": 0.0057,
+      "mean_abs_score_drift": 0.0514,
+      "bonafide_mean_p": 0.1199,
+      "spoof_mean_p": 0.9868
+    },
+    {
+      "condition": "opus_24k",
+      "minDCF": 0.0957,
+      "EER": 0.0257,
+      "AUC": 0.998,
+      "FRR_bonafide_at_clean_thr": 0.0614,
+      "FAR_spoof_at_clean_thr": 0.01,
+      "mean_abs_score_drift": 0.0155,
+      "bonafide_mean_p": 0.0475,
+      "spoof_mean_p": 0.9789
+    },
+    {
+      "condition": "aac_48k",
+      "minDCF": 0.0729,
+      "EER": 0.0157,
+      "AUC": 0.9983,
+      "FRR_bonafide_at_clean_thr": 0.0557,
+      "FAR_spoof_at_clean_thr": 0.0071,
+      "mean_abs_score_drift": 0.0176,
+      "bonafide_mean_p": 0.0481,
+      "spoof_mean_p": 0.9884
+    },
+    {
+      "condition": "mp3_opus_mp3_chain",
+      "minDCF": 0.1329,
+      "EER": 0.0329,
+      "AUC": 0.996,
+      "FRR_bonafide_at_clean_thr": 0.1457,
+      "FAR_spoof_at_clean_thr": 0.01,
+      "mean_abs_score_drift": 0.054,
+      "bonafide_mean_p": 0.1234,
+      "spoof_mean_p": 0.9863
+    },
+    {
+      "condition": "telephone_mulaw_8k",
+      "minDCF": 0.1329,
+      "EER": 0.03,
+      "AUC": 0.9958,
+      "FRR_bonafide_at_clean_thr": 0.0943,
+      "FAR_spoof_at_clean_thr": 0.0171,
+      "mean_abs_score_drift": 0.0318,
+      "bonafide_mean_p": 0.0752,
+      "spoof_mean_p": 0.9739
+    },
+    {
+      "condition": "noise_20dB",
+      "minDCF": 0.1529,
+      "EER": 0.05,
+      "AUC": 0.9929,
+      "FRR_bonafide_at_clean_thr": 0.3986,
+      "FAR_spoof_at_clean_thr": 0.0,
+      "mean_abs_score_drift": 0.1526,
+      "bonafide_mean_p": 0.3089,
+      "spoof_mean_p": 0.994
+    },
+    {
+      "condition": "noise_10dB",
+      "minDCF": 0.2471,
+      "EER": 0.0929,
+      "AUC": 0.9739,
+      "FRR_bonafide_at_clean_thr": 0.9043,
+      "FAR_spoof_at_clean_thr": 0.0,
+      "mean_abs_score_drift": 0.3826,
+      "bonafide_mean_p": 0.7692,
+      "spoof_mean_p": 0.9998
+    },
+    {
+      "condition": "gain_-18dB",
+      "minDCF": 0.0529,
+      "EER": 0.0143,
+      "AUC": 0.9992,
+      "FRR_bonafide_at_clean_thr": 0.0257,
+      "FAR_spoof_at_clean_thr": 0.0071,
+      "mean_abs_score_drift": 0.0,
+      "bonafide_mean_p": 0.0231,
+      "spoof_mean_p": 0.9808
+    },
+    {
+      "condition": "clipping",
+      "minDCF": 0.1271,
+      "EER": 0.03,
+      "AUC": 0.9967,
+      "FRR_bonafide_at_clean_thr": 0.02,
+      "FAR_spoof_at_clean_thr": 0.0357,
+      "mean_abs_score_drift": 0.0232,
+      "bonafide_mean_p": 0.0185,
+      "spoof_mean_p": 0.9484
+    }
+  ],
+  "latency": {
+    "gpu_fp16_2s_clip_ms_median": 23.1,
+    "gpu_fp16_4s_clip_ms_median": 23.0,
+    "cpu_fp32_2s_clip_ms_median": 220.2,
+    "cpu_fp32_4s_clip_ms_median": 344.8
+  },
+  "clip_aggregation": [
+    {
+      "aggregation": "full",
+      "minDCF_all_full_length": 0.021,
+      "minDCF_clips_gt_6s": 0.0156
+    },
+    {
+      "aggregation": "mean",
+      "minDCF_all_full_length": 0.016,
+      "minDCF_clips_gt_6s": 0.0144
+    },
+    {
+      "aggregation": "median",
+      "minDCF_all_full_length": 0.023,
+      "minDCF_clips_gt_6s": 0.0287
+    },
+    {
+      "aggregation": "max",
+      "minDCF_all_full_length": 0.026,
+      "minDCF_clips_gt_6s": 0.0349
+    },
+    {
+      "aggregation": "top2",
+      "minDCF_all_full_length": 0.033,
+      "minDCF_clips_gt_6s": 0.032
+    }
+  ],
+  "grok_voice_ood": [
+    {
+      "file": "sample_01_urgent_relative.wav",
+      "source": "grok_voice",
+      "duration_s": 4.15,
+      "synthetic_probability": 1.0,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.8776,
+      "max_window_p": 1.0,
+      "text": "Grandma, it's me, I'm in trouble and I need gift cards fast."
+    },
+    {
+      "file": "sample_02_ceo_wire.wav",
+      "source": "grok_voice",
+      "duration_s": 5.11,
+      "synthetic_probability": 0.9798,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.6572,
+      "max_window_p": 0.9946,
+      "text": "Hi, this is your CEO, please process the wire transfer before noon today."
+    },
+    {
+      "file": "sample_03_bank_alert.wav",
+      "source": "grok_voice",
+      "duration_s": 4.39,
+      "synthetic_probability": 0.9083,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.6661,
+      "max_window_p": 0.9809,
+      "text": "This is an automated alert from your bank, your account has been locked."
+    },
+    {
+      "file": "sample_04_calm_greeting.wav",
+      "source": "grok_voice",
+      "duration_s": 4.07,
+      "synthetic_probability": 0.9979,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.5174,
+      "max_window_p": 0.9997,
+      "text": "Good morning, thanks so much for calling, how can I help you today?"
+    },
+    {
+      "file": "sample_05_delivery_scam.wav",
+      "source": "grok_voice",
+      "duration_s": 4.79,
+      "synthetic_probability": 0.9997,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.4974,
+      "max_window_p": 0.9999,
+      "text": "Your package could not be delivered, please confirm your address and payment details."
+    },
+    {
+      "file": "grok_fixture.wav",
+      "source": "grok_voice",
+      "duration_s": 5.6,
+      "synthetic_probability": 1.0,
+      "flagged_at_threshold": true,
+      "min_window_p": 0.9638,
+      "max_window_p": 1.0,
+      "text": "Hi, it's me, I need you to wire money right away, it's an emergency and I can't talk long."
+    }
+  ],
   "heldout_prediction_stats": {
-    "mean": 0.3815406868076381,
-    "median": 0.08731849491596222,
-    "frac_above_threshold": 0.44763614602034707,
-    "model_sha1": "fe6232932852f9e370e22445f186d91ca945a122"
+    "mean": 0.301181904566998,
+    "median": 0.008910533040761948,
+    "frac_above_threshold": 0.31358467983243565,
+    "model_sha1": "52e7b1728265852c18c24d9891fb77d1c2a3e2c3"
   }
 }

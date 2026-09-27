@@ -49,11 +49,14 @@ def main():
 
     det = PrimaryDetector(ROOT / a.model_dir, a.device)
     m, c = manifest("val"), Cache("val")
-    y = m.y.to_numpy()
-    clips = [c.get(i) for i in range(len(c))]
+    rng = np.random.default_rng(5)  # stratified 2,000-clip subsample (full-length clips are memory-heavy on 8 GB)
+    yy = m.y.to_numpy()
+    idx = np.sort(np.concatenate([rng.choice(np.flatnonzero(yy == k), 1000, replace=False) for k in (0, 1)]))
+    y = yy[idx]
+    clips = [c.get(int(i)) for i in idx]
     lens = np.array([len(x) / SR for x in clips])
-    full = det.logits(clips, bs=4)
-    wl = [det.logits(windows(x), bs=8) for x in clips]
+    full = det.logits(clips, bs=1)
+    wl = [det.logits(windows(x), bs=4) for x in clips]
     aggs = {"full": full, "mean": np.array([w.mean() for w in wl]), "median": np.array([np.median(w) for w in wl]),
             "max": np.array([w.max() for w in wl]),
             "top2": np.array([np.sort(w)[-2:].mean() for w in wl])}

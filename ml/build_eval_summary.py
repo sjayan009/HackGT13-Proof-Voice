@@ -91,6 +91,9 @@ def main():
     lat = load(R / "latency.json")
     if lat:
         S["latency"] = lat
+    agg = load(R / "aggregation.json")
+    if agg:
+        S["clip_aggregation"] = agg["rows"]
     ood = load(R / "grok_ood.json")
     if ood:
         S["grok_voice_ood"] = ood["rows"]
@@ -123,7 +126,8 @@ def write_results_md(S: dict):
                        ("forensic_branches_standalone", "Forensic branches — standalone (train → val)"),
                        ("fusion_ablation_oof", "Fusion ablation — out-of-fold on validation"),
                        ("robustness", "Robustness / laundering"),
-                       ("grok_voice_ood", "Out-of-distribution: live Grok Voice samples")]:
+                       ("grok_voice_ood", "Out-of-distribution: live Grok Voice samples"),
+                       ("clip_aggregation", "Long-clip aggregation (full-length val subsample, n=2000)")]:
         if key in S:
             parts += [f"## {title}", table(S[key]), ""]
     if "fusion_decision" in S:
