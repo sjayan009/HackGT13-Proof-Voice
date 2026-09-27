@@ -1,18 +1,20 @@
 # ProofVoice — a real-time evidence layer for synthetic speech
 
-> ## 👉 NSA HEARSAY judges: start here
->
-> | | |
-> |---|---|
-> | 📄 **Final prediction TSV** | **[`00_NSA_HEARSAY_SUBMISSION/ProofVoice_final.tsv`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_final.tsv)** — 1,671 rows, `cm-score` = P(synthetic), 1.0 = synthetic |
-> | 🔁 Same scores, bona-fide-high | [`ProofVoice_final_bonafide_high.tsv`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_final_bonafide_high.tsv) — `1 − p`, if your scorer expects higher = real |
-> | 📊 **Validation minDCF (NSA settings: Pspoof 0.3, Cfa 4)** | **0.039** · EER **1.53%** · AUC 0.999 — [how it's computed](00_NSA_HEARSAY_SUBMISSION/README.md#validation-performance-lower-mindcf-is-better) |
-> | 🧠 Model weights | [GitHub Release `hearsay-final`](https://github.com/sjayan009/HackGT13-Proof-Voice/releases/tag/hearsay-final) (315 MB, too large for git) |
-> | 🐳 Reproduce the TSV | [Docker, offline, 3 commands](#hearsay-tsv-offline-no-internet-no-xai) |
-> | 🔬 Forensic techniques | [7 families, with code links](#forensic-techniques-distinct-families) |
-> | 🎬 Demo video (1:40) | [`00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4) |
->
-> Everything is also summarized on one page: **[00_NSA_HEARSAY_SUBMISSION/README.md](00_NSA_HEARSAY_SUBMISSION/README.md)**.
+## 👉 NSA HEARSAY judges: start here
+
+| | |
+|---|---|
+| 📄 **Final prediction TSV** | **[`00_NSA_HEARSAY_SUBMISSION/ProofVoice_final.tsv`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_final.tsv)** — 1,671 rows, `cm-score` = P(synthetic), 1.0 = synthetic |
+| 🔁 Same scores, bona-fide-high | [`ProofVoice_final_bonafide_high.tsv`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_final_bonafide_high.tsv) — `1 − p`, if your scorer expects higher = real |
+| 📊 **Validation minDCF (NSA settings: Pspoof 0.3, Cfa 4)** | **0.039** · EER **1.53%** · AUC 0.999 — [how it's computed](00_NSA_HEARSAY_SUBMISSION/README.md#validation-performance-lower-mindcf-is-better) |
+| 🧠 Model weights | [GitHub Release `hearsay-final`](https://github.com/sjayan009/HackGT13-Proof-Voice/releases/tag/hearsay-final) (315 MB, too large for git) |
+| 🐳 Reproduce the TSV | [Docker, offline, 3 commands](#hearsay-tsv-offline-no-internet-no-xai) |
+| 🔬 Forensic techniques | [7 families, with code links](#forensic-techniques-distinct-families) |
+| 🎬 Demo video (1:40) | [`00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4) |
+
+Everything is also summarized on one page: **[00_NSA_HEARSAY_SUBMISSION/README.md](00_NSA_HEARSAY_SUBMISSION/README.md)**.
+
+---
 
 > Three seconds of speech can be enough to clone a voice. ProofVoice asks: **how quickly can we know that the voice
 > we're hearing is synthetic — and what evidence supports that?**

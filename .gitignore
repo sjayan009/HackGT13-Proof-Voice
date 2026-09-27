@@ -29,3 +29,6 @@ __pycache__/
 node_modules/
 .next/
 web/out/
+
+# local editor/preview tooling
+.claude/
