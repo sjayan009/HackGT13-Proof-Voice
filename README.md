@@ -50,6 +50,10 @@ python -m venv .venv && .venv/Scripts/pip install torch==2.6.0 --index-url https
 The app is two processes: the **FastAPI detector** on `:8000` and the **Next.js web UI** on `:3000`.
 Run each in its own terminal from the repo root.
 
+Commands below use Git Bash / macOS / Linux syntax (`.venv/Scripts/python`). In Windows **Command Prompt** use
+backslashes (`.venv\Scripts\python ...`); in **PowerShell** prefix with `.\` (`.\.venv\Scripts\python ...`).
+On macOS/Linux the venv interpreter is `.venv/bin/python`.
+
 **0. One-time setup**
 
 ```bash
@@ -76,6 +80,12 @@ DEVICE=auto            # auto | cuda | cpu
 ```bash
 .venv/Scripts/python -m uvicorn app.main:app --app-dir api --host 127.0.0.1 --port 8000
 curl http://127.0.0.1:8000/health          # -> {"status":"ok", ... "device":"cuda"}
+```
+
+Windows Command Prompt:
+
+```bat
+.venv\Scripts\python -m uvicorn app.main:app --app-dir api --host 127.0.0.1 --port 8000
 ```
 
 **2. Start the web UI** (terminal 2)
