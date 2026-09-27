@@ -1,0 +1,310 @@
+{
+ "id": "8258b139-c62c-4bf5-911c-cbea551e7306",
+ "file": {
+  "name": "hard-elevenlabs-2061.mp3",
+  "container": "mp3",
+  "codec": "mpeg_layer_iii",
+  "sample_rate": 44100,
+  "channels": 1,
+  "bit_depth": null,
+  "duration_s": 6.36233560090703,
+  "bitrate": 128000,
+  "metadata": {},
+  "channel_layout": "mono"
+ },
+ "synthetic_probability": 0.0128,
+ "cm_score": 0.012814,
+ "analysis_confidence": 0.769,
+ "status": "likely_human",
+ "decision_threshold": 0.2537,
+ "detector": {
+  "name": "ProofVoice XLS-R-12L v3",
+  "version": "xlsr12_v3",
+  "raw_score": -7.5586,
+  "latency_ms": 32.13
+ },
+ "timeline": [
+  {
+   "start_ms": 0,
+   "end_ms": 3000,
+   "synthetic_probability": 0.9534,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 500,
+   "end_ms": 3500,
+   "synthetic_probability": 0.6587,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 1000,
+   "end_ms": 4000,
+   "synthetic_probability": 0.0096,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 1500,
+   "end_ms": 4500,
+   "synthetic_probability": 0.01,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 2000,
+   "end_ms": 5000,
+   "synthetic_probability": 0.0132,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 2500,
+   "end_ms": 5500,
+   "synthetic_probability": 0.0058,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 3000,
+   "end_ms": 6000,
+   "synthetic_probability": 0.0081,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 3347,
+   "end_ms": 6347,
+   "synthetic_probability": 0.011,
+   "analysis_confidence": null
+  }
+ ],
+ "suspicious_regions": [
+  {
+   "start_ms": 0,
+   "end_ms": 3500,
+   "peak_probability": 0.9534,
+   "reason": "detector window score above decision threshold"
+  },
+  {
+   "start_ms": 1408.0,
+   "end_ms": 1440.0,
+   "reason": "seam score z=5.0 (spectral/RMS/DC/phase discontinuity)",
+   "peak_probability": null
+  },
+  {
+   "start_ms": 1936.0,
+   "end_ms": 1968.0,
+   "reason": "seam score z=4.6 (spectral/RMS/DC/phase discontinuity)",
+   "peak_probability": null
+  },
+  {
+   "start_ms": 3680.0,
+   "end_ms": 3712.0,
+   "reason": "seam score z=4.1 (spectral/RMS/DC/phase discontinuity)",
+   "peak_probability": null
+  },
+  {
+   "start_ms": 6288.0,
+   "end_ms": 6320.0,
+   "reason": "seam score z=4.8 (spectral/RMS/DC/phase discontinuity)",
+   "peak_probability": null
+  }
+ ],
+ "time_to_confidence_ms": 4000,
+ "techniques_run": [
+  "metadata",
+  "quality",
+  "primary_detector",
+  "spectral",
+  "prosody",
+  "compression",
+  "splice"
+ ],
+ "why_run": {
+  "metadata": "file provided: container/codec/tag inspection",
+  "quality": "always: signal quality drives routing and confidence",
+  "primary_detector": "always: learned anti-spoofing model (sets the score)",
+  "spectral": "primary decision weak (|p-thr|=0.24 < 0.25)",
+  "prosody": "primary decision weak: check pitch/pause/energy dynamics",
+  "compression": "lossy codec in container",
+  "splice": "detector timeline jumps (range 0.95): look for edit seams"
+ },
+ "evidence": {
+  "metadata": {
+   "summary": "Metadata anomalies: lossy codec/container detected (mpeg_layer_iii). Metadata is circumstantial evidence only -- it can be trivially edited or stripped.",
+   "suspicion": 0.3,
+   "features": {
+    "sample_rate_hz": 44100.0,
+    "duration_s": 6.36233560090703,
+    "bit_depth": 0.0,
+    "channels": 1.0,
+    "bitrate": 128000.0,
+    "is_lossy_codec": 1.0,
+    "num_metadata_tags": 0.0
+   },
+   "flags": [
+    "lossy codec/container detected (mpeg_layer_iii)"
+   ],
+   "used_in_score": false
+  },
+  "quality": {
+   "summary": "Signal quality: SNR~26.5dB, speech ratio=0.78, clipping=0.00%, level=-21.6 dBFS. Used for routing/confidence, not synthesis evidence.",
+   "suspicion": null,
+   "features": {
+    "snr_estimate_db": 26.54060215892813,
+    "clipping_ratio": 0.0,
+    "silence_ratio": 0.22239747634069396,
+    "speech_ratio": 0.777602523659306,
+    "rms_dbfs": -21.64608239919833,
+    "peak_amplitude": 0.4656057059764862,
+    "duration_s": 6.34775
+   },
+   "flags": [],
+   "used_in_score": false
+  },
+  "primary_detector": {
+   "summary": "Learned detector gives synthetic probability 0.01 (decision threshold 0.25, chosen to minimise the official minDCF on validation).",
+   "suspicion": 0.0128,
+   "features": {
+    "logit": -7.5586,
+    "window_min": 0.0058,
+    "window_max": 0.9534,
+    "window_std": 0.3527
+   },
+   "flags": [],
+   "used_in_score": true
+  },
+  "spectral": {
+   "summary": "Spectral shape: flatness=0.021, band-limit~6250Hz, high-band energy ratio=0.124. This is a weak, uncalibrated heuristic, not proof of synthesis.",
+   "suspicion": 0.0,
+   "features": {
+    "logmel_mean": -3.680458272733059,
+    "logmel_std": 4.035547786989121,
+    "flatness_mean": 0.02140689454972744,
+    "flatness_std": 0.045010682195425034,
+    "centroid_mean_hz": 1087.9462322877469,
+    "rolloff_mean_hz": 1537.0896464646464,
+    "highband_energy_ratio": 0.1235283762216568,
+    "band_limit_cutoff_hz": 6250.0,
+    "flux_variance": 0.003541484009474516,
+    "flux_mean": 0.09650009870529175,
+    "hnr_proxy": 2.45009183883667
+   },
+   "flags": [
+    "band-limited near 6250 Hz"
+   ],
+   "used_in_score": false
+  },
+  "prosody": {
+   "summary": "Prosody: F0 mean=236Hz, std=82.4Hz, voiced ratio=0.83, pauses=12. Uncalibrated heuristic; natural speakers vary widely.",
+   "suspicion": 0.0,
+   "features": {
+    "f0_mean_hz": 235.94981917037455,
+    "f0_std_hz": 82.35226665966601,
+    "f0_range_hz": 306.4327485380117,
+    "voiced_ratio": 0.8291139240506329,
+    "jitter_proxy": 0.039444230994925084,
+    "shimmer_proxy": 0.10832333937510104,
+    "monotonicity_index": 0.40344168260038243,
+    "pause_count": 12.0,
+    "pause_total_s": 1.41,
+    "speech_rate_proxy": 0.7766531448028569,
+    "energy_variance": 0.0042247047839350784
+   },
+   "flags": [],
+   "used_in_score": false
+  },
+  "compression": {
+   "summary": "Compression evidence: band-limit ~6250Hz (78% of Nyquist), shelf ratio=2.44. Consistent with lossy transcoding or a band-limited vocoder, but not proof of either.",
+   "suspicion": 0.13125,
+   "features": {
+    "band_limit_cutoff_hz": 6250.0,
+    "cutoff_ratio_of_nyquist": 0.78125,
+    "highband_near_zero_fraction": 0.18073038073038072,
+    "shelf_ratio": 2.444117806626654,
+    "double_compression_proxy": 0.02421114221215248
+   },
+   "flags": [
+    "band-limited to ~6250 Hz (78% of Nyquist)"
+   ],
+   "used_in_score": false
+  },
+  "splice": {
+   "summary": "Splice/discontinuity scan: 4 candidate seam(s) above robust z-score 4.0. Natural speech also has legitimate discontinuities (plosives, breaths); this flags outliers only, not confirmed edits.",
+   "suspicion": 0.3241465368654314,
+   "features": {
+    "seam_score_max": 4.961674707033501,
+    "seam_score_mean": 1.1099200590540053,
+    "seam_score_std": 0.7685005061460148,
+    "num_candidate_splices": 4.0
+   },
+   "flags": [
+    "4 candidate splice point(s) detected"
+   ],
+   "used_in_score": false,
+   "regions": [
+    {
+     "start_ms": 1408.0,
+     "end_ms": 1440.0,
+     "reason": "seam score z=5.0 (spectral/RMS/DC/phase discontinuity)"
+    },
+    {
+     "start_ms": 1936.0,
+     "end_ms": 1968.0,
+     "reason": "seam score z=4.6 (spectral/RMS/DC/phase discontinuity)"
+    },
+    {
+     "start_ms": 3680.0,
+     "end_ms": 3712.0,
+     "reason": "seam score z=4.1 (spectral/RMS/DC/phase discontinuity)"
+    },
+    {
+     "start_ms": 6288.0,
+     "end_ms": 6320.0,
+     "reason": "seam score z=4.8 (spectral/RMS/DC/phase discontinuity)"
+    }
+   ]
+  }
+ },
+ "branch_log": [
+  {
+   "technique": "metadata",
+   "ran": true,
+   "reason": "file provided: container/codec/tag inspection",
+   "runtime_ms": 0.05
+  },
+  {
+   "technique": "quality",
+   "ran": true,
+   "reason": "always: signal quality drives routing and confidence",
+   "runtime_ms": 4.1
+  },
+  {
+   "technique": "primary_detector",
+   "ran": true,
+   "reason": "always: learned anti-spoofing model (sets the score)",
+   "runtime_ms": 88.82
+  },
+  {
+   "technique": "spectral",
+   "ran": true,
+   "reason": "primary decision weak (|p-thr|=0.24 < 0.25)",
+   "runtime_ms": 7.75
+  },
+  {
+   "technique": "prosody",
+   "ran": true,
+   "reason": "primary decision weak: check pitch/pause/energy dynamics",
+   "runtime_ms": 50.02
+  },
+  {
+   "technique": "compression",
+   "ran": true,
+   "reason": "lossy codec in container",
+   "runtime_ms": 4.77
+  },
+  {
+   "technique": "splice",
+   "ran": true,
+   "reason": "detector timeline jumps (range 0.95): look for edit seams",
+   "runtime_ms": 22.81
+  }
+ ],
+ "processing_ms": 228.64,
+ "disclaimer": "Probabilistic evidence, not proof. The score comes from a detector trained on specific generators and may not generalize to unseen synthesis methods, heavy compression, or replayed audio. Metadata can be forged or stripped. Use alongside other verification."
+}

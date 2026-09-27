@@ -17,7 +17,8 @@ hand-crafted forensic features alone. **6/6** live Grok Voice clips (a generator
 23 ms per 4 s clip on a laptop RTX 4060.
 
 All measured numbers live in **[RESULTS.md](RESULTS.md)** (auto-generated from result files; nothing typed by hand)
-and in the app's Evaluation drawer. Engineering log: **[PROGRESS.md](PROGRESS.md)**.
+and in the app's Evaluation drawer. The subgroup and domain-shift audit is in **[MODEL_STRATEGY.md](MODEL_STRATEGY.md)**.
+Engineering log: **[PROGRESS.md](PROGRESS.md)**.
 
 ---
 
@@ -44,15 +45,67 @@ python -m venv .venv && .venv/Scripts/pip install torch==2.6.0 --index-url https
     --template data/hearsay/template/HearsayScoreKey4TeamX.tsv
 ```
 
-### App (API + web)
+### App (API + web) — run locally
+
+The app is two processes: the **FastAPI detector** on `:8000` and the **Next.js web UI** on `:3000`.
+Run each in its own terminal from the repo root.
+
+**0. One-time setup**
 
 ```bash
-cd api && ../.venv/Scripts/python -m uvicorn app.main:app --port 8000     # needs models/selected
-cd web && npm install && npm run dev                                      # http://localhost:3000
+python -m venv .venv
+.venv/Scripts/pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124   # CPU: .../whl/cpu
+.venv/Scripts/pip install -r requirements.txt
+cd web && npm install && cd ..
 ```
 
-`api/.env` (not committed) may set `XAI_API_KEY` for the Grok red team; without it the red team replays a cached,
-previously generated Grok Voice clip and **labels it as such**.
+Model weights are **not in git** (`models/**/*.pt` is ignored; `model.pt` is ~315 MB). The API loads
+`models/selected/` (`model.pt`, `calibration.json`, `meta.json`, `backbone_config/`); copy that folder in, or point
+`PROOFVOICE_MODEL_DIR` at it. ffmpeg on `PATH` is needed for MP3/M4A/MP4 input.
+
+Optional `api/.env` (never committed):
+
+```bash
+XAI_API_KEY=...        # Grok red team + "Explain this result"; without it the red team replays a cached,
+                       # previously generated Grok Voice clip and labels it as such
+DEVICE=auto            # auto | cuda | cpu
+```
+
+**1. Start the API** (terminal 1)
+
+```bash
+.venv/Scripts/python -m uvicorn app.main:app --app-dir api --host 127.0.0.1 --port 8000
+curl http://127.0.0.1:8000/health          # -> {"status":"ok", ... "device":"cuda"}
+```
+
+**2. Start the web UI** (terminal 2)
+
+```bash
+cd web && npm run dev                      # http://localhost:3000
+```
+
+The UI reads `NEXT_PUBLIC_API_BASE_URL` / `NEXT_PUBLIC_WS_BASE_URL` from `web/.env.local`
+(default `http://127.0.0.1:8000`). To point one browser at a different backend without rebuilding, open
+`http://localhost:3000/?api=http://HOST:PORT` (remembered per browser, shown as "custom" in the header;
+`?api=default` resets it).
+
+Production build instead of dev server:
+
+```bash
+cd web && npm run build && npm start       # http://localhost:3000
+```
+
+**Demo samples (one click, no files needed).** Forensic Lab ships 11 held-out clips in `web/public/samples/`
+(real LibriSpeech/LJ Speech, DiffSSD voice clones, unseen Grok Voice, and one known hard case the detector
+misses). Each can be previewed, analyzed with one click, and shows its ground truth after the result. If the API
+is down, samples fall back to the reference report the real API produced for that clip, labeled as precomputed.
+To rebuild them (needs the API running and `data/` present):
+
+```bash
+.venv/Scripts/python web/scripts/build-samples.py
+```
+
+**Frontend-only development** (fake data, no model): `cd web && npm run mock` starts a mock backend on `:8000`.
 
 ### Tests
 
@@ -123,8 +176,10 @@ The organizer scorer treats a **higher score as more bona fide**; the HEARSAY in
 
 ### Honest limitations
 
-- Validation is in-distribution with respect to generator *families*; unseen-generator numbers (RESULTS.md) are the
-  better estimate of open-world behaviour, and they are worse.
+- Validation is in-distribution with respect to generator *families*. Leave-one-generator-out retraining has not yet
+  been run; six Grok clips are a small smoke test, not an open-world error-rate estimate.
+- The two held-out cloned speakers have very different ElevenLabs error rates; see the speaker subgroup table in
+  RESULTS.md. The pooled 0.066 minDCF does not describe every unseen speaker.
 - Only 44 LJ bona fide clips exist in validation, so LJ-specific numbers are noisy.
 - Scores are probabilities under equal priors (Platt scaling on validation), not proof. Metadata can be forged.
 - Speaker similarity is not liveness; no watermark does not mean human.

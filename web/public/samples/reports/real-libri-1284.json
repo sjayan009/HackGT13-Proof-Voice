@@ -1,0 +1,195 @@
+{
+ "id": "1406a68f-ecfe-4cb6-8f3c-5146f12cd71d",
+ "file": {
+  "name": "real-libri-1284.flac",
+  "container": "flac",
+  "codec": "pcm_16",
+  "sample_rate": 16000,
+  "channels": 1,
+  "bit_depth": 16,
+  "duration_s": 6.265,
+  "bitrate": 156000,
+  "metadata": {},
+  "channel_layout": "mono"
+ },
+ "synthetic_probability": 0.0003,
+ "cm_score": 0.000272,
+ "analysis_confidence": 0.828,
+ "status": "likely_human",
+ "decision_threshold": 0.2537,
+ "detector": {
+  "name": "ProofVoice XLS-R-12L v3",
+  "version": "xlsr12_v3",
+  "raw_score": -9.8203,
+  "latency_ms": 36.98
+ },
+ "timeline": [
+  {
+   "start_ms": 0,
+   "end_ms": 3000,
+   "synthetic_probability": 0.0012,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 500,
+   "end_ms": 3500,
+   "synthetic_probability": 0.0024,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 1000,
+   "end_ms": 4000,
+   "synthetic_probability": 0.0009,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 1500,
+   "end_ms": 4500,
+   "synthetic_probability": 0.0013,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 2000,
+   "end_ms": 5000,
+   "synthetic_probability": 0.0018,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 2500,
+   "end_ms": 5500,
+   "synthetic_probability": 0.0022,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 3000,
+   "end_ms": 6000,
+   "synthetic_probability": 0.0008,
+   "analysis_confidence": null
+  },
+  {
+   "start_ms": 3265,
+   "end_ms": 6265,
+   "synthetic_probability": 0.0,
+   "analysis_confidence": null
+  }
+ ],
+ "suspicious_regions": [],
+ "time_to_confidence_ms": 3000,
+ "techniques_run": [
+  "metadata",
+  "quality",
+  "primary_detector",
+  "compression"
+ ],
+ "why_run": {
+  "metadata": "file provided: container/codec/tag inspection",
+  "quality": "always: signal quality drives routing and confidence",
+  "primary_detector": "always: learned anti-spoofing model (sets the score)",
+  "compression": "band-limited spectrum (~3906 Hz)"
+ },
+ "evidence": {
+  "metadata": {
+   "summary": "No unusual metadata found. Metadata is easily stripped or forged and is evidence only, never proof.",
+   "suspicion": null,
+   "features": {
+    "sample_rate_hz": 16000.0,
+    "duration_s": 6.265,
+    "bit_depth": 16.0,
+    "channels": 1.0,
+    "bitrate": 156000.0,
+    "is_lossy_codec": 0.0,
+    "num_metadata_tags": 0.0
+   },
+   "flags": [],
+   "used_in_score": false
+  },
+  "quality": {
+   "summary": "Signal quality: SNR~27.7dB, speech ratio=0.82, clipping=0.00%, level=-23.5 dBFS. Used for routing/confidence, not synthesis evidence.",
+   "suspicion": null,
+   "features": {
+    "snr_estimate_db": 27.747976782055446,
+    "clipping_ratio": 0.0,
+    "silence_ratio": 0.17600000000000005,
+    "speech_ratio": 0.824,
+    "rms_dbfs": -23.48463367672435,
+    "peak_amplitude": 0.45562744140625,
+    "duration_s": 6.265
+   },
+   "flags": [],
+   "used_in_score": false
+  },
+  "primary_detector": {
+   "summary": "Learned detector gives synthetic probability 0.00 (decision threshold 0.25, chosen to minimise the official minDCF on validation).",
+   "suspicion": 0.0003,
+   "features": {
+    "logit": -9.8203,
+    "window_min": 0.0,
+    "window_max": 0.0024,
+    "window_std": 0.0007
+   },
+   "flags": [],
+   "used_in_score": true
+  },
+  "compression": {
+   "summary": "Compression evidence: band-limit ~3906Hz (49% of Nyquist), shelf ratio=0.25. Consistent with lossy transcoding or a band-limited vocoder, but not proof of either.",
+   "suspicion": 0.3738307264831291,
+   "features": {
+    "band_limit_cutoff_hz": 3906.25,
+    "cutoff_ratio_of_nyquist": 0.48828125,
+    "highband_near_zero_fraction": 0.1290182962817234,
+    "shelf_ratio": 0.24990039263765312,
+    "double_compression_proxy": 0.024118615314364433
+   },
+   "flags": [
+    "band-limited to ~3906 Hz (49% of Nyquist)"
+   ],
+   "used_in_score": false
+  }
+ },
+ "branch_log": [
+  {
+   "technique": "metadata",
+   "ran": true,
+   "reason": "file provided: container/codec/tag inspection",
+   "runtime_ms": 0.08
+  },
+  {
+   "technique": "quality",
+   "ran": true,
+   "reason": "always: signal quality drives routing and confidence",
+   "runtime_ms": 6.45
+  },
+  {
+   "technique": "primary_detector",
+   "ran": true,
+   "reason": "always: learned anti-spoofing model (sets the score)",
+   "runtime_ms": 102.96
+  },
+  {
+   "technique": "spectral",
+   "ran": false,
+   "reason": "primary decision confident (|p-thr|=0.25)",
+   "runtime_ms": 0.0
+  },
+  {
+   "technique": "prosody",
+   "ran": false,
+   "reason": "primary decision confident",
+   "runtime_ms": 0.0
+  },
+  {
+   "technique": "compression",
+   "ran": true,
+   "reason": "band-limited spectrum (~3906 Hz)",
+   "runtime_ms": 4.42
+  },
+  {
+   "technique": "splice",
+   "ran": false,
+   "reason": "timeline homogeneous",
+   "runtime_ms": 0.0
+  }
+ ],
+ "processing_ms": 167.98,
+ "disclaimer": "Probabilistic evidence, not proof. The score comes from a detector trained on specific generators and may not generalize to unseen synthesis methods, heavy compression, or replayed audio. Metadata can be forged or stripped. Use alongside other verification."
+}

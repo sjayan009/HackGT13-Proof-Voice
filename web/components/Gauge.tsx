@@ -1,75 +1,66 @@
-import type { Status } from "@/lib/types";
+"use client";
 
-const STATUS_COLOR: Record<Status, string> = {
-  likely_human: "var(--green)",
-  inconclusive: "var(--amber)",
-  likely_synthetic: "var(--red)",
-  insufficient_evidence: "var(--gray)",
-};
+import { useEffect, useState } from "react";
+import type { Status } from "@/lib/types";
+import { STATUS_COLOR, clamp01, isFiniteNumber } from "@/lib/format";
 
 export default function Gauge({
   probability,
   status,
-  label = "Synthetic probability",
+  size = 168,
 }: {
   probability: number | null;
   status: Status | null;
-  label?: string;
+  size?: number;
 }) {
-  const pct = probability == null ? null : Math.round(probability * 100);
-  const size = 160;
+  const valid = isFiniteNumber(probability);
+  const target = valid ? clamp01(probability) : 0;
+  // Sweep in from zero on mount; later updates animate from the current value.
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setShown(target));
+    return () => cancelAnimationFrame(id);
+  }, [target]);
+
   const stroke = 12;
   const r = (size - stroke) / 2;
-  const circumference = 2 * Math.PI * r;
-  const dash =
-    pct == null ? 0 : (Math.max(0, Math.min(100, pct)) / 100) * circumference;
+  const c = 2 * Math.PI * r;
+  const dash = shown * c;
   const color = status ? STATUS_COLOR[status] : "var(--gray)";
+  const pctText = valid ? Math.round(target * 100) : null;
 
   return (
-    <div className="gauge-wrap">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <div
+      className="gauge-wrap"
+      style={{ width: size, height: size }}
+      role="img"
+      aria-label={
+        pctText == null ? "Synthetic probability unavailable" : `Synthetic probability ${pctText} percent`
+      }
+    >
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--border)" strokeWidth={stroke} />
         <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill="none"
-          stroke="var(--border)"
-          strokeWidth={stroke}
-        />
-        <circle
+          className="gauge-arc"
           cx={size / 2}
           cy={size / 2}
           r={r}
           fill="none"
           stroke={color}
           strokeWidth={stroke}
-          strokeDasharray={`${dash} ${circumference - dash}`}
+          strokeDasharray={`${dash} ${c - dash}`}
           strokeLinecap="round"
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          style={{ transition: "stroke-dasharray 0.3s ease" }}
+          opacity={valid ? 1 : 0}
         />
-        <text
-          x="50%"
-          y="48%"
-          textAnchor="middle"
-          fontSize="30"
-          fontWeight="700"
-          fill="var(--text)"
-          fontFamily="var(--mono)"
-        >
-          {pct == null ? "—" : `${pct}%`}
-        </text>
-        <text
-          x="50%"
-          y="64%"
-          textAnchor="middle"
-          fontSize="10"
-          fill="var(--text-faint)"
-        >
-          p(synthetic)
-        </text>
       </svg>
-      <div className="gauge-label">{label}</div>
+      <div className="gauge-center" aria-hidden>
+        <div className="gauge-value">
+          {pctText == null ? "—" : pctText}
+          {pctText != null && <small>%</small>}
+        </div>
+        <div className="gauge-caption">p(synthetic)</div>
+      </div>
     </div>
   );
 }

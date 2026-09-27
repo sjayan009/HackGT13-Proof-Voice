@@ -38,6 +38,17 @@ This starts a fake backend on `:8000` implementing every contract endpoint
 with randomly generated (clearly fake) data. Set `MOCK_EVAL=404 npm run mock`
 to exercise the "Evaluation not computed yet" UI path.
 
+## UX / production notes
+
+- Tabs are an ARIA tablist (arrow keys, Home/End), deep-linkable via `#live` / `#redteam`; panels stay
+  mounted so a running session or a finished report survives switching tabs.
+- The Evaluation drawer is a modal dialog: Esc closes, focus is trapped and restored, background scroll locked.
+- In-flight uploads are cancellable and superseded by newer ones; stale responses are ignored.
+- Dark by default, light follows the OS; honors `prefers-reduced-motion`, `prefers-reduced-transparency`,
+  `prefers-contrast`, forced colors, and prints cleanly. Works down to 375 px wide.
+- `next.config.mjs` sends `nosniff`, `Referrer-Policy`, `X-Frame-Options: DENY` and a `Permissions-Policy`
+  that allows the microphone for this origin only.
+
 ## Build
 
 ```bash
@@ -47,9 +58,12 @@ npm run build
 ## Structure
 
 - `app/` — App Router shell (`layout.tsx`, `page.tsx` with the tab switcher, `globals.css`)
-- `components/` — screens (`ForensicLab`, `LiveTrust`, `RedTeam`, `EvalDrawer`) and shared report UI (`ReportView`, `Gauge`, `StatusChip`, `TrustTimelineChart`, `RollingProbabilityChart`, `EvidenceCard`, `BranchLogTable`, `FileMetadataPanel`, `Waveform`, `LevelMeter`)
+- `app/error.tsx`, `app/not-found.tsx`, `app/icon.svg` — error boundary, 404 and favicon
+- `components/` — screens (`ForensicLab`, `LiveTrust`, `RedTeam`, `EvalDrawer`) and shared report UI (`ReportView`, `Gauge`, `StatusChip`, `TrustTimelineChart` (with the waveform on the same time axis), `RollingProbabilityChart`, `EvidenceCard`, `BranchLogTable`, `FileMetadataPanel`, `LevelMeter`, `Callout`, `Icon`)
 - `lib/types.ts` — TypeScript types mirroring `api/CONTRACT.md` exactly
-- `lib/api.ts` — REST client (`/analyze/file`, `/redteam/grok`, `/eval/summary`, `/explain`) and WS URL helpers
+- `lib/api.ts` — REST client (`/health`, `/analyze/file`, `/redteam/grok`, `/eval/summary`, `/explain`) with timeouts/abort, and WS URL helpers
+- `lib/useHealth.ts` — single shared `/health` poller behind the header status pill
+- `lib/format.ts` — display-only formatting (never changes values)
 - `lib/mic.ts` — microphone capture (AudioWorklet, ScriptProcessorNode fallback)
 - `lib/audio.ts` — PCM encode/decode helpers, local waveform decoding, PCM16 playback queue
 - `public/pcm-worklet-processor.js` — AudioWorklet processor used by Live Trust
