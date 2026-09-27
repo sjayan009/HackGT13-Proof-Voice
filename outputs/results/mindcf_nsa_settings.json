@@ -1,0 +1,50 @@
+{
+ "validation_split": "outputs/manifests/val.csv (group-disjoint)",
+ "rows": [
+  {
+   "model": "xlsr12_v3",
+   "note": "selected (submitted TSV)",
+   "n_bonafide": 1121,
+   "n_spoof": 6000,
+   "minDCF nsa_final (Pspoof=0.3, Cmiss=1, Cfa=4)": 0.0393,
+   "minDCF HackGTMinDCF.zip (Pspoof=0.5, Cmiss=1, Cfa=4)": 0.0656,
+   "EER_percent": 1.53
+  },
+  {
+   "model": "xlsr12_v4_codec_hard",
+   "note": "v4 codec/hard augmentation (not selected)",
+   "n_bonafide": 1121,
+   "n_spoof": 6000,
+   "minDCF nsa_final (Pspoof=0.3, Cmiss=1, Cfa=4)": 0.0454,
+   "minDCF HackGTMinDCF.zip (Pspoof=0.5, Cmiss=1, Cfa=4)": 0.0799,
+   "EER_percent": 1.77
+  },
+  {
+   "model": "xlsr12_v2_lj30",
+   "note": "",
+   "n_bonafide": 1121,
+   "n_spoof": 6000,
+   "minDCF nsa_final (Pspoof=0.3, Cmiss=1, Cfa=4)": 0.078,
+   "minDCF HackGTMinDCF.zip (Pspoof=0.5, Cmiss=1, Cfa=4)": 0.1311,
+   "EER_percent": 3.02
+  },
+  {
+   "model": "xlsr12_v1",
+   "note": "",
+   "n_bonafide": 1121,
+   "n_spoof": 6000,
+   "minDCF nsa_final (Pspoof=0.3, Cmiss=1, Cfa=4)": 0.108,
+   "minDCF HackGTMinDCF.zip (Pspoof=0.5, Cmiss=1, Cfa=4)": 0.1534,
+   "EER_percent": 4.36
+  },
+  {
+   "model": "aasist_v1",
+   "note": "AASIST fine-tuned",
+   "n_bonafide": 1121,
+   "n_spoof": 6000,
+   "minDCF nsa_final (Pspoof=0.3, Cmiss=1, Cfa=4)": 0.3124,
+   "minDCF HackGTMinDCF.zip (Pspoof=0.5, Cmiss=1, Cfa=4)": 0.445,
+   "EER_percent": 11.95
+  }
+ ]
+}

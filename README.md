@@ -1,5 +1,19 @@
 # ProofVoice — a real-time evidence layer for synthetic speech
 
+> ## 👉 NSA HEARSAY judges: start here
+>
+> | | |
+> |---|---|
+> | 📄 **Final prediction TSV** | **[`00_NSA_HEARSAY_SUBMISSION/ProofVoice_final.tsv`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_final.tsv)** — 1,671 rows, `cm-score` = P(synthetic), 1.0 = synthetic |
+> | 🔁 Same scores, bona-fide-high | [`ProofVoice_final_bonafide_high.tsv`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_final_bonafide_high.tsv) — `1 − p`, if your scorer expects higher = real |
+> | 📊 **Validation minDCF (NSA settings: Pspoof 0.3, Cfa 4)** | **0.039** · EER **1.53%** · AUC 0.999 — [how it's computed](00_NSA_HEARSAY_SUBMISSION/README.md#validation-performance-lower-mindcf-is-better) |
+> | 🧠 Model weights | [GitHub Release `hearsay-final`](https://github.com/sjayan009/HackGT13-Proof-Voice/releases/tag/hearsay-final) (315 MB, too large for git) |
+> | 🐳 Reproduce the TSV | [Docker, offline, 3 commands](#hearsay-tsv-offline-no-internet-no-xai) |
+> | 🔬 Forensic techniques | [7 families, with code links](#forensic-techniques-distinct-families) |
+> | 🎬 Demo video (1:40) | [`00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4) |
+>
+> Everything is also summarized on one page: **[00_NSA_HEARSAY_SUBMISSION/README.md](00_NSA_HEARSAY_SUBMISSION/README.md)**.
+
 > Three seconds of speech can be enough to clone a voice. ProofVoice asks: **how quickly can we know that the voice
 > we're hearing is synthetic — and what evidence supports that?**
 
@@ -11,9 +25,10 @@ explicitly representing uncertainty. One forensic core powers:
 - **Live Trust** (microphone → rolling probability, time-to-confidence, uncertainty)
 - **Grok Red Team** (Grok Voice speaks → the *same* audio bytes stream through the *same* detector, live)
 
-**Headline (validation, official organizer minDCF, lower is better):** fine-tuned XLS-R detector
-**minDCF 0.066 · EER 1.5 % · AUC 0.999** — vs 1.000 for the organizer's AASIST checkpoint zero-shot and 0.506 for
-hand-crafted forensic features alone. **6/6** live Grok Voice clips (a generator never seen in training) flagged.
+**Headline (validation, organizer minDCF code, lower is better):** fine-tuned XLS-R detector
+**minDCF 0.039 at NSA's final scoring settings (Pspoof 0.3, Cfa 4) · EER 1.5 % · AUC 0.999**. Under the
+HackGTMinDCF.zip default (Pspoof 0.5) the same model scores 0.066, vs 1.000 for the organizer's AASIST checkpoint
+zero-shot and 0.506 for hand-crafted forensic features alone. **6/6** live Grok Voice clips (a generator never seen in training) flagged.
 23 ms per 4 s clip on a laptop RTX 4060.
 
 All measured numbers live in **[RESULTS.md](RESULTS.md)** (auto-generated from result files; nothing typed by hand)
@@ -27,6 +42,9 @@ Engineering log: **[PROGRESS.md](PROGRESS.md)**.
 ### HEARSAY TSV (offline, no internet, no xAI)
 
 ```bash
+# model weights (not in git): unzip into the repo root -> models/selected/
+curl -L -o proofvoice_model.zip https://github.com/sjayan009/HackGT13-Proof-Voice/releases/download/hearsay-final/proofvoice_model_selected_v3.zip
+unzip proofvoice_model.zip          # Windows PowerShell: Expand-Archive proofvoice_model.zip -DestinationPath .
 docker build -t proofvoice .
 docker run --rm -v "$PWD/data/hearsay:/data" -v "$PWD/outputs:/out" proofvoice
 # -> outputs/team_predictions.tsv  (cm-score = synthetic probability, 1.0 = synthetic)
@@ -164,8 +182,13 @@ enter the score only if fusion improves validation minDCF (decision recorded in 
 
 ### Official metric
 
-`ml/evaluate_mindcf.py` wraps the organizer package (`HackGTMinDCF.zip`, ASVspoof 5 Track 1 code with organizer
-costs **Pspoof = 0.5, Cmiss = 1, Cfa = 4**), i.e. minDCF = min_t [FRR_bona fide(t) + 4·FAR_spoof(t)].
+`ml/evaluate_mindcf.py` wraps the organizer package (`HackGTMinDCF.zip`, ASVspoof 5 Track 1 code). Model selection
+used the package's costs **Pspoof = 0.5, Cmiss = 1, Cfa = 4**. NSA later announced that final scoring uses
+**Pspoof = 0.3** (the test set's ~30% spoof share) with Cfa = 4. minDCF chooses its own threshold, so the submitted
+scores are unaffected and XLS-R v3 remains the best model under both; `ml/rescore_nsa_settings.py` re-scores every
+model under both settings with the organizer's own functions
+([`outputs/results/mindcf_nsa_settings.json`](outputs/results/mindcf_nsa_settings.json)): v3 **0.039** (0.3) /
+0.066 (0.5), v4 0.045 / 0.080, AASIST fine-tuned 0.312 / 0.445.
 `ml/tests/test_mindcf_parity.py` checks it against the organizer script and their shipped fixture.
 
 ### Score orientation (read this)
@@ -189,7 +212,7 @@ The organizer scorer treats a **higher score as more bona fide**; the HEARSAY in
 - Validation is in-distribution with respect to generator *families*. Leave-one-generator-out retraining has not yet
   been run; six Grok clips are a small smoke test, not an open-world error-rate estimate.
 - The two held-out cloned speakers have very different ElevenLabs error rates; see the speaker subgroup table in
-  RESULTS.md. The pooled 0.066 minDCF does not describe every unseen speaker.
+  RESULTS.md. The pooled minDCF (0.039 at Pspoof 0.3, 0.066 at 0.5) does not describe every unseen speaker.
 - Only 44 LJ bona fide clips exist in validation, so LJ-specific numbers are noisy.
 - Scores are probabilities under equal priors (Platt scaling on validation), not proof. Metadata can be forged.
 - Speaker similarity is not liveness; no watermark does not mean human.

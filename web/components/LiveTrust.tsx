@@ -407,7 +407,14 @@ export default function LiveTrust({
             <div className="stat">
               <div className="stat-label">Current reading</div>
               <div className="stat-value lg">
-                {latest ? `${leaning(latest.rolling_probability)!.text} ${leaning(latest.rolling_probability)!.side}` : "—"}
+                {latest ? (
+                  <>
+                    {leaning(latest.rolling_probability)!.text}{" "}
+                    <span className="stat-unit">{leaning(latest.rolling_probability)!.side}</span>
+                  </>
+                ) : (
+                  "—"
+                )}
               </div>
             </div>
             <div className="stat">

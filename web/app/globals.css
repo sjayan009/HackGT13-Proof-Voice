@@ -651,6 +651,14 @@ input {
   text-overflow: ellipsis;
 }
 
+.stat-unit {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-dim);
+}
+
 .stat-value.lg {
   font-size: 1.5rem;
   letter-spacing: -0.02em;
