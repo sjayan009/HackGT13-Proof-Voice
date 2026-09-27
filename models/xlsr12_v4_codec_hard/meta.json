@@ -1,0 +1,36 @@
+{
+  "step": 400,
+  "val_minDCF": 0.07986975914362177,
+  "args": {
+    "backbone": "facebook/wav2vec2-xls-r-300m",
+    "out": "models/xlsr12_v4_codec_hard",
+    "steps": 800,
+    "bs": 8,
+    "accum": 2,
+    "lr": 2e-06,
+    "head_lr": 0.0001,
+    "eval_every": 200,
+    "aug": 1.0,
+    "seed": 0,
+    "exclude_generators": [],
+    "grad_ckpt": false,
+    "lj_share": 0.3,
+    "extra_train": [
+      "train_extra"
+    ],
+    "crop_min": 2.5,
+    "crop_max": 6.0,
+    "num_layers": 12,
+    "init_from": "models/selected",
+    "codec_prob": 0.5,
+    "min_noise_snr": 8.0,
+    "noise_prob": 0.5,
+    "hard_generators": [
+      "elevenlabs",
+      "playht"
+    ],
+    "hard_share": 0.5,
+    "warmup_steps": 40
+  },
+  "backbone": "facebook/wav2vec2-xls-r-300m"
+}

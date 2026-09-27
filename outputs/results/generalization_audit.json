@@ -1,0 +1,229 @@
+{
+  "model_dir": "C:\\Users\\jayan\\GeorgiaTech\\AI Code Completions\\HackGT13\\models\\selected",
+  "global_threshold": 0.25372197088405857,
+  "pooled": {
+    "n_bonafide": 1121,
+    "n_spoof": 6000,
+    "minDCF_with_reoptimized_threshold": 0.0656,
+    "false_alarm_rate_at_global_threshold": 0.0223,
+    "miss_rate_at_global_threshold": 0.0113
+  },
+  "spoof_speaker_subgroups": {
+    "diffgan_tts/single": {
+      "n_bonafide": 1121,
+      "n_spoof": 600,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "elevenlabs/speaker_2061": {
+      "n_bonafide": 1121,
+      "n_spoof": 296,
+      "minDCF_with_reoptimized_threshold": 0.2415,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.2095
+    },
+    "elevenlabs/speaker_6167": {
+      "n_bonafide": 1121,
+      "n_spoof": 304,
+      "minDCF_with_reoptimized_threshold": 0.0009,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "grad_tts/single": {
+      "n_bonafide": 1121,
+      "n_spoof": 600,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "openvoicev2/speaker_2061": {
+      "n_bonafide": 1121,
+      "n_spoof": 304,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "openvoicev2/speaker_6167": {
+      "n_bonafide": 1121,
+      "n_spoof": 296,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "playht/speaker_2061": {
+      "n_bonafide": 1121,
+      "n_spoof": 283,
+      "minDCF_with_reoptimized_threshold": 0.1071,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0212
+    },
+    "playht/speaker_6167": {
+      "n_bonafide": 1121,
+      "n_spoof": 317,
+      "minDCF_with_reoptimized_threshold": 0.0009,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "pro_diff/single": {
+      "n_bonafide": 1121,
+      "n_spoof": 600,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "unit_speech/speaker_2061": {
+      "n_bonafide": 1121,
+      "n_spoof": 300,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "unit_speech/speaker_6167": {
+      "n_bonafide": 1121,
+      "n_spoof": 300,
+      "minDCF_with_reoptimized_threshold": 0.0133,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "wavegrad2/single": {
+      "n_bonafide": 1121,
+      "n_spoof": 600,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "xtts_v2/speaker_2061": {
+      "n_bonafide": 1121,
+      "n_spoof": 299,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "xtts_v2/speaker_6167": {
+      "n_bonafide": 1121,
+      "n_spoof": 301,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "your_tts/speaker_2061": {
+      "n_bonafide": 1121,
+      "n_spoof": 291,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    "your_tts/speaker_6167": {
+      "n_bonafide": 1121,
+      "n_spoof": 309,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    }
+  },
+  "bona_fide_false_alarms_by_source": {
+    "bonafide_libri_dev-clean": {
+      "n": 399,
+      "false_alarms": 6,
+      "false_alarm_rate": 0.015
+    },
+    "bonafide_libri_test-clean": {
+      "n": 678,
+      "false_alarms": 14,
+      "false_alarm_rate": 0.0206
+    },
+    "bonafide_lj": {
+      "n": 44,
+      "false_alarms": 5,
+      "false_alarm_rate": 0.1136
+    }
+  },
+  "bona_fide_false_alarms_by_speaker": {
+    "LJ": {
+      "n": 44,
+      "false_alarms": 5,
+      "false_alarm_rate": 0.1136
+    },
+    "libri_1284": {
+      "n": 63,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_1580": {
+      "n": 105,
+      "false_alarms": 8,
+      "false_alarm_rate": 0.0762
+    },
+    "libri_174": {
+      "n": 59,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_2277": {
+      "n": 95,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_2300": {
+      "n": 42,
+      "false_alarms": 2,
+      "false_alarm_rate": 0.0476
+    },
+    "libri_2412": {
+      "n": 58,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_2830": {
+      "n": 90,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_3729": {
+      "n": 47,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_3853": {
+      "n": 57,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_4970": {
+      "n": 63,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_4992": {
+      "n": 62,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_6930": {
+      "n": 78,
+      "false_alarms": 4,
+      "false_alarm_rate": 0.0513
+    },
+    "libri_8297": {
+      "n": 75,
+      "false_alarms": 5,
+      "false_alarm_rate": 0.0667
+    },
+    "libri_8455": {
+      "n": 71,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    },
+    "libri_8842": {
+      "n": 55,
+      "false_alarms": 1,
+      "false_alarm_rate": 0.0182
+    },
+    "libri_908": {
+      "n": 57,
+      "false_alarms": 0,
+      "false_alarm_rate": 0.0
+    }
+  }
+}

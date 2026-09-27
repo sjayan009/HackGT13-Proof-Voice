@@ -1,0 +1,88 @@
+{
+  "pooled": {
+    "minDCF": 0.07986975914362177,
+    "EER": 0.017670606601248886,
+    "CLLR": 0.7656204462245134,
+    "actDCF": 1.0,
+    "minDCF_threshold": 0.9987886935705319,
+    "AUC": 0.9980660868272375,
+    "log_loss": 0.34103344837776867,
+    "brier": 0.06694974275933226,
+    "FRR_bonafide_at_minDCF": 0.025869759143621766,
+    "FAR_spoof_at_minDCF": 0.0135,
+    "p_synth_threshold_at_minDCF": 0.0012113064294680953,
+    "n_bonafide": 1121,
+    "n_spoof": 6000
+  },
+  "per_generator_minDCF": {
+    "diffgan_tts": 0.0,
+    "elevenlabs": 0.2344,
+    "grad_tts": 0.0,
+    "openvoicev2": 0.0067,
+    "playht": 0.0823,
+    "pro_diff": 0.0,
+    "unit_speech": 0.0169,
+    "wavegrad2": 0.0,
+    "xtts_v2": 0.0,
+    "your_tts": 0.0
+  },
+  "lj_bonafide_vs_lj_voice_spoofs_minDCF": 0.0,
+  "libri_bonafide_vs_cloned_spoofs_minDCF": 0.1068,
+  "bonafide_p_by_source": {
+    "librispeech": [
+      0.0,
+      0.0004,
+      0.0025
+    ],
+    "ljreal": [
+      0.0002,
+      0.001,
+      0.0032
+    ]
+  },
+  "best_step": 400,
+  "log": [
+    {
+      "step": 200,
+      "val_minDCF": 0.0854,
+      "elapsed_s": 643
+    },
+    {
+      "step": 400,
+      "val_minDCF": 0.0799,
+      "elapsed_s": 1491
+    }
+  ],
+  "args": {
+    "backbone": "facebook/wav2vec2-xls-r-300m",
+    "out": "models/xlsr12_v4_codec_hard",
+    "steps": 800,
+    "bs": 8,
+    "accum": 2,
+    "lr": 2e-06,
+    "head_lr": 0.0001,
+    "eval_every": 200,
+    "aug": 1.0,
+    "seed": 0,
+    "exclude_generators": [],
+    "grad_ckpt": false,
+    "lj_share": 0.3,
+    "extra_train": [
+      "train_extra"
+    ],
+    "crop_min": 2.5,
+    "crop_max": 6.0,
+    "num_layers": 12,
+    "init_from": "models/selected",
+    "codec_prob": 0.5,
+    "min_noise_snr": 8.0,
+    "noise_prob": 0.5,
+    "hard_generators": [
+      "elevenlabs",
+      "playht"
+    ],
+    "hard_share": 0.5,
+    "warmup_steps": 40
+  },
+  "stopped_after_step": 400
+}

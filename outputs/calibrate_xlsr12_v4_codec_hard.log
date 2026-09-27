@@ -1,0 +1,39 @@
+{
+ "calibration": {
+  "a": 1.530780585796254,
+  "b": 9.085021246655154,
+  "decision_threshold": 0.23362549227749663,
+  "val_minDCF": 0.07986975914362177,
+  "fitted_on": "validation manifest, test-like crops, class-balanced (equal priors)",
+  "val_ECE_10bin": 0.017774315408743552
+ },
+ "pooled": {
+  "minDCF": 0.07986975914362177,
+  "EER": 0.017670606601248886,
+  "CLLR": 0.7425085360116492,
+  "actDCF": 1.0,
+  "minDCF_threshold": 0.7663745077225034,
+  "AUC": 0.9980709931608683,
+  "log_loss": 0.055256053385833725,
+  "brier": 0.01619367281292516,
+  "FRR_bonafide_at_minDCF": 0.025869759143621766,
+  "FAR_spoof_at_minDCF": 0.0135,
+  "p_synth_threshold_at_minDCF": 0.23362549227749663,
+  "n_bonafide": 1121,
+  "n_spoof": 6000
+ },
+ "per_gen": {
+  "diffgan_tts": 0.0,
+  "elevenlabs": 0.2344,
+  "grad_tts": 0.0,
+  "openvoicev2": 0.0067,
+  "playht": 0.0841,
+  "pro_diff": 0.0,
+  "unit_speech": 0.0169,
+  "wavegrad2": 0.0,
+  "xtts_v2": 0.0,
+  "your_tts": 0.0
+ },
+ "lj": 0.0,
+ "libri": 0.1064
+}

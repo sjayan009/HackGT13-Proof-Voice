@@ -7,6 +7,7 @@ Writes outputs/results/grok_ood.json and outputs/results/latency.json
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 import time
@@ -21,13 +22,18 @@ from common import save_json  # noqa: E402
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--model-dir", default="models/selected")
+    ap.add_argument("--output", default="outputs/results/grok_ood.json")
+    ap.add_argument("--skip-latency", action="store_true")
+    args = ap.parse_args()
     import torch
 
     from app.audio.ingest import load_audio
     from app.detectors.primary import PrimaryDetector
 
     dev = "cuda" if torch.cuda.is_available() else "cpu"
-    det = PrimaryDetector(ROOT / "models/selected", dev)
+    det = PrimaryDetector(ROOT / args.model_dir, dev)
     files = sorted((ROOT / "data/grok_samples").glob("*.wav")) + [ROOT / "api/app/fixtures/grok_fixture.wav"]
     rows = []
     for f in files:
@@ -44,11 +50,14 @@ def main():
         print(rows[-1], flush=True)
     save_json({"threshold": det.threshold, "rows": rows,
                "flagged": f"{sum(r['flagged_at_threshold'] for r in rows)}/{len(rows)}"},
-              ROOT / "outputs/results/grok_ood.json")
+              ROOT / args.output)
+
+    if args.skip_latency:
+        return
 
     lat = {}
     rng = np.random.default_rng(0)
-    for name, d in [("gpu_fp16", det)] + ([("cpu_fp32", PrimaryDetector(ROOT / "models/selected", "cpu"))]
+    for name, d in [("gpu_fp16", det)] + ([("cpu_fp32", PrimaryDetector(ROOT / args.model_dir, "cpu"))]
                                           if dev == "cuda" else []):
         for secs in (2.0, 4.0):
             x = (0.1 * rng.standard_normal(int(secs * 16000))).astype(np.float32)

@@ -15,6 +15,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "ml"))
 from common import manifest  # noqa: E402
+from evaluate_mindcf import official_metrics  # noqa: E402
 
 R = ROOT / "outputs/results"
 
@@ -34,6 +35,9 @@ def main():
         "bona fide, scored on test-like 3.0-4.6 s crops.",
         "Multi-speaker spoofs in validation are from 2 cloned speakers never seen in training.",
         "Unseen-generator rows: generator removed from training entirely.",
+        "The organizer's actDCF uses a log-likelihood-ratio threshold. Applying it directly to our bounded HEARSAY "
+        "probabilities gives 1.0 by scale mismatch; the separate calibrated-log-odds diagnostic is fitted on this validation set.",
+        "Fusion rows are mean minDCF across five held-out folds; they are not directly comparable to pooled minDCF.",
     ]}
     sel_dir = ROOT / "models/selected"
     sel = load(sel_dir / "val_report_serving.json")
@@ -62,7 +66,7 @@ def main():
         meta = load(sel_dir / "meta.json")
         S["selected_model"] = {"name": meta.get("name"), "backbone": meta.get("backbone"),
                                "val_minDCF": r4(sel["pooled"]["minDCF"]), "EER": r4(sel["pooled"]["EER"]),
-                               "AUC": r4(sel["pooled"]["AUC"]), "actDCF": r4(sel["pooled"]["actDCF"]),
+                               "AUC": r4(sel["pooled"]["AUC"]),
                                "decision_threshold": r4(sel["calibration"]["decision_threshold"]),
                                "FRR_bonafide_at_minDCF": r4(sel["pooled"]["FRR_bonafide_at_minDCF"]),
                                "FAR_spoof_at_minDCF": r4(sel["pooled"]["FAR_spoof_at_minDCF"])}
@@ -71,6 +75,14 @@ def main():
         cal = sel["calibration"]
         p = 1 / (1 + np.exp(-(cal["a"] * lg + cal["b"])))
         y = manifest("val").y.to_numpy()
+        llr_bona = -(cal["a"] * lg + cal["b"])
+        llr_metrics = official_metrics(llr_bona[y == 0], llr_bona[y == 1])
+        S["calibration_diagnostics"] = [{
+            "actDCF_on_submitted_probability_scale": r4(sel["pooled"]["actDCF"]),
+            "actDCF_on_equal_prior_log_odds": r4(llr_metrics["actDCF"]),
+            "CLLR_on_equal_prior_log_odds": r4(llr_metrics["CLLR"]),
+            "fitted_on": "same validation set; optimistic for unseen data",
+        }]
         bins = np.linspace(0, 1, 21)
         S["histograms"] = {"validation_synthetic_probability": {
             "bins": [round(b, 2) for b in bins[:-1]],
@@ -81,6 +93,16 @@ def main():
         uns.extend(u["rows"])
     if uns:
         S["unseen_generator"] = uns
+    gen = load(R / "generalization_audit.json")
+    if gen and gen.get("model_dir", "").replace("\\", "/").endswith("models/selected"):
+        S["speaker_generalization"] = [
+            {"group": k, **v} for k, v in sorted(gen["spoof_speaker_subgroups"].items(),
+                                                  key=lambda item: item[1]["minDCF_with_reoptimized_threshold"],
+                                                  reverse=True)[:8]
+        ]
+        S["bona_fide_source_errors"] = [
+            {"source": k, **v} for k, v in gen["bona_fide_false_alarms_by_source"].items()
+        ]
     if fus:
         S["forensic_branches_standalone"] = [{"branch": k, **v} for k, v in fus["standalone_train_to_val"].items()]
         S["fusion_ablation_oof"] = [{"config": k, "minDCF": v} for k, v in fus["fusion_oof_on_val"].items()]
@@ -120,8 +142,12 @@ def write_results_md(S: dict):
              "\n".join(f"- {n}" for n in S["notes"]), ""]
     if "selected_model" in S:
         parts += ["## Selected model", table([S["selected_model"]]), ""]
+    if "calibration_diagnostics" in S:
+        parts += ["## Calibration diagnostics", table(S["calibration_diagnostics"]), ""]
     for key, title in [("model_selection", "Model selection (validation)"),
                        ("per_generator_minDCF", "Per-generator minDCF (each generator vs all bona fide)"),
+                       ("speaker_generalization", "Hardest generator and speaker subgroups (validation)"),
+                       ("bona_fide_source_errors", "Bona fide false alarms at selected threshold"),
                        ("unseen_generator", "Unseen-generator generalisation"),
                        ("forensic_branches_standalone", "Forensic branches — standalone (train → val)"),
                        ("fusion_ablation_oof", "Fusion ablation — out-of-fold on validation"),

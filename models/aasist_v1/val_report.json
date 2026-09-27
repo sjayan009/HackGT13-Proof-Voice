@@ -1,0 +1,56 @@
+{
+  "pooled": {
+    "minDCF": 0.4450496580434136,
+    "EER": 0.11951806422836753,
+    "CLLR": 0.8367333677005834,
+    "actDCF": 1.0,
+    "minDCF_threshold": 0.9536409415304661,
+    "AUC": 0.9567582515611062,
+    "log_loss": 0.371130324509393,
+    "brier": 0.11579077191330692,
+    "FRR_bonafide_at_minDCF": 0.3577163247100803,
+    "FAR_spoof_at_minDCF": 0.021833333333333333,
+    "p_synth_threshold_at_minDCF": 0.04635905846953392,
+    "n_bonafide": 1121,
+    "n_spoof": 6000
+  },
+  "per_generator_minDCF": {
+    "diffgan_tts": 0.0415,
+    "elevenlabs": 0.6202,
+    "grad_tts": 0.5242,
+    "openvoicev2": 0.0762,
+    "playht": 0.4865,
+    "pro_diff": 0.1226,
+    "unit_speech": 0.1426,
+    "wavegrad2": 0.3297,
+    "xtts_v2": 0.1077,
+    "your_tts": 0.0984
+  },
+  "lj_bonafide_vs_lj_voice_spoofs_minDCF": 0.2489,
+  "libri_bonafide_vs_cloned_spoofs_minDCF": 0.4546,
+  "bonafide_p_by_source": {
+    "librispeech": [
+      0.0229,
+      0.3698,
+      0.8718
+    ],
+    "ljreal": [
+      0.0124,
+      0.1013,
+      0.1503
+    ]
+  },
+  "model": "AASIST fine-tuned from ASVspoof5 ckpt",
+  "best_step": 600,
+  "log": [
+    {
+      "step": 300,
+      "val_minDCF": 0.4866
+    },
+    {
+      "step": 600,
+      "val_minDCF": 0.445
+    }
+  ],
+  "stopped_after_step": 600
+}

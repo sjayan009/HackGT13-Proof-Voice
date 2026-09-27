@@ -1,0 +1,14 @@
+step 50 loss 1.7025 77s
+step 100 loss 0.3184 143s
+step 150 loss 0.6549 212s
+step 200 loss 0.1987 278s
+step 250 loss 0.1279 348s
+step 300 loss 0.4682 416s
+EVAL {'step': 300, 'val_minDCF': 0.4866}
+step 350 loss 0.3526 625s
+step 400 loss 0.2535 689s
+step 450 loss 0.8808 751s
+step 500 loss 0.3439 820s
+step 550 loss 0.1256 887s
+step 600 loss 0.0469 953s
+EVAL {'step': 600, 'val_minDCF': 0.445}

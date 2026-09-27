@@ -156,3 +156,20 @@ Full-length val subsample (n=2000): mean of 4 s window logits 0.016 vs full clip
 Final TSV regenerated with this rule (31.4 % of held-out above threshold).
 
 Docker verified: clean image build + offline run (CPU, no network/xAI) wrote a validated 1,671-row TSV in 656 s; matches the local GPU TSV (same filenames/order, Spearman 0.99999, max |diff| 0.018 from fp16 vs fp32).
+
+## 2026-09-27 — generalization audit and candidate race
+
+Audited selected v3 at generator × speaker and bona fide source level (`ml/audit_generalization.py`,
+`outputs/results/generalization_audit.json`). ElevenLabs speaker 2061 is the dominant weakness: 0.2415 subgroup
+minDCF, 62/296 misses at the global threshold, versus 0.0009 and 0 misses for speaker 6167. LJ bona fide has 5/44
+false alarms. The eight training clone speakers have no matched genuine recordings in the local train cache.
+
+Fine-tuned AASIST to step 600: best observed minDCF 0.445; fusion with v3 did not improve pooled minDCF. Warm-started
+XLS-R v4 from v3 with class-independent real codecs, stronger noise, and hard-generator sampling; stopped at step 400
+after full-val minDCF 0.0799 and worse hard-speaker performance. On the fixed 1,400-clip robustness set, v4 is worse
+than v3 on clean, MP3, Opus, µ-law, noise, and clipping; AAC minDCF improves only 0.0015 while its bona fide FRR
+worsens. The six Grok clips are flagged by both, too small for a comparative error estimate. **v3 remains selected.**
+
+Fixed `--exclude-generators` checkpoint-selection leakage for future unseen-generator experiments. Expanded the
+evaluation summary with speaker/source subgroups and a properly scaled actDCF diagnostic. Full interpretation and
+next data experiment are in `MODEL_STRATEGY.md`. Verification: 86 tests pass; selected TSV validates against template.

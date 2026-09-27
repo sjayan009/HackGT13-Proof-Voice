@@ -3,7 +3,9 @@
     "minDCF = official organizer scorer (ASVspoof5 Track 1 code, Pspoof=0.5, Cmiss=1, Cfa=4); lower is better.",
     "Validation = group-disjoint split of organizer DiffSSD + LJRealResampled + public LibriSpeech dev/test-clean bona fide, scored on test-like 3.0-4.6 s crops.",
     "Multi-speaker spoofs in validation are from 2 cloned speakers never seen in training.",
-    "Unseen-generator rows: generator removed from training entirely."
+    "Unseen-generator rows: generator removed from training entirely.",
+    "The organizer's actDCF uses a log-likelihood-ratio threshold. Applying it directly to our bounded HEARSAY probabilities gives 1.0 by scale mismatch; the separate calibrated-log-odds diagnostic is fitted on this validation set.",
+    "Fusion rows are mean minDCF across five held-out folds; they are not directly comparable to pooled minDCF."
   ],
   "model_selection": [
     {
@@ -17,6 +19,14 @@
       "val_minDCF": 0.5057,
       "EER": 0.176,
       "AUC": 0.8999
+    },
+    {
+      "model": "aasist_v1",
+      "val_minDCF": 0.445,
+      "EER": 0.1195,
+      "AUC": 0.9568,
+      "LJ_bona_vs_LJ_voice_spoofs_minDCF": 0.2489,
+      "Libri_bona_vs_cloned_spoofs_minDCF": 0.4546
     },
     {
       "model": "xlsr12_v1",
@@ -41,6 +51,14 @@
       "AUC": 0.9986,
       "LJ_bona_vs_LJ_voice_spoofs_minDCF": 0.0,
       "Libri_bona_vs_cloned_spoofs_minDCF": 0.0879
+    },
+    {
+      "model": "xlsr12_v4_codec_hard",
+      "val_minDCF": 0.0799,
+      "EER": 0.0177,
+      "AUC": 0.9981,
+      "LJ_bona_vs_LJ_voice_spoofs_minDCF": 0.0,
+      "Libri_bona_vs_cloned_spoofs_minDCF": 0.1064
     }
   ],
   "selected_model": {
@@ -49,7 +67,6 @@
     "val_minDCF": 0.0656,
     "EER": 0.0153,
     "AUC": 0.9986,
-    "actDCF": 1.0,
     "decision_threshold": 0.2537,
     "FRR_bonafide_at_minDCF": 0.0223,
     "FAR_spoof_at_minDCF": 0.0113
@@ -94,6 +111,14 @@
     {
       "generator": "your_tts",
       "minDCF": 0.0
+    }
+  ],
+  "calibration_diagnostics": [
+    {
+      "actDCF_on_submitted_probability_scale": 1.0,
+      "actDCF_on_equal_prior_log_odds": 0.0703,
+      "CLLR_on_equal_prior_log_odds": 0.0564,
+      "fitted_on": "same validation set; optimistic for unseen data"
     }
   ],
   "histograms": {
@@ -166,6 +191,92 @@
       ]
     }
   },
+  "speaker_generalization": [
+    {
+      "group": "elevenlabs/speaker_2061",
+      "n_bonafide": 1121,
+      "n_spoof": 296,
+      "minDCF_with_reoptimized_threshold": 0.2415,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.2095
+    },
+    {
+      "group": "playht/speaker_2061",
+      "n_bonafide": 1121,
+      "n_spoof": 283,
+      "minDCF_with_reoptimized_threshold": 0.1071,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0212
+    },
+    {
+      "group": "unit_speech/speaker_6167",
+      "n_bonafide": 1121,
+      "n_spoof": 300,
+      "minDCF_with_reoptimized_threshold": 0.0133,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    {
+      "group": "elevenlabs/speaker_6167",
+      "n_bonafide": 1121,
+      "n_spoof": 304,
+      "minDCF_with_reoptimized_threshold": 0.0009,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    {
+      "group": "playht/speaker_6167",
+      "n_bonafide": 1121,
+      "n_spoof": 317,
+      "minDCF_with_reoptimized_threshold": 0.0009,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    {
+      "group": "diffgan_tts/single",
+      "n_bonafide": 1121,
+      "n_spoof": 600,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    {
+      "group": "grad_tts/single",
+      "n_bonafide": 1121,
+      "n_spoof": 600,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    },
+    {
+      "group": "openvoicev2/speaker_2061",
+      "n_bonafide": 1121,
+      "n_spoof": 304,
+      "minDCF_with_reoptimized_threshold": 0.0,
+      "false_alarm_rate_at_global_threshold": 0.0223,
+      "miss_rate_at_global_threshold": 0.0
+    }
+  ],
+  "bona_fide_source_errors": [
+    {
+      "source": "bonafide_libri_dev-clean",
+      "n": 399,
+      "false_alarms": 6,
+      "false_alarm_rate": 0.015
+    },
+    {
+      "source": "bonafide_libri_test-clean",
+      "n": 678,
+      "false_alarms": 14,
+      "false_alarm_rate": 0.0206
+    },
+    {
+      "source": "bonafide_lj",
+      "n": 44,
+      "false_alarms": 5,
+      "false_alarm_rate": 0.1136
+    }
+  ],
   "forensic_branches_standalone": [
     {
       "branch": "spectral",

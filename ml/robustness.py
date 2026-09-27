@@ -83,11 +83,15 @@ def main():
     ap.add_argument("--n", type=int, default=1400)
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--device", default=None)
+    ap.add_argument("--output", default="outputs/results/robustness.json")
+    ap.add_argument("--bs", type=int, default=8, help="inference batch size; keep below WDDM shared-memory spill")
     a = ap.parse_args()
     import torch
     from concurrent.futures import ThreadPoolExecutor
     from app.detectors.primary import PrimaryDetector
 
+    if torch.cuda.is_available() and a.device != "cpu":
+        torch.cuda.set_per_process_memory_fraction(0.9)
     det = PrimaryDetector(ROOT / a.model_dir, a.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     m = manifest("val")
     c = Cache("val")
@@ -105,7 +109,7 @@ def main():
         with ThreadPoolExecutor(12) as ex:
             xs = list(ex.map(lambda t: np.clip(fn(t[1], np.random.default_rng(t[0])), -1, 1).astype(np.float32),
                              enumerate(clean)))
-        p = det.calibrate(det.logits(xs))
+        p = det.calibrate(det.logits(xs, bs=a.bs))
         r = full_report(y, p)
         if name == "clean":
             thr_clean, p_clean = r["p_synth_threshold_at_minDCF"], p
@@ -117,7 +121,7 @@ def main():
                      "bonafide_mean_p": round(float(p[y == 0].mean()), 4), "spoof_mean_p": round(float(p[y == 1].mean()), 4)}
         print(name, out[name], flush=True)
     save_json({"model_dir": a.model_dir, "n": int(len(idx)), "n_bonafide": int((y == 0).sum()),
-               "conditions": out}, ROOT / "outputs/results/robustness.json")
+               "conditions": out}, ROOT / a.output)
 
 
 if __name__ == "__main__":

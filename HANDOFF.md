@@ -53,6 +53,30 @@ Do not run heavy CPU jobs during training (augmentation is CPU-bound).
 4. Live Trust with a real microphone was not exercised in a browser (WebSocket path is covered by tests).
    **Try it before demoing**: on-device mic audio is out of domain and may read "inconclusive"/synthetic;
    the MP3 robustness result (bona fide FRR 2.6 %→14.7 %) suggests codec/channel shift raises false alarms.
-5. Optional experiments with ready scripts: `ml/train_aasist.py` (family 2), unseen-generator retrain
-   (`ml/train.py --exclude-generators elevenlabs xtts_v2 grad_tts` then `ml/unseen.py`), codec augmentation on
-   bona fide to fix the MP3 false-alarm shift.
+5. Unseen-generator retrain (`ml/train.py --exclude-generators elevenlabs xtts_v2 grad_tts` then `ml/unseen.py`)
+   remains unrun. Checkpoint selection now excludes the held-out generators; confirm evaluation isolation before a claim.
+
+## Subsequent model investigation (2026-09-27)
+
+Read `MODEL_STRATEGY.md` for the subgroup analysis and experiment design. v3 remains selected and its prediction TSV
+has not changed. The apparent 0.0656 validation minDCF hides ElevenLabs speaker 2061 minDCF 0.2415 and 62/296 misses
+at the global threshold; ElevenLabs speaker 6167 is near perfect. The eight training clone speakers lack matched
+genuine speech in the local training data. MP3 and noise cause high bona fide false alarms. The six Grok clips are a
+sanity check, not an open-world error-rate estimate. The official scorer's actDCF=1.0 on bounded probabilities is
+a score-scale artifact; `RESULTS.md` now reports a separate, validation-fitted log-odds diagnostic.
+
+Two actual candidates were run and retained without promotion. Fine-tuned AASIST reached minDCF 0.445 at step 600.
+Warm-start XLS-R v4 with real codec/noise augmentation and hard-generator sampling reached full-val minDCF 0.0799
+at step 400 versus v3's 0.0656, and worsened the hard speaker and most channel conditions. Candidate artifacts are
+under `models/aasist_v1`, `models/xlsr12_v4_codec_hard`, and `outputs/results/robustness_xlsr12_v4_codec_hard.json`.
+The updated `ml/robustness.py` uses batch size 8 by default to stay within RTX 4060 WDDM memory.
+
+Next highest-value work: acquire genuine LibriSpeech train-clean-360 audio for only the eight *training* clone
+speaker IDs 100, 1487, 3654, 4490, 5448, 6575, 7995, 8848; keep validation IDs 2061 and 6167 untouched.
+The OpenSLR archive is 21 GB, and selective network retrieval was refused by the current sandbox. Deduplicate
+against held-out files, then compare identity-balanced training on an independent speaker/channel split. Run codec-only
+ablation separately. Do not report further tuning on the current validation set as an unbiased generalization result.
+
+Verification after these changes: 86 tests pass; `git diff --check` passes; the existing 1,671-row TSV validates
+against the template. `data/hearsay/test` contains the ZIP, not extracted WAVs, so validator `--test-dir` currently
+fails file-presence checking; omit that option to validate the TSV content and template identity.

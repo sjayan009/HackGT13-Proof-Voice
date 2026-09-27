@@ -4,20 +4,29 @@
 - Validation = group-disjoint split of organizer DiffSSD + LJRealResampled + public LibriSpeech dev/test-clean bona fide, scored on test-like 3.0-4.6 s crops.
 - Multi-speaker spoofs in validation are from 2 cloned speakers never seen in training.
 - Unseen-generator rows: generator removed from training entirely.
+- The organizer's actDCF uses a log-likelihood-ratio threshold. Applying it directly to our bounded HEARSAY probabilities gives 1.0 by scale mismatch; the separate calibrated-log-odds diagnostic is fitted on this validation set.
+- Fusion rows are mean minDCF across five held-out folds; they are not directly comparable to pooled minDCF.
 
 ## Selected model
-| name | backbone | val_minDCF | EER | AUC | actDCF | decision_threshold | FRR_bonafide_at_minDCF | FAR_spoof_at_minDCF |
-|---|---|---|---|---|---|---|---|---|
-| ProofVoice XLS-R-12L v3 | facebook/wav2vec2-xls-r-300m | 0.0656 | 0.0153 | 0.9986 | 1.0 | 0.2537 | 0.0223 | 0.0113 |
+| name | backbone | val_minDCF | EER | AUC | decision_threshold | FRR_bonafide_at_minDCF | FAR_spoof_at_minDCF |
+|---|---|---|---|---|---|---|---|
+| ProofVoice XLS-R-12L v3 | facebook/wav2vec2-xls-r-300m | 0.0656 | 0.0153 | 0.9986 | 0.2537 | 0.0223 | 0.0113 |
+
+## Calibration diagnostics
+| actDCF_on_submitted_probability_scale | actDCF_on_equal_prior_log_odds | CLLR_on_equal_prior_log_odds | fitted_on |
+|---|---|---|---|
+| 1.0 | 0.0703 | 0.0564 | same validation set; optimistic for unseen data |
 
 ## Model selection (validation)
 | model | val_minDCF | EER | AUC | LJ_bona_vs_LJ_voice_spoofs_minDCF | Libri_bona_vs_cloned_spoofs_minDCF |
 |---|---|---|---|---|---|
 | AASIST (organizer ASVspoof5 ckpt), zero-shot | 1.0 | 0.4398 | 0.638 |  |  |
 | Hand-crafted forensic branches (38 feats, logistic regression) | 0.5057 | 0.176 | 0.8999 |  |  |
+| aasist_v1 | 0.445 | 0.1195 | 0.9568 | 0.2489 | 0.4546 |
 | xlsr12_v1 | 0.1534 | 0.0436 | 0.9932 | 0.0 | 0.1616 |
 | xlsr12_v2_lj30 | 0.1311 | 0.0302 | 0.9961 | 0.0 | 0.1584 |
 | xlsr12_v3 | 0.0656 | 0.0153 | 0.9986 | 0.0 | 0.0879 |
+| xlsr12_v4_codec_hard | 0.0799 | 0.0177 | 0.9981 | 0.0 | 0.1064 |
 
 ## Per-generator minDCF (each generator vs all bona fide)
 | generator | minDCF |
@@ -32,6 +41,25 @@
 | wavegrad2 | 0.0 |
 | xtts_v2 | 0.0 |
 | your_tts | 0.0 |
+
+## Hardest generator and speaker subgroups (validation)
+| group | n_bonafide | n_spoof | minDCF_with_reoptimized_threshold | false_alarm_rate_at_global_threshold | miss_rate_at_global_threshold |
+|---|---|---|---|---|---|
+| elevenlabs/speaker_2061 | 1121 | 296 | 0.2415 | 0.0223 | 0.2095 |
+| playht/speaker_2061 | 1121 | 283 | 0.1071 | 0.0223 | 0.0212 |
+| unit_speech/speaker_6167 | 1121 | 300 | 0.0133 | 0.0223 | 0.0 |
+| elevenlabs/speaker_6167 | 1121 | 304 | 0.0009 | 0.0223 | 0.0 |
+| playht/speaker_6167 | 1121 | 317 | 0.0009 | 0.0223 | 0.0 |
+| diffgan_tts/single | 1121 | 600 | 0.0 | 0.0223 | 0.0 |
+| grad_tts/single | 1121 | 600 | 0.0 | 0.0223 | 0.0 |
+| openvoicev2/speaker_2061 | 1121 | 304 | 0.0 | 0.0223 | 0.0 |
+
+## Bona fide false alarms at selected threshold
+| source | n | false_alarms | false_alarm_rate |
+|---|---|---|---|
+| bonafide_libri_dev-clean | 399 | 6 | 0.015 |
+| bonafide_libri_test-clean | 678 | 14 | 0.0206 |
+| bonafide_lj | 44 | 5 | 0.1136 |
 
 ## Forensic branches — standalone (train → val)
 | branch | n_features | minDCF | AUC | EER |

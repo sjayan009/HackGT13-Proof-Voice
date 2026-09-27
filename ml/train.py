@@ -26,17 +26,30 @@ sys.path.insert(0, str(ROOT / "api"))
 from audio_cache import Cache  # noqa: E402
 from common import TESTLIKE_MAX_S, TESTLIKE_MIN_S, manifest, save_json, subset_report, testlike_crop  # noqa: E402
 from evaluate_mindcf import fast_mindcf  # noqa: E402
-from app.detectors.ssl_model import SSLDetector, normalize, save_detector  # noqa: E402
+from app.detectors.ssl_model import SSLDetector, load_detector, normalize, save_detector  # noqa: E402
 
 SR = 16000
 
 
 class Augment:
-    def __init__(self, rng: np.random.Generator, strength: float = 1.0):
+    def __init__(self, rng: np.random.Generator, strength: float = 1.0,
+                 codec_prob: float = 0.0, min_noise_snr: float = 12.0,
+                 noise_prob: float = 0.35):
         self.rng, self.s = rng, strength
+        self.codec_prob = codec_prob
+        self.min_noise_snr = min_noise_snr
+        self.noise_prob = noise_prob
 
     def __call__(self, x: np.ndarray) -> np.ndarray:
         r = self.rng
+        if self.codec_prob and r.random() < self.codec_prob:
+            # A real encode/decode path, sampled independently of the class. The
+            # old low-pass approximation did not reproduce MP3/Opus artifacts.
+            from robustness import AAC, MP3, OPUS, ULAW, codec_roundtrip
+            # MP3 gets twice the sampling weight because it causes the largest
+            # measured bona fide false-alarm shift in this dataset.
+            codec = [MP3, MP3, OPUS, AAC, ULAW][int(r.integers(5))]
+            x = codec_roundtrip(x, [codec])
         if r.random() < 0.3 * self.s:  # resample round-trip (different resampler artefacts)
             import librosa
             mid = int(r.choice([11025, 12000, 22050, 24000, 32000]))
@@ -47,8 +60,8 @@ class Augment:
             x = sosfilt(butter(8, fc, "low", fs=SR, output="sos"), x)
         elif r.random() < 0.07 * self.s:  # telephone band
             x = sosfilt(butter(4, [300, 3400], "band", fs=SR, output="sos"), x)
-        if r.random() < 0.35 * self.s:  # additive noise (white or pink-ish)
-            snr = r.uniform(12, 40)
+        if r.random() < self.noise_prob * self.s:  # additive noise (white or pink-ish)
+            snr = r.uniform(self.min_noise_snr, 40)
             n = r.standard_normal(len(x))
             if r.random() < 0.5:
                 n = np.cumsum(n)
@@ -107,6 +120,15 @@ def main():
     ap.add_argument("--crop-min", type=float, default=TESTLIKE_MIN_S)
     ap.add_argument("--crop-max", type=float, default=TESTLIKE_MAX_S)
     ap.add_argument("--num-layers", type=int, default=None, help="keep only the first N transformer layers")
+    ap.add_argument("--init-from", default=None, help="warm-start from a saved detector directory")
+    ap.add_argument("--codec-prob", type=float, default=0.0,
+                    help="probability of a real codec round-trip, applied to both classes")
+    ap.add_argument("--min-noise-snr", type=float, default=12.0)
+    ap.add_argument("--noise-prob", type=float, default=0.35)
+    ap.add_argument("--hard-generators", nargs="*", default=[],
+                    help="generators to oversample within the spoof half of each batch")
+    ap.add_argument("--hard-share", type=float, default=0.5)
+    ap.add_argument("--warmup-steps", type=int, default=200)
     a = ap.parse_args()
 
     torch.manual_seed(a.seed)
@@ -143,10 +165,30 @@ def main():
     spoof_by_gen = {g: tr_idx[(mtr.generator.to_numpy()[tr_idx] == g)] for g in mtr[mtr.y == 1].generator.unique()
                     if g not in a.exclude_generators}
     gens = sorted(spoof_by_gen)
+    unknown_hard = set(a.hard_generators) - set(gens)
+    if unknown_hard:
+        raise ValueError(f"hard generators absent from training: {sorted(unknown_hard)}")
+    if a.hard_generators and not 0 < a.hard_share < 1:
+        raise ValueError("--hard-share must be between 0 and 1")
+    if a.hard_generators and len(a.hard_generators) == len(gens):
+        raise ValueError("hard generators must be a proper subset")
+    gen_prob = None
+    if a.hard_generators:
+        hard = set(a.hard_generators)
+        gen_prob = np.array([a.hard_share / len(hard) if g in hard else
+                             (1 - a.hard_share) / (len(gens) - len(hard)) for g in gens])
     val_clips = [testlike_crop(cva.get(i), i, 0) for i in range(len(cva))]
     yva = mva.y.to_numpy()
+    val_selection = ~mva.generator.isin(a.exclude_generators).to_numpy()
+    if len(np.unique(yva[val_selection])) != 2:
+        raise ValueError("checkpoint-selection validation must contain both classes")
 
-    model = SSLDetector(a.backbone, cache_dir=str(ROOT / "models/hf_cache"), num_layers=a.num_layers).to(dev)
+    if a.init_from:
+        model, _ = load_detector(ROOT / a.init_from, dev)
+        if a.num_layers is not None and model.ssl.config.num_hidden_layers != a.num_layers:
+            raise ValueError("--num-layers must match the warm-start checkpoint")
+    else:
+        model = SSLDetector(a.backbone, cache_dir=str(ROOT / "models/hf_cache"), num_layers=a.num_layers).to(dev)
     model.ssl.feature_extractor._freeze_parameters() if hasattr(model.ssl, "feature_extractor") else None
     if a.grad_ckpt:
         model.ssl.gradient_checkpointing_enable()
@@ -154,11 +196,11 @@ def main():
     head_params = [p for n, p in model.named_parameters() if not n.startswith("ssl.")]
     opt = torch.optim.AdamW([{"params": ssl_params, "lr": a.lr}, {"params": head_params, "lr": a.head_lr}],
                             weight_decay=1e-4)
-    warm = 200
+    warm = max(1, a.warmup_steps)
     sched = torch.optim.lr_scheduler.LambdaLR(
         opt, lambda s: min(1.0, (s + 1) / warm) * 0.5 * (1 + math.cos(math.pi * min(1.0, s / a.steps))))
     scaler = torch.amp.GradScaler()
-    aug = Augment(rng, a.aug)
+    aug = Augment(rng, a.aug, a.codec_prob, a.min_noise_snr, a.noise_prob)
     lossf = torch.nn.BCEWithLogitsLoss()
 
     def sample_batch():
@@ -171,7 +213,8 @@ def main():
                     pool = bona_idx
                 i, y = int(rng.choice(pool)), 0
             else:
-                i, y = int(rng.choice(spoof_by_gen[gens[rng.integers(len(gens))]])), 1
+                g = gens[rng.integers(len(gens))] if gen_prob is None else rng.choice(gens, p=gen_prob)
+                i, y = int(rng.choice(spoof_by_gen[g])), 1
             x = get_train(i)
             n = int(rng.uniform(a.crop_min, a.crop_max) * SR)
             if len(x) > n:
@@ -203,8 +246,12 @@ def main():
         if step % a.eval_every == 0 or step == a.steps:
             lg = predict(model, val_clips, dev)
             p = 1 / (1 + np.exp(-lg))
-            md = fast_mindcf(yva, p)[0]
-            log.append({"step": step, "val_minDCF": round(md, 4), "elapsed_s": round(time.time() - t0)})
+            # Excluded generators are an unseen test. Never use their labels to
+            # choose checkpoints, even though logits for the full val set are saved.
+            md = fast_mindcf(yva[val_selection], p[val_selection])[0]
+            log.append({"step": step, "val_minDCF": round(md, 4),
+                        "selection_scope": "seen_generators_only" if a.exclude_generators else "all_validation",
+                        "elapsed_s": round(time.time() - t0)})
             print("EVAL", log[-1], flush=True)
             if md < best[0]:
                 best = (md, step)
