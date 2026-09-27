@@ -41,6 +41,7 @@ Do not run heavy CPU jobs during training (augmentation is CPU-bound).
 
 - **Selected model: xlsr12_v3** — val minDCF 0.066, EER 1.5 %, AUC 0.999 (official scorer, group-disjoint val).
 - `outputs/team_predictions.tsv` (+ `_bonafide_high.tsv`, `.json` sidecar) generated from v3 and validated.
+- Docker: clean build + offline CPU run reproduces the TSV (Spearman 0.99999 vs local GPU run).
 - 86 tests pass. Web UI + API verified end-to-end in a browser (Forensic Lab, Red Team with live Grok Voice).
 - Robustness, Grok-OOD (6/6 flagged), latency, fusion ablation, eval summary: done (RESULTS.md).
 - QA audit: `outputs/qa_audit.md`; bugs B-1..B-5 fixed (stream stall, TSV dup checks, red-team player).

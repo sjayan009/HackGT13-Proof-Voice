@@ -154,3 +154,5 @@ Latency: 23 ms per 4 s clip on RTX 4060 fp16, 345 ms on CPU (`latency.json`).
 Full-length val subsample (n=2000): mean of 4 s window logits 0.016 vs full clip 0.021 vs median 0.023 vs max 0.026
 → clips > 4 s now scored as the mean of 4 s windows (`PrimaryDetector.clip_logits`, used by API and TSV).
 Final TSV regenerated with this rule (31.4 % of held-out above threshold).
+
+Docker verified: clean image build + offline run (CPU, no network/xAI) wrote a validated 1,671-row TSV in 656 s; matches the local GPU TSV (same filenames/order, Spearman 0.99999, max |diff| 0.018 from fp16 vs fp32).
