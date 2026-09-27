@@ -1,0 +1,240 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1060" width="1600" height="1060" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif">
+  <title>How ProofVoice works: high-level architecture</title>
+  <desc>Audio from four sources is standardized, scored by a fine-tuned XLS-R detector, double-checked by forensic techniques, and turned into an explainable report for the web app or the NSA HEARSAY TSV. The detector was trained offline on DiffSSD, LJ Speech and LibriSpeech with group-disjoint splits and selected by the official minDCF metric.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0a84ff"/>
+    </marker>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5ac8fa"/><stop offset="1" stop-color="#5e5ce6"/>
+    </linearGradient>
+    <style>
+      .h   { font-size: 17px; font-weight: 700; fill: #0d1117; }
+      .b   { font-size: 15px; font-weight: 600; fill: #0d1117; }
+      .p   { font-size: 13.5px; fill: #374151; }
+      .d   { font-size: 11.5px; fill: #6b7280; font-family: Consolas, "Cascadia Mono", Menlo, monospace; }
+      .step{ font-size: 13px; font-weight: 700; fill: #0a84ff; letter-spacing: .08em; }
+      .card{ fill: #ffffff; stroke: #d7dbe1; stroke-width: 1.5; }
+      .line{ stroke: #4b5563; stroke-width: 2; fill: none; }
+    </style>
+  </defs>
+
+  <!-- Background (solid, so it reads the same in GitHub light and dark themes) -->
+  <rect width="1600" height="1060" fill="#f6f7f9"/>
+
+  <!-- Title -->
+  <rect x="40" y="30" width="52" height="52" rx="14" fill="url(#brand)"/>
+  <path d="M52 56h3M61 47v18M68 41v30M75 49v14M82 53v6" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
+  <text x="108" y="56" font-size="30" font-weight="800" fill="#0d1117">How ProofVoice works</text>
+  <text x="108" y="80" class="p">One forensic core: every input goes through the same detector and evidence pipeline. There is no separate demo logic.</text>
+  <text x="1560" y="56" text-anchor="end" font-size="13" font-weight="600" fill="#374151">Bold = what happens (anyone)</text>
+  <text x="1560" y="76" text-anchor="end" class="d">gray = how it's built (developers)</text>
+
+  <!-- ===================== STEP HEADERS ===================== -->
+  <text x="40"   y="130" class="step">1 · AUDIO COMES IN</text>
+  <text x="352"  y="130" class="step">2 · CLEAN IT UP</text>
+  <text x="610"  y="130" class="step">3 · THE AI EAR LISTENS</text>
+  <text x="910"  y="130" class="step">4 · DOUBLE-CHECK</text>
+  <text x="1250" y="130" class="step">5 · EXPLAIN THE VERDICT</text>
+
+  <!-- ===================== 1. INPUTS ===================== -->
+  <g>
+    <rect class="card" x="40" y="150" width="270" height="100" rx="14"/>
+    <text x="58" y="180" class="b">Upload a recording</text>
+    <text x="58" y="200" class="p">or click one of 11 demo clips</text>
+    <text x="58" y="220" class="p" font-style="italic">Forensic Lab</text>
+    <text x="58" y="240" class="d">POST /analyze/file</text>
+
+    <rect class="card" x="40" y="265" width="270" height="100" rx="14"/>
+    <text x="58" y="295" class="b">Speak or stream live</text>
+    <text x="58" y="315" class="p">new verdict every 0.5 seconds</text>
+    <text x="58" y="335" class="p" font-style="italic">Live Trust</text>
+    <text x="58" y="355" class="d">WS /analyze/stream · AudioWorklet</text>
+
+    <rect class="card" x="40" y="380" width="270" height="100" rx="14"/>
+    <text x="58" y="410" class="b">Grok Voice attacks</text>
+    <text x="58" y="430" class="p">AI speaks a scam call, live</text>
+    <text x="58" y="450" class="p" font-style="italic">Red Team (xAI)</text>
+    <text x="58" y="470" class="d">WS /redteam/stream · grok-voice</text>
+
+    <rect class="card" x="40" y="495" width="270" height="100" rx="14"/>
+    <text x="58" y="525" class="b">1,671 NSA test files</text>
+    <text x="58" y="545" class="p">scored in one batch, offline</text>
+    <text x="58" y="565" class="p" font-style="italic">HEARSAY challenge</text>
+    <text x="58" y="585" class="d">generate_hearsay_tsv.py · Docker</text>
+  </g>
+
+  <!-- merge arrows -->
+  <path class="line" d="M310 200 H325 V372"/>
+  <path class="line" d="M310 315 H325"/>
+  <path class="line" d="M310 430 H325"/>
+  <path class="line" d="M310 545 H325 V372"/>
+  <path class="line" d="M325 372 H348" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 2. INGEST ===================== -->
+  <rect class="card" x="352" y="262" width="220" height="220" rx="14"/>
+  <text x="370" y="295" class="b">Standardize the audio</text>
+  <text x="370" y="320" class="p">Any format in (MP3, WAV,</text>
+  <text x="370" y="338" class="p">video…) → one clean format</text>
+  <text x="370" y="364" class="p">Check quality: noise,</text>
+  <text x="370" y="382" class="p">clipping, how much speech</text>
+  <text x="370" y="420" class="d">ffmpeg / soundfile decode</text>
+  <text x="370" y="438" class="d">→ mono 16 kHz (soxr HQ)</text>
+  <text x="370" y="456" class="d">quality.py (SNR, speech %)</text>
+
+  <path class="line" d="M572 372 H606" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 3. DETECTOR ===================== -->
+  <rect x="610" y="228" width="266" height="288" rx="16" fill="#ffffff" stroke="#0a84ff" stroke-width="2.5"/>
+  <rect x="610" y="228" width="266" height="40" rx="16" fill="#0a84ff"/>
+  <rect x="610" y="252" width="266" height="16" fill="#0a84ff"/>
+  <text x="628" y="254" font-size="15" font-weight="700" fill="#ffffff">Deep-learning detector</text>
+  <text x="628" y="296" class="p">Trained to hear the tiny</text>
+  <text x="628" y="314" class="p">artifacts voice generators</text>
+  <text x="628" y="332" class="p">leave behind, which people</text>
+  <text x="628" y="350" class="p">can't hear.</text>
+  <text x="628" y="380" class="b" fill="#0a84ff">This sets the score.</text>
+  <text x="628" y="418" class="d">XLS-R (wav2vec 2.0), fine-tuned</text>
+  <text x="628" y="436" class="d">3 s windows, 0.5 s hop</text>
+  <text x="628" y="454" class="d">→ per-moment timeline</text>
+  <text x="628" y="472" class="d">Platt-calibrated probability</text>
+  <text x="628" y="490" class="d">~23 ms / clip on RTX 4060</text>
+
+  <path class="line" d="M876 372 H906" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 4. FORENSICS ===================== -->
+  <rect class="card" x="910" y="150" width="300" height="445" rx="14"/>
+  <text x="928" y="180" class="b">Forensic techniques</text>
+  <text x="928" y="200" class="p">Independent evidence, run only</text>
+  <text x="928" y="218" class="p">when useful; every choice is logged</text>
+
+  <g>
+    <rect x="928" y="236" width="264" height="56" rx="10" fill="#f1f5fb" stroke="#dbe4f0"/>
+    <text x="944" y="259" class="b" font-size="14">Spectral</text>
+    <text x="944" y="279" class="p" font-size="12.5">unnatural frequency patterns</text>
+
+    <rect x="928" y="300" width="264" height="56" rx="10" fill="#f1f5fb" stroke="#dbe4f0"/>
+    <text x="944" y="323" class="b" font-size="14">Prosody</text>
+    <text x="944" y="343" class="p" font-size="12.5">pitch, rhythm and pauses</text>
+
+    <rect x="928" y="364" width="264" height="56" rx="10" fill="#f1f5fb" stroke="#dbe4f0"/>
+    <text x="944" y="387" class="b" font-size="14">Compression</text>
+    <text x="944" y="407" class="p" font-size="12.5">re-encoding / laundering traces</text>
+
+    <rect x="928" y="428" width="264" height="56" rx="10" fill="#f1f5fb" stroke="#dbe4f0"/>
+    <text x="944" y="451" class="b" font-size="14">Splice</text>
+    <text x="944" y="471" class="p" font-size="12.5">edits and cut-and-paste seams</text>
+
+    <rect x="928" y="492" width="264" height="56" rx="10" fill="#f1f5fb" stroke="#dbe4f0"/>
+    <text x="944" y="515" class="b" font-size="14">Metadata</text>
+    <text x="944" y="535" class="p" font-size="12.5">file / encoder fingerprints</text>
+  </g>
+  <text x="928" y="577" class="d">api/app/forensics/* · router + branch_log</text>
+
+  <path class="line" d="M1210 330 H1246" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 5. REPORT ===================== -->
+  <rect class="card" x="1250" y="150" width="310" height="300" rx="14"/>
+  <text x="1268" y="180" class="b">Evidence report</text>
+  <!-- mini verdict -->
+  <rect x="1268" y="196" width="274" height="104" rx="10" fill="#fff5f5" stroke="#f5c2c0"/>
+  <text x="1284" y="240" font-size="34" font-weight="800" fill="#d70015">98%</text>
+  <text x="1284" y="262" font-size="13" font-weight="600" fill="#6b7280">synthetic</text>
+  <text x="1368" y="226" class="p" font-size="12.5">Likely synthetic</text>
+  <!-- mini scale -->
+  <rect x="1368" y="240" width="160" height="8" rx="4" fill="#e5e7eb"/>
+  <rect x="1368" y="240" width="20" height="8" rx="4" fill="#30d158"/>
+  <rect x="1388" y="240" width="62" height="8" fill="#ffb340"/>
+  <rect x="1450" y="240" width="78" height="8" rx="4" fill="#ff6961"/>
+  <circle cx="1522" cy="244" r="7" fill="#ffffff" stroke="#d70015" stroke-width="3"/>
+  <text x="1368" y="266" class="d" font-size="10.5">human · unsure · synthetic</text>
+  <text x="1284" y="290" class="d" font-size="10.5">+ confidence · "I'm not sure" state</text>
+
+  <text x="1268" y="326" class="p">• Timeline: where in the audio</text>
+  <text x="1268" y="346" class="p">• Evidence from each technique</text>
+  <text x="1268" y="366" class="p">• Which checks ran, and why</text>
+  <text x="1268" y="386" class="p">• Time until it was confident</text>
+  <text x="1268" y="418" class="d">AnalysisReport JSON · status ·</text>
+  <text x="1268" y="436" class="d">suspicious_regions · evidence</text>
+
+  <!-- outputs -->
+  <path class="line" d="M1330 450 V478" marker-end="url(#arrow)"/>
+  <path class="line" d="M1480 450 V478" marker-end="url(#arrow)"/>
+  <rect x="1250" y="482" width="150" height="113" rx="14" fill="#eaf4ff" stroke="#b9d9ff"/>
+  <text x="1266" y="508" class="b" font-size="14">Web app</text>
+  <text x="1266" y="528" class="p" font-size="12.5">interactive, live</text>
+  <text x="1266" y="546" class="p" font-size="12.5">charts, playback</text>
+  <text x="1266" y="580" class="d" font-size="10.5">Next.js · FastAPI</text>
+  <rect x="1410" y="482" width="150" height="113" rx="14" fill="#eefbf1" stroke="#bfe8c9"/>
+  <text x="1426" y="508" class="b" font-size="14">NSA TSV file</text>
+  <text x="1426" y="528" class="p" font-size="12.5">one score per</text>
+  <text x="1426" y="546" class="p" font-size="12.5">test file</text>
+  <text x="1426" y="580" class="d" font-size="10.5">cm-score = P(fake)</text>
+
+  <!-- optional Grok explanation -->
+  <rect x="1250" y="612" width="310" height="52" rx="12" fill="#ffffff" stroke="#d7dbe1" stroke-dasharray="5 4"/>
+  <text x="1268" y="634" class="p" font-size="12.5"><tspan font-weight="700" fill="#0d1117">Optional:</tspan> Grok restates the report in</text>
+  <text x="1268" y="652" class="p" font-size="12.5">plain English. It never sets the score.</text>
+
+  <!-- ===================== TRAINING (offline) ===================== -->
+  <rect x="24" y="700" width="1552" height="300" rx="20" fill="#eef2f8" stroke="#d7dfeb"/>
+  <text x="52" y="738" font-size="18" font-weight="800" fill="#0d1117">Built beforehand: how the AI ear learned</text>
+  <text x="52" y="760" class="p">Offline training on a GPU. Judged only by the official NSA metric (minDCF), never on the hidden test set.</text>
+
+  <g>
+    <rect class="card" x="52" y="790" width="262" height="160" rx="14"/>
+    <text x="70" y="820" class="b">1 · Collect examples</text>
+    <text x="70" y="844" class="p">Real voices + fakes from</text>
+    <text x="70" y="862" class="p">10 voice generators</text>
+    <text x="70" y="898" class="d">DiffSSD (fake) · LJ Speech +</text>
+    <text x="70" y="916" class="d">LibriSpeech (real, many</text>
+    <text x="70" y="934" class="d">speakers)</text>
+
+    <rect class="card" x="358" y="790" width="262" height="160" rx="14"/>
+    <text x="376" y="820" class="b">2 · Fair test split</text>
+    <text x="376" y="844" class="p">No speaker appears in both</text>
+    <text x="376" y="862" class="p">training and testing, so it</text>
+    <text x="376" y="880" class="p">can't cheat by memorizing</text>
+    <text x="376" y="916" class="d">group-disjoint splits,</text>
+    <text x="376" y="934" class="d">3–4.6 s test-like crops</text>
+
+    <rect class="card" x="664" y="790" width="262" height="160" rx="14"/>
+    <text x="682" y="820" class="b">3 · Teach the AI ear</text>
+    <text x="682" y="844" class="p">Start from a model that</text>
+    <text x="682" y="862" class="p">already understands speech,</text>
+    <text x="682" y="880" class="p">then train it on real vs fake</text>
+    <text x="682" y="916" class="d">fine-tune XLS-R 300M</text>
+    <text x="682" y="934" class="d">+ augmentation · PyTorch/CUDA</text>
+
+    <rect class="card" x="970" y="790" width="262" height="160" rx="14"/>
+    <text x="988" y="820" class="b">4 · Pick the best model</text>
+    <text x="988" y="844" class="p">Compared 5 models on the</text>
+    <text x="988" y="862" class="p">NSA's own scoring code</text>
+    <text x="988" y="890" font-size="15" font-weight="800" fill="#1f9d45">Winner: minDCF 0.039</text>
+    <text x="988" y="916" class="d">vs 1.000 organizer baseline</text>
+    <text x="988" y="934" class="d">(Pspoof 0.3, Cfa 4) · EER 1.5%</text>
+
+    <rect x="1276" y="790" width="272" height="160" rx="14" fill="#ffffff" stroke="#0a84ff" stroke-width="2"/>
+    <text x="1294" y="820" class="b">5 · Ship it</text>
+    <text x="1294" y="844" class="p">Calibrate scores into honest</text>
+    <text x="1294" y="862" class="p">probabilities; save weights</text>
+    <text x="1294" y="898" class="d">Platt scaling (ECE 1.5%)</text>
+    <text x="1294" y="916" class="d">models/selected (315 MB,</text>
+    <text x="1294" y="934" class="d">GitHub release)</text>
+  </g>
+  <path class="line" d="M314 870 H354" marker-end="url(#arrow)"/>
+  <path class="line" d="M620 870 H660" marker-end="url(#arrow)"/>
+  <path class="line" d="M926 870 H966" marker-end="url(#arrow)"/>
+  <path class="line" d="M1232 870 H1272" marker-end="url(#arrow)"/>
+
+  <!-- weights feed the live detector -->
+  <path d="M1412 790 C1412 690, 743 690, 743 520" stroke="#0a84ff" stroke-width="2.5" stroke-dasharray="7 6" fill="none" marker-end="url(#arrowBlue)"/>
+  <rect x="1010" y="672" width="170" height="26" rx="13" fill="#0a84ff"/>
+  <text x="1095" y="690" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">loads the trained model</text>
+
+  <!-- footer -->
+  <text x="800" y="1040" text-anchor="middle" class="d">ProofVoice · HackGT 13 · github.com/sjayan009/HackGT13-Proof-Voice</text>
+</svg>

@@ -10,6 +10,7 @@
 | 🧠 Model weights | [GitHub Release `hearsay-final`](https://github.com/sjayan009/HackGT13-Proof-Voice/releases/tag/hearsay-final) (315 MB, too large for git) |
 | 🐳 Reproduce the TSV | [Docker, offline, 3 commands](#hearsay-tsv-offline-no-internet-no-xai) |
 | 🔬 Forensic techniques | [7 families, with code links](#forensic-techniques-distinct-families) |
+| 🗺️ Architecture (1 picture) | [`docs/architecture.svg`](docs/architecture.svg) |
 | 🎬 Demo video (1:40) | [`00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4`](00_NSA_HEARSAY_SUBMISSION/ProofVoice_demo_video.mp4) |
 
 Everything is also summarized on one page: **[00_NSA_HEARSAY_SUBMISSION/README.md](00_NSA_HEARSAY_SUBMISSION/README.md)**.
@@ -150,6 +151,8 @@ and **bit-level parity with the organizer minDCF scorer**.
 ---
 
 ## How it works
+
+![How ProofVoice works: audio comes in, is standardized, scored by a fine-tuned XLS-R detector, double-checked by forensic techniques and explained in a report](docs/architecture.svg)
 
 ```text
  file / mic / Grok Voice ──► ingest (soundfile | ffmpeg) ──► mono float32 @ 16 kHz (soxr HQ)
