@@ -22,3 +22,7 @@ pytest
 pytest-timeout
 # v2 Guardian / Aegis
 nvidia-ml-py  # NVML GPU telemetry (optional at runtime; metrics report gpu=null without it)
+
+# Optional: TensorRT FP16 backend for Aegis (AEGIS_BACKEND=tensorrt; NVIDIA GPU, CUDA 12 driver). Not installed by default.
+#   pip install tensorrt-cu12==11.5.0.63 onnx==1.23.2 nvidia-ml-py
+#   python -m engine.trt_build          # export + build engine into models/selected/trt/ (~2 min, cached)

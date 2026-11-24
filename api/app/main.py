@@ -86,7 +86,14 @@ def _start_runtime(detector) -> None:
 
     RT.detector = detector
     RT.telemetry = Telemetry(gpu=Gpu() if str(detector.device).startswith("cuda") else None)
-    RT.aegis = Aegis(TorchBackend(detector), RT.telemetry, config.AEGIS_POLICY, config.AEGIS_MAX_BATCH,
+    backend = TorchBackend(detector)
+    if config.AEGIS_BACKEND == "tensorrt":
+        try:
+            from engine.backends import TensorRTBackend
+            backend = TensorRTBackend(config.MODEL_DIR)
+        except Exception:  # noqa: BLE001
+            log.warning("AEGIS_BACKEND=tensorrt unavailable; falling back to PyTorch", exc_info=True)
+    RT.aegis = Aegis(backend, RT.telemetry, config.AEGIS_POLICY, config.AEGIS_MAX_BATCH,
                      config.AEGIS_MAX_WAIT_MS, config.AEGIS_DEADLINE_MS)
     RT.calibration = {ch: Calibration.load(config.MODEL_DIR, ch) for ch in ("clean", "telephone")}
     RT.risk_policy = RiskPolicy.load(config.MODEL_DIR)

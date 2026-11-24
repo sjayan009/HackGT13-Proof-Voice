@@ -11,6 +11,9 @@ models/**/*.pt
 models/**/*.pth
 models/**/*.safetensors
 models/**/*.bin
+models/**/*.onnx
+models/**/*.engine
+models/**/*.plan
 models/hf_cache/
 tmp/
 outputs/cache/

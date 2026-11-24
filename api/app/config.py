@@ -47,6 +47,7 @@ PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "").rstrip("/")  # e.g. https://a
 GUARDIAN_RECIPIENT_NUMBER = os.getenv("GUARDIAN_RECIPIENT_NUMBER", "")  # dev-mode fallback line
 GUARDIAN_SMS_ALERTS = os.getenv("GUARDIAN_SMS_ALERTS", "1") == "1"
 AEGIS_POLICY = os.getenv("AEGIS_POLICY", "adaptive")
+AEGIS_BACKEND = os.getenv("AEGIS_BACKEND", "pytorch")  # pytorch | tensorrt (falls back to pytorch)
 AEGIS_MAX_BATCH = int(os.getenv("AEGIS_MAX_BATCH", "16"))
 AEGIS_MAX_WAIT_MS = float(os.getenv("AEGIS_MAX_WAIT_MS", "5"))
 AEGIS_DEADLINE_MS = float(os.getenv("AEGIS_DEADLINE_MS", "1000"))
