@@ -6,6 +6,7 @@ import base64
 import io
 import json
 import logging
+import re
 import tempfile
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -19,9 +20,28 @@ from pydantic import BaseModel
 from app import config
 from app.audio.ingest import DecodeError, load_audio, pcm_bytes_to_float
 from app.orchestration.pipeline import analyze
+from app.runtime import RT
 from app.services.stream import StreamAnalyzer
+from app.telephony.twilio import router as twilio_router
+from app.verification.routes import engine as engine_router
+from app.verification.routes import guardian as guardian_router
 
 log = logging.getLogger("proofvoice")
+
+
+class _RedactTokens(logging.Filter):
+    """Access tokens travel in WebSocket query strings (browsers cannot set headers); keep them out of logs."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if isinstance(record.args, tuple):
+            record.args = tuple(re.sub(r"token=[^&\s\"]+", "token=[redacted]", a) if isinstance(a, str) else a
+                                for a in record.args)
+        record.msg = re.sub(r"token=[^&\s\"]+", "token=[redacted]", str(record.msg))
+        return True
+
+
+for _name in ("uvicorn.access", "uvicorn.error"):
+    logging.getLogger(_name).addFilter(_RedactTokens())
 STATE: dict = {}
 
 
@@ -43,10 +63,41 @@ async def lifespan(app: FastAPI):
     except Exception as e:  # noqa: BLE001
         STATE["detector_error"] = f"{type(e).__name__}: {e}"
         log.exception("detector failed to load")
+    if STATE.get("detector"):
+        _start_runtime(STATE["detector"])
     yield
+    for s in list(RT.calls.values()):
+        await s.end()
+    if RT.aegis:
+        RT.aegis.stop()
+    if RT.store:
+        await RT.store.drain()
+
+
+def _start_runtime(detector) -> None:
+    """v2: Aegis scheduler + telemetry + Guardian store/hub around the loaded detector."""
+    from engine.aegis import Aegis
+    from engine.backends import TorchBackend
+    from engine.telemetry import Gpu, Telemetry
+
+    from app.risk.engine import Calibration, RiskPolicy
+    from app.verification.alerts import Hub
+    from app.verification.store import Store
+
+    RT.detector = detector
+    RT.telemetry = Telemetry(gpu=Gpu() if str(detector.device).startswith("cuda") else None)
+    RT.aegis = Aegis(TorchBackend(detector), RT.telemetry, config.AEGIS_POLICY, config.AEGIS_MAX_BATCH,
+                     config.AEGIS_MAX_WAIT_MS, config.AEGIS_DEADLINE_MS)
+    RT.calibration = {ch: Calibration.load(config.MODEL_DIR, ch) for ch in ("clean", "telephone")}
+    RT.risk_policy = RiskPolicy.load(config.MODEL_DIR)
+    RT.store = Store(config.SUPABASE_URL, config.SUPABASE_SECRET_KEY)
+    RT.hub = Hub()
 
 
 app = FastAPI(title="ProofVoice", version=config.VERSION, lifespan=lifespan)
+app.include_router(twilio_router)
+app.include_router(guardian_router)
+app.include_router(engine_router)
 app.add_middleware(CORSMiddleware, allow_origins=config.CORS_ORIGINS + ["*"], allow_methods=["*"],
                    allow_headers=["*"])
 
@@ -63,7 +114,16 @@ def health():
     return {"status": "ok" if det else "degraded", "version": config.VERSION,
             "detector": {"name": det.name, "version": det.version, "device": str(det.device),
                          "decision_threshold": det.threshold} if det else None,
-            "detector_error": STATE.get("detector_error"), "grok_available": _grok_available()}
+            "detector_error": STATE.get("detector_error"), "grok_available": _grok_available(),
+            "guardian": _guardian_status()}
+
+
+def _guardian_status() -> dict:
+    from app.verification.alerts import dev_mode, twilio_configured
+
+    return {"dev_mode": dev_mode(), "store": "supabase" if RT.store and RT.store.enabled else "memory",
+            "twilio": twilio_configured(), "public_base_url": bool(config.PUBLIC_BASE_URL),
+            "policy": RT.aegis.policy if RT.aegis else None}
 
 
 def _analyze_array(audio: np.ndarray, **kw) -> dict:
