@@ -20,3 +20,5 @@ python-dotenv==1.2.3
 pyarrow
 pytest
 pytest-timeout
+# v2 Guardian / Aegis
+nvidia-ml-py  # NVML GPU telemetry (optional at runtime; metrics report gpu=null without it)

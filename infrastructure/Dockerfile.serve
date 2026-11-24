@@ -1,0 +1,19 @@
+# ProofVoice 2.0 serving image: FastAPI + Aegis on CUDA (needs NVIDIA Container Toolkit: `docker run --gpus all`).
+# The original judge-facing HEARSAY image is the repo-root Dockerfile and is unchanged.
+FROM python:3.11-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+    FFMPEG_PATH=ffmpeg DEVICE=auto PROOFVOICE_MODEL_DIR=/app/models/selected OUTPUT_DIR=/app/outputs
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg libsndfile1 && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124 \
+    && pip install --no-cache-dir -r requirements.txt
+COPY api/ api/
+COPY engine/ engine/
+COPY models/selected/ models/selected/
+COPY outputs/results/ outputs/results/
+COPY outputs/benchmarks/ outputs/benchmarks/
+WORKDIR /app/api
+EXPOSE 8000
+# Secrets (Supabase secret key, Twilio) come from --env-file api/.env at runtime; never baked in.
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

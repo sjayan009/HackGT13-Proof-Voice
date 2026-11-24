@@ -1,0 +1,192 @@
+{
+ "title": "ProofVoice Aegis",
+ "uid": "proofvoice-aegis",
+ "refresh": "5s",
+ "time": {
+  "from": "now-15m",
+  "to": "now"
+ },
+ "schemaVersion": 39,
+ "panels": [
+  {
+   "type": "timeseries",
+   "title": "Per-window latency",
+   "datasource": {
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ms"
+    }
+   },
+   "targets": [
+    {
+     "expr": "proofvoice_latency_ms_p50",
+     "legendFormat": "p50",
+     "refId": "A"
+    },
+    {
+     "expr": "proofvoice_latency_ms_p95",
+     "legendFormat": "p95",
+     "refId": "B"
+    },
+    {
+     "expr": "proofvoice_latency_ms_p99",
+     "legendFormat": "p99",
+     "refId": "C"
+    }
+   ]
+  },
+  {
+   "type": "timeseries",
+   "title": "GPU",
+   "datasource": {
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 0,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none"
+    }
+   },
+   "targets": [
+    {
+     "expr": "proofvoice_gpu_util_pct",
+     "legendFormat": "util %",
+     "refId": "A"
+    },
+    {
+     "expr": "proofvoice_gpu_power_w",
+     "legendFormat": "power W",
+     "refId": "B"
+    }
+   ]
+  },
+  {
+   "type": "timeseries",
+   "title": "Windows / s",
+   "datasource": {
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 8,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none"
+    }
+   },
+   "targets": [
+    {
+     "expr": "proofvoice_windows_demand_per_s",
+     "legendFormat": "demand",
+     "refId": "A"
+    },
+    {
+     "expr": "proofvoice_windows_inferred_per_s",
+     "legendFormat": "inferred",
+     "refId": "B"
+    }
+   ]
+  },
+  {
+   "type": "timeseries",
+   "title": "Scheduler actions (rate)",
+   "datasource": {
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 8,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops"
+    }
+   },
+   "targets": [
+    {
+     "expr": "rate(proofvoice_hops_total[30s])",
+     "legendFormat": "{{action}}",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "type": "timeseries",
+   "title": "Calls and queue",
+   "datasource": {
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 16,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "none"
+    }
+   },
+   "targets": [
+    {
+     "expr": "proofvoice_active_calls",
+     "legendFormat": "active calls",
+     "refId": "A"
+    },
+    {
+     "expr": "proofvoice_queue_depth",
+     "legendFormat": "queue depth",
+     "refId": "B"
+    },
+    {
+     "expr": "proofvoice_batch_size_mean",
+     "legendFormat": "batch mean",
+     "refId": "C"
+    }
+   ]
+  },
+  {
+   "type": "timeseries",
+   "title": "GPU memory",
+   "datasource": {
+    "uid": "prom"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 16,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "mbytes"
+    }
+   },
+   "targets": [
+    {
+     "expr": "proofvoice_gpu_mem_used_mb",
+     "legendFormat": "MiB used",
+     "refId": "A"
+    }
+   ]
+  }
+ ]
+}

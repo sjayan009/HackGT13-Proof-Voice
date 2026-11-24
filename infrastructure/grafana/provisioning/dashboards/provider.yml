@@ -1,0 +1,3 @@
+apiVersion: 1
+providers:
+  - { name: proofvoice, folder: ProofVoice, type: file, options: { path: /etc/grafana/provisioning/dashboards } }
