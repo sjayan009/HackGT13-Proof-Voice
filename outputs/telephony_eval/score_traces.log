@@ -1,0 +1,113 @@
+8/514 calls, 3472 windows in chunk, 31s
+16/514 calls, 3444 windows in chunk, 63s
+24/514 calls, 3514 windows in chunk, 99s
+32/514 calls, 3570 windows in chunk, 133s
+40/514 calls, 3409 windows in chunk, 164s
+48/514 calls, 3654 windows in chunk, 197s
+56/514 calls, 3563 windows in chunk, 230s
+64/514 calls, 3437 windows in chunk, 271s
+72/514 calls, 3339 windows in chunk, 304s
+80/514 calls, 3556 windows in chunk, 341s
+88/514 calls, 3381 windows in chunk, 375s
+96/514 calls, 3248 windows in chunk, 411s
+104/514 calls, 3346 windows in chunk, 441s
+112/514 calls, 3647 windows in chunk, 473s
+120/514 calls, 3787 windows in chunk, 520s
+128/514 calls, 3437 windows in chunk, 585s
+136/514 calls, 3556 windows in chunk, 651s
+144/514 calls, 3479 windows in chunk, 710s
+152/514 calls, 3969 windows in chunk, 776s
+160/514 calls, 3430 windows in chunk, 806s
+168/514 calls, 3430 windows in chunk, 836s
+176/514 calls, 3262 windows in chunk, 871s
+184/514 calls, 3563 windows in chunk, 923s
+192/514 calls, 3381 windows in chunk, 982s
+200/514 calls, 3318 windows in chunk, 1046s
+208/514 calls, 3290 windows in chunk, 1118s
+216/514 calls, 3199 windows in chunk, 1158s
+224/514 calls, 3346 windows in chunk, 1189s
+232/514 calls, 3325 windows in chunk, 1220s
+240/514 calls, 3577 windows in chunk, 1251s
+248/514 calls, 3598 windows in chunk, 1284s
+256/514 calls, 3528 windows in chunk, 1326s
+264/514 calls, 3213 windows in chunk, 1359s
+272/514 calls, 3430 windows in chunk, 1392s
+280/514 calls, 3724 windows in chunk, 1432s
+288/514 calls, 3437 windows in chunk, 1472s
+296/514 calls, 3633 windows in chunk, 1515s
+304/514 calls, 3605 windows in chunk, 1553s
+312/514 calls, 3444 windows in chunk, 1582s
+320/514 calls, 3766 windows in chunk, 1615s
+328/514 calls, 3500 windows in chunk, 1645s
+336/514 calls, 3927 windows in chunk, 1678s
+344/514 calls, 3395 windows in chunk, 1708s
+352/514 calls, 3248 windows in chunk, 1736s
+360/514 calls, 3612 windows in chunk, 1767s
+368/514 calls, 3423 windows in chunk, 1796s
+376/514 calls, 3528 windows in chunk, 1827s
+384/514 calls, 3640 windows in chunk, 1858s
+392/514 calls, 3465 windows in chunk, 1892s
+400/514 calls, 3283 windows in chunk, 1929s
+408/514 calls, 3451 windows in chunk, 1960s
+416/514 calls, 3444 windows in chunk, 1990s
+424/514 calls, 3745 windows in chunk, 2026s
+432/514 calls, 3640 windows in chunk, 2065s
+440/514 calls, 3465 windows in chunk, 2103s
+448/514 calls, 3129 windows in chunk, 2133s
+456/514 calls, 3465 windows in chunk, 2164s
+464/514 calls, 3318 windows in chunk, 2195s
+472/514 calls, 3437 windows in chunk, 2226s
+480/514 calls, 3689 windows in chunk, 2261s
+488/514 calls, 3514 windows in chunk, 2297s
+496/514 calls, 3598 windows in chunk, 2332s
+504/514 calls, 3395 windows in chunk, 2365s
+512/514 calls, 3598 windows in chunk, 2402s
+514/514 calls, 1043 windows in chunk, 2412s
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\traces_clean.npz 32037 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\traces_telephone.npz 32037 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\traces_telephone_noise30.npz 32037 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\traces_telephone_noise20.npz 32037 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\traces_telephone_loss5.npz 32037 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\traces_opus_telephone.npz 32037 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\traces_replay_sim.npz 32037 windows
+8/270 calls, 3514 windows in chunk, 39s
+16/270 calls, 3570 windows in chunk, 71s
+24/270 calls, 3409 windows in chunk, 119s
+32/270 calls, 3654 windows in chunk, 154s
+40/270 calls, 3563 windows in chunk, 208s
+48/270 calls, 3437 windows in chunk, 277s
+56/270 calls, 3339 windows in chunk, 346s
+64/270 calls, 3556 windows in chunk, 419s
+72/270 calls, 3185 windows in chunk, 483s
+80/270 calls, 3556 windows in chunk, 555s
+88/270 calls, 4046 windows in chunk, 629s
+96/270 calls, 3465 windows in chunk, 689s
+104/270 calls, 3507 windows in chunk, 750s
+112/270 calls, 3367 windows in chunk, 794s
+120/270 calls, 3122 windows in chunk, 822s
+128/270 calls, 3346 windows in chunk, 850s
+136/270 calls, 3444 windows in chunk, 880s
+144/270 calls, 3234 windows in chunk, 907s
+152/270 calls, 3360 windows in chunk, 937s
+160/270 calls, 3759 windows in chunk, 969s
+168/270 calls, 3689 windows in chunk, 999s
+176/270 calls, 3766 windows in chunk, 1030s
+184/270 calls, 3500 windows in chunk, 1060s
+192/270 calls, 3983 windows in chunk, 1093s
+200/270 calls, 3605 windows in chunk, 1124s
+208/270 calls, 3199 windows in chunk, 1151s
+216/270 calls, 3283 windows in chunk, 1180s
+224/270 calls, 3451 windows in chunk, 1209s
+232/270 calls, 3381 windows in chunk, 1238s
+240/270 calls, 3437 windows in chunk, 1268s
+248/270 calls, 3388 windows in chunk, 1297s
+256/270 calls, 3255 windows in chunk, 1325s
+264/270 calls, 3514 windows in chunk, 1354s
+270/270 calls, 2849 windows in chunk, 1378s
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\xlsr12_v4_codec_hard\traces_clean.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\xlsr12_v4_codec_hard\traces_telephone.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\xlsr12_v4_codec_hard\traces_telephone_noise30.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\xlsr12_v4_codec_hard\traces_telephone_noise20.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\xlsr12_v4_codec_hard\traces_telephone_loss5.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\xlsr12_v4_codec_hard\traces_opus_telephone.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\xlsr12_v4_codec_hard\traces_replay_sim.npz 16819 windows

@@ -1,0 +1,151 @@
+{
+  "clean": {
+    "a": 1.780440496144395,
+    "b": 7.522966019492547,
+    "decision_threshold": 0.252158548415892,
+    "threshold_window_FA_1pct": 0.521454232819485
+  },
+  "telephone": {
+    "a": 1.1618261832600332,
+    "b": 4.369335305127131,
+    "decision_threshold": 0.20901476490960758,
+    "threshold_window_FA_1pct": 0.8690921677370327
+  },
+  "fitted_on": "outputs/telephony_eval calib split (speaker-disjoint), 3 s windows / 0.5 s hop, speech_s >= 1.0, class-balanced Platt; decision_threshold = minDCF (Pspoof 0.5, Cfa 4) on calib. clean: ['clean']; telephone: ['telephone', 'telephone_noise30', 'telephone_noise20', 'telephone_loss5', 'opus_telephone']. Simulated channels.",
+  "convention": "p = sigmoid(a * logit + b), same as calibration.json",
+  "eval": {
+    "clean": {
+      "family": "clean",
+      "serving": {
+        "ECE_balanced_10bin": 0.0287,
+        "ECE_balanced_speech_ge_1s": 0.0288,
+        "genuine_FA": 0.121,
+        "spoof_miss": 0.0487,
+        "actDCF": 0.3157,
+        "threshold": 0.2537
+      },
+      "channel_platt": {
+        "ECE_balanced_10bin": 0.0399,
+        "ECE_balanced_speech_ge_1s": 0.0398,
+        "genuine_FA": 0.0515,
+        "spoof_miss": 0.0833,
+        "actDCF": 0.3846,
+        "threshold": 0.2522
+      }
+    },
+    "telephone": {
+      "family": "telephone",
+      "serving": {
+        "ECE_balanced_10bin": 0.058,
+        "ECE_balanced_speech_ge_1s": 0.0583,
+        "genuine_FA": 0.2023,
+        "spoof_miss": 0.0626,
+        "actDCF": 0.4528,
+        "threshold": 0.2537
+      },
+      "channel_platt": {
+        "ECE_balanced_10bin": 0.0409,
+        "ECE_balanced_speech_ge_1s": 0.0408,
+        "genuine_FA": 0.1145,
+        "spoof_miss": 0.0998,
+        "actDCF": 0.5137,
+        "threshold": 0.209
+      }
+    },
+    "telephone_noise30": {
+      "family": "telephone",
+      "serving": {
+        "ECE_balanced_10bin": 0.0741,
+        "ECE_balanced_speech_ge_1s": 0.0742,
+        "genuine_FA": 0.1891,
+        "spoof_miss": 0.1101,
+        "actDCF": 0.6294,
+        "threshold": 0.2537
+      },
+      "channel_platt": {
+        "ECE_balanced_10bin": 0.0665,
+        "ECE_balanced_speech_ge_1s": 0.0656,
+        "genuine_FA": 0.1057,
+        "spoof_miss": 0.1505,
+        "actDCF": 0.7076,
+        "threshold": 0.209
+      }
+    },
+    "telephone_noise20": {
+      "family": "telephone",
+      "serving": {
+        "ECE_balanced_10bin": 0.1191,
+        "ECE_balanced_speech_ge_1s": 0.1206,
+        "genuine_FA": 0.3615,
+        "spoof_miss": 0.0741,
+        "actDCF": 0.658,
+        "threshold": 0.2537
+      },
+      "channel_platt": {
+        "ECE_balanced_10bin": 0.0763,
+        "ECE_balanced_speech_ge_1s": 0.076,
+        "genuine_FA": 0.2498,
+        "spoof_miss": 0.1189,
+        "actDCF": 0.7254,
+        "threshold": 0.209
+      }
+    },
+    "telephone_loss5": {
+      "family": "telephone",
+      "serving": {
+        "ECE_balanced_10bin": 0.108,
+        "ECE_balanced_speech_ge_1s": 0.1083,
+        "genuine_FA": 0.3328,
+        "spoof_miss": 0.0317,
+        "actDCF": 0.4596,
+        "threshold": 0.2537
+      },
+      "channel_platt": {
+        "ECE_balanced_10bin": 0.0522,
+        "ECE_balanced_speech_ge_1s": 0.0523,
+        "genuine_FA": 0.2309,
+        "spoof_miss": 0.0588,
+        "actDCF": 0.4662,
+        "threshold": 0.209
+      }
+    },
+    "opus_telephone": {
+      "family": "telephone",
+      "serving": {
+        "ECE_balanced_10bin": 0.0639,
+        "ECE_balanced_speech_ge_1s": 0.0646,
+        "genuine_FA": 0.2193,
+        "spoof_miss": 0.0536,
+        "actDCF": 0.4336,
+        "threshold": 0.2537
+      },
+      "channel_platt": {
+        "ECE_balanced_10bin": 0.0357,
+        "ECE_balanced_speech_ge_1s": 0.036,
+        "genuine_FA": 0.1327,
+        "spoof_miss": 0.0818,
+        "actDCF": 0.46,
+        "threshold": 0.209
+      }
+    },
+    "replay_sim": {
+      "family": "clean",
+      "serving": {
+        "ECE_balanced_10bin": 0.3348,
+        "ECE_balanced_speech_ge_1s": 0.3349,
+        "genuine_FA": 0.0962,
+        "spoof_miss": 0.6729,
+        "actDCF": 2.7879,
+        "threshold": 0.2537
+      },
+      "channel_platt": {
+        "ECE_balanced_10bin": 0.3923,
+        "ECE_balanced_speech_ge_1s": 0.3924,
+        "genuine_FA": 0.0425,
+        "spoof_miss": 0.7742,
+        "actDCF": 3.1392,
+        "threshold": 0.2522
+      }
+    }
+  }
+}
