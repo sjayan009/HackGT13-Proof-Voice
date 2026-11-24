@@ -23,6 +23,7 @@ const POLICIES: { id: EnginePolicy; desc: string }[] = [
 const ACTIONS: { id: ComputeAction; label: string; color: string }[] = [
   { id: "infer", label: "infer", color: "var(--accent)" },
   { id: "escalate", label: "escalate", color: "var(--amber)" },
+  { id: "screen_only", label: "screen_only (student)", color: "var(--accent)" },
   { id: "skip_silence", label: "skip_silence", color: "var(--gray)" },
   { id: "skip_clear", label: "skip_clear", color: "var(--green)" },
   { id: "shed", label: "shed", color: "var(--red)" },

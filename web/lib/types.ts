@@ -207,7 +207,7 @@ export interface ApiErrorBody {
 export type RiskState = "no_suspicious_evidence" | "inconclusive" | "suspicious" | "analysis_unavailable";
 export type Consent = "granted" | "declined" | "simulated";
 export type Scenario = "genuine" | "synthetic" | "mixed";
-export type ComputeAction = "infer" | "skip_silence" | "skip_clear" | "escalate" | "shed";
+export type ComputeAction = "infer" | "screen_only" | "skip_silence" | "skip_clear" | "escalate" | "shed";
 export type EnginePolicy = "fifo" | "dynamic" | "edf" | "adaptive";
 export type VerificationOutcome = "verified_genuine" | "could_not_reach" | "confirmed_scam" | "skipped";
 

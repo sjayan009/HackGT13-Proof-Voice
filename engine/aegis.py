@@ -12,6 +12,10 @@ Two independent decisions, so each contribution can be ablated:
                older one) + shedding of windows already past their deadline
      adaptive  edf dispatch + adaptive gating
 
+Optional two-stage screening (`adaptive` only, when a screening backend is configured): a distilled 4-layer
+student scores the window first; if it is confidently below threshold (screen llr < SCREEN_CLEAR_LLR) its
+evidence is used and the 12-layer model is skipped, otherwise the window escalates to the main model.
+
 Objective (PRD §7): minimise E[C_gpu + λ·D] subject to limits on missed detections, false alerts and abstention.
 The gate thresholds below are deterministic and documented; benchmarks/policy_replay.py measures the trade-off.
 """
@@ -31,6 +35,7 @@ SILENT_HOP_SPEECH_S = 0.1   # newest hop has < 100 ms of speech -> nothing new t
 CLEAR_LLR = -2.0            # last 3 inferred windows all below this -> decimate
 CLEAR_STRIDE = 3            # ...to one inference every 3 hops (1.5 s)
 AMBIGUOUS_LLR = 1.0         # |llr| below this, or sign flips -> escalate
+SCREEN_CLEAR_LLR = -2.0     # two-stage: student llr below this -> accept the student, skip the main model
 
 
 def decide(policy: str, hop_speech_s: float, state: str, recent_llr: list[float], hops_since_infer: int) -> str:
@@ -55,12 +60,14 @@ class _Req:
     call_id: str = field(compare=False)
     clip: np.ndarray = field(compare=False, repr=False)
     fut: asyncio.Future = field(compare=False, repr=False)
+    model: str = field(default="main", compare=False)
 
 
 class Aegis:
     def __init__(self, backend, telemetry, policy: str = "adaptive", max_batch: int = 16, max_wait_ms: float = 5.0,
-                 deadline_ms: float = 1000.0):
+                 deadline_ms: float = 1000.0, screen=None):
         self.backend, self.tm = backend, telemetry
+        self.backends = {"main": backend, "screen": screen}
         self.max_batch, self.max_wait, self.deadline = max_batch, max_wait_ms / 1000, deadline_ms / 1000
         self.set_policy(policy)
         self._q: list[_Req] = []
@@ -82,12 +89,16 @@ class Aegis:
     def decide(self, **kw) -> str:
         return decide(self.policy, **kw)
 
-    async def infer(self, call_id: str, clip: np.ndarray, escalate: bool = False) -> float | None:
+    @property
+    def screening(self) -> bool:
+        return self.policy == "adaptive" and self.backends["screen"] is not None
+
+    async def infer(self, call_id: str, clip: np.ndarray, escalate: bool = False, model: str = "main") -> float | None:
         """Logit for one window, or None if the request was shed/superseded. Raises if the backend fails."""
         self._loop = self._loop or asyncio.get_running_loop()
         now = time.perf_counter()
         fut = self._loop.create_future()
-        req = _Req(now + self.deadline * (0.5 if escalate else 1.0), now, call_id, clip, fut)
+        req = _Req(now + self.deadline * (0.5 if escalate else 1.0), now, call_id, clip, fut, model)
         with self._cv:
             if self.policy in ("edf", "adaptive"):  # coalesce: only the newest window of a call matters
                 for old in [r for r in self._q if r.call_id == call_id]:
@@ -129,7 +140,9 @@ class Aegis:
             else:
                 self._q.sort(key=lambda r: r.submitted)
             n = 1 if self.policy == "fifo" else self.max_batch
-            batch, self._q = self._q[:n], self._q[n:]
+            head = self._q[0].model if self._q else "main"  # one model per microbatch, chosen by the most urgent
+            batch = [r for r in self._q if r.model == head][:n]
+            self._q = [r for r in self._q if r not in batch]
             return batch
 
     def _run(self):
@@ -139,7 +152,7 @@ class Aegis:
                 continue
             t0 = time.perf_counter()
             try:
-                logits = self.backend.logits([r.clip for r in batch])
+                logits = self.backends[batch[0].model].logits([r.clip for r in batch])
             except Exception as e:  # noqa: BLE001 - surfaced to the call as analysis_unavailable
                 for r in batch:
                     self._resolve(r.fut, exc=e)
@@ -181,6 +194,12 @@ if __name__ == "__main__":
             r = await asyncio.gather(ag.infer("x", np.ones(4)), ag.infer("x", np.zeros(4)))
             assert (r[0] is None) == (pol in ("edf", "adaptive")), (pol, r)
             ag.stop()
+        be, sc = _Echo(), _Echo()
+        ag = Aegis(be, Telemetry(), "adaptive", max_batch=8, max_wait_ms=20, screen=sc)
+        assert ag.screening
+        r = await asyncio.gather(ag.infer("a", np.ones(4), model="screen"), ag.infer("b", np.zeros(4)))
+        assert r == [1.0, 0.0], r
+        ag.stop()
         print("aegis ok")
 
     asyncio.run(main())

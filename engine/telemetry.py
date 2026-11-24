@@ -10,7 +10,7 @@ from collections import Counter, deque
 
 import numpy as np
 
-ACTIONS = ("infer", "escalate", "skip_silence", "skip_clear", "shed")
+ACTIONS = ("infer", "escalate", "screen_only", "skip_silence", "skip_clear", "shed")
 
 
 def _pct(xs, qs=(50, 95, 99)) -> dict:
@@ -104,7 +104,7 @@ class Telemetry:
                 "latency_ms": _pct(self.lat), "compute_ms": _pct(self.compute, (50, 95)),
                 "queue_wait_ms": _pct(self.wait, (50, 95)),
                 "windows_per_s": {"demand": round(len(recent) / span, 2),
-                                  "inferred": round(sum(a in ("infer", "escalate") for a in recent) / span, 2)},
+                                  "inferred": round(sum(a in ("infer", "escalate", "screen_only") for a in recent) / span, 2)},
                 "actions": {a: self.actions.get(a, 0) for a in ACTIONS},
                 "batch_size": {"mean": round(float(np.mean(bs)), 2) if bs else None, "max": max(bs) if bs else None,
                                "hist": {str(k): v for k, v in sorted(hist.items())}},

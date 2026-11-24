@@ -93,8 +93,16 @@ def _start_runtime(detector) -> None:
             backend = TensorRTBackend(config.MODEL_DIR)
         except Exception:  # noqa: BLE001
             log.warning("AEGIS_BACKEND=tensorrt unavailable; falling back to PyTorch", exc_info=True)
+    screen = None
+    if config.AEGIS_SCREEN_MODEL_DIR:  # two-stage screening (adaptive policy only)
+        from app.detectors.primary import PrimaryDetector
+
+        sd = Path(config.AEGIS_SCREEN_MODEL_DIR)
+        sd = sd if sd.is_absolute() else (config.API_DIR / sd).resolve()
+        screen = TorchBackend(PrimaryDetector(sd, str(detector.device)))
+        RT.screen_calibration = Calibration.load(sd, "telephone")
     RT.aegis = Aegis(backend, RT.telemetry, config.AEGIS_POLICY, config.AEGIS_MAX_BATCH,
-                     config.AEGIS_MAX_WAIT_MS, config.AEGIS_DEADLINE_MS)
+                     config.AEGIS_MAX_WAIT_MS, config.AEGIS_DEADLINE_MS, screen=screen)
     RT.calibration = {ch: Calibration.load(config.MODEL_DIR, ch) for ch in ("clean", "telephone")}
     RT.risk_policy = RiskPolicy.load(config.MODEL_DIR)
     RT.store = Store(config.SUPABASE_URL, config.SUPABASE_SECRET_KEY)

@@ -67,6 +67,10 @@ class Calibration:
     def log_odds(self, logit: float) -> float:
         return self.a * logit + self.b
 
+    def llr(self, logit: float) -> float:
+        """Threshold-centred log-odds: > 0 means above this calibration's decision threshold."""
+        return self.log_odds(logit) - math.log(self.threshold / (1 - self.threshold))
+
     def prob(self, logit: float) -> float:
         return 1 / (1 + math.exp(-max(-60.0, min(60.0, self.log_odds(logit)))))
 
@@ -74,7 +78,6 @@ class Calibration:
 class RiskEngine:
     def __init__(self, calibration: Calibration, policy: RiskPolicy | None = None):
         self.cal, self.pol = calibration, policy or RiskPolicy()
-        self.thr_lo = math.log(self.cal.threshold / (1 - self.cal.threshold))
         self.S = 0.0
         self.peak = 0.0
         self.usable_speech_s = 0.0
@@ -96,9 +99,11 @@ class RiskEngine:
         w_snr = min(1.0, (q["snr_db"] - p.min_snr_db) / (p.full_snr_db - p.min_snr_db))
         return round(max(0.0, w_snr) * (1 - q.get("packet_loss", 0) / p.max_packet_loss * 0.5), 3)
 
-    def update(self, logit: float, q: dict, hop_s: float = 0.5) -> dict:
-        """One inferred window. Returns the window record for the UI/timeline."""
-        llr = max(-self.pol.max_llr, min(self.pol.max_llr, self.cal.log_odds(logit) - self.thr_lo))
+    def update(self, logit: float, q: dict, hop_s: float = 0.5, cal: Calibration | None = None) -> dict:
+        """One inferred window. `cal`: the calibration of the model that produced `logit` (two-stage screening
+        feeds student logits with the student's own calibration). Returns the window record for the UI."""
+        cal = cal or self.cal
+        llr = max(-self.pol.max_llr, min(self.pol.max_llr, cal.llr(logit)))
         self.recent_llr = (self.recent_llr + [llr])[-12:]
         w = self.weight(q)
         if w > 0:
@@ -107,7 +112,7 @@ class RiskEngine:
             self.usable_speech_s += min(hop_s, q["speech_s"])
             self.recent = (self.recent + [llr > 0])[-12:]
         self._settle(q, w)
-        return {"synthetic_probability": round(self.cal.prob(logit), 4), "usable": w > 0, "weight": w,
+        return {"synthetic_probability": round(cal.prob(logit), 4), "usable": w > 0, "weight": w,
                 "llr": round(llr, 3)}
 
     def set_unavailable(self, why: str | None) -> None:

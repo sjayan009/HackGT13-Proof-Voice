@@ -118,7 +118,29 @@ Adaptive gating vs fixed-rate inference (same calls, same risk policy):
 | clean | 28.6% | 0.0% | -0.8% | 1 |
 | replay_sim | 45.1% | 0.0% | 0.0% | 0.25 |
 
+## Two-stage screening (distilled 4-layer student → 12-layer model)
+
+Measured 2026-11-24T23:53Z. Student `models/exp_student_l4`; cost ratio student/main = 0.68 per window (from `screen_ratio.json`: batch 1: 0.58, batch 4: 0.705, batch 8: 0.677; other GPU work: yes — training job). Cost is relative to fixed-rate inference on every hop.
+
+| channel | student clear threshold (llr) | genuine false alerts | synthetic detected | first alert s p50 | main-model windows | student windows | cost |
+|---|---|---|---|---|---|---|---|
+| telephone | off (adaptive only) | 2.7% | 90.8% | 8 | 12815 | 0 | 0.7619 |
+| telephone | -4 | 2.7% | 90.8% | 8 | 12813 | 10451 | 1.184 |
+| telephone | -3 | 2.7% | 90.8% | 8 | 12743 | 10451 | 1.18 |
+| telephone | -2 | 2.7% | 90.8% | 8 | 11973 | 10440 | 1.134 |
+| telephone | -1 | 3.6% | 90.8% | 8 | 11201 | 11329 | 1.124 |
+| telephone | 0 | 2.7% | 90.0% | 8 | 10792 | 11007 | 1.087 |
+| clean | off (adaptive only) | 0.0% | 93.8% | 8.5 | 12006 | 0 | 0.7138 |
+| clean | -4 | 0.0% | 93.8% | 8.5 | 11990 | 10706 | 1.146 |
+| clean | -3 | 0.0% | 93.8% | 8.5 | 11654 | 10706 | 1.126 |
+| clean | -2 | 0.0% | 93.8% | 8.5 | 10487 | 10691 | 1.056 |
+| clean | -1 | 0.0% | 93.8% | 8.5 | 9803 | 11610 | 1.052 |
+| clean | 0 | 0.0% | 93.8% | 8.5 | 9495 | 11423 | 1.026 |
+
+Negative result: every cascade setting costs more than adaptive gating alone, because the student shares the full convolutional front end (it is only ~1/3 cheaper) and is rarely confident on narrowband speech. Two-stage screening stays off by default (`AEGIS_SCREEN_MODEL_DIR` unset).
+
 ## Window-level detector on simulated channels
 
 See `docs/research/telephony_eval.md` for the method, per-speaker spread, calibration and quality gates; raw numbers in `outputs/results/telephony_eval.json`.
 
+* Training experiment result available: `outputs/results/telephony_eval_exp_student_l4.json`

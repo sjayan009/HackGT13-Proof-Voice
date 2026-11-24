@@ -114,12 +114,21 @@ class CallSession:
         prev = self.risk.state
         action = RT.aegis.decide(hop_speech_s=hop_speech, state=prev, recent_llr=self.risk.recent_llr,
                                  hops_since_infer=self.hops_since_infer)
-        if action not in ("infer", "escalate"):
+        if action not in ("infer", "escalate"):  # skip_silence / skip_clear
             self.hops_since_infer += 1
             return self._hop_skipped(action)
         t = time.perf_counter()
+        cal = None
         try:
-            logit = await RT.aegis.infer(self.id, win.copy(), escalate=action == "escalate")
+            logit = None
+            if RT.aegis.screening and action == "infer":  # two-stage: distilled student first
+                from engine.aegis import SCREEN_CLEAR_LLR
+
+                s_logit = await RT.aegis.infer(self.id, win.copy(), model="screen")
+                if s_logit is not None and RT.screen_calibration.llr(s_logit) < SCREEN_CLEAR_LLR:
+                    logit, cal, action = s_logit, RT.screen_calibration, "screen_only"
+            if logit is None:
+                logit = await RT.aegis.infer(self.id, win.copy(), escalate=action == "escalate")
         except Exception as e:  # noqa: BLE001
             log.exception("inference failed")
             logit, action = None, "shed"
@@ -138,7 +147,7 @@ class CallSession:
                 self.risk.set_unavailable(None)
             self.inferred += 1
             self.hops_since_infer = 0
-            rec = self.risk.update(logit, q)
+            rec = self.risk.update(logit, q, cal=cal)
             end_ms = int(self.total * 1000 / SR)
             window = {"start_ms": max(0, end_ms - 3000), "end_ms": end_ms, **rec,
                       "speech_s": q["speech_s"], "snr_db": q["snr_db"], "level_dbfs": q["level_dbfs"],

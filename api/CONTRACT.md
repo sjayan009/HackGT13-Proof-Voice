@@ -134,7 +134,7 @@ If the backend has no Supabase configuration it runs in single-user **dev mode**
  "reason":"plain-English why this state",
  "window":null|{"start_ms":1500,"end_ms":4500,"synthetic_probability":0.71,"usable":true,"weight":0.8,
            "speech_s":2.4,"snr_db":24.1,"level_dbfs":-22.0,"packet_loss":0.0},
- "compute":{"policy":"adaptive","action":"infer"|"skip_silence"|"skip_clear"|"escalate"|"shed","latency_ms":31.2}}
+ "compute":{"policy":"adaptive","action":"infer"|"screen_only"|"skip_silence"|"skip_clear"|"escalate"|"shed","latency_ms":31.2}}
 {"type":"call.alert","session_id":"uuid","t_ms":6000,"evidence":1.12,
  "message":"Potential synthetic speech detected. Verify independently before sharing information or sending money.",
  "sms_sent":true|false}
@@ -170,7 +170,7 @@ Per-window scores are deliberately **not** persisted (minimal storage); history 
  "latency_ms":{"p50":22.1,"p95":35.0,"p99":48.2,"n":1200},          // submit → result, rolling last 2000 requests
  "compute_ms":{"p50":18.0,"p95":24.0},"queue_wait_ms":{"p50":2.0,"p95":9.0},
  "windows_per_s":{"demand":6.0,"inferred":3.1},                     // hops arriving vs windows actually run (last 10 s)
- "actions":{"infer":512,"escalate":40,"skip_silence":201,"skip_clear":330,"shed":0},
+ "actions":{"infer":512,"escalate":40,"screen_only":0,"skip_silence":201,"skip_clear":330,"shed":0},  // screen_only: two-stage, student accepted
  "batch_size":{"mean":2.4,"max":8,"hist":{"1":100,"2":40,"4":12}},
  "gpu":null|{"util_pct":41,"mem_used_mb":3120,"mem_total_mb":8188,"power_w":38.5,"temp_c":61},
  "t":1764012345.2}

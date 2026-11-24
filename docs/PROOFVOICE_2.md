@@ -49,7 +49,7 @@ Two decisions are separated so each contribution can be measured on its own:
 | `fifo` | every hop | serial, batch 1 (original ProofVoice) |
 | `dynamic` | every hop | microbatching (≤16, ≤5 ms wait) |
 | `edf` | every hop | microbatching + earliest-deadline-first + per-call coalescing + shedding past deadline |
-| `adaptive` | skip silent hops; score every 3rd hop on clearly genuine calls; escalate ambiguous hops | as `edf` |
+| `adaptive` | skip silent hops; score every 3rd hop on clearly genuine calls; escalate ambiguous hops | as `edf` (+ optional two-stage screening) |
 
 ## PRD §11 targets vs measured
 
@@ -80,7 +80,12 @@ real, consented telephone evaluation set.
   documented in the contract and `app.telephony.sim` doubles as a reference client.
 * **On-device inference (P3)**.
 * **Learned scheduling**: the PRD says deterministic baselines first; they now exist with measurements.
-* **Two-stage screening with the distilled student**: waits for the `student_l4` training run.
+* **Two-stage screening** is implemented (`AEGIS_SCREEN_MODEL_DIR`, `screen_only` action) and evaluated
+  (`benchmarks/cascade_replay.py`), and is **off by default**: with the distilled 4-layer student it costs *more*
+  than adaptive gating alone (1.09 vs 0.76 of fixed-rate compute on simulated telephone calls). The student
+  re-runs the shared convolutional front end (it is only ~1/3 cheaper per window) and is rarely confident on
+  narrowband speech. The better design is an early-exit head on the main model, so escalation reuses the
+  front-end and first-layer activations instead of recomputing them.
 * No automatic hang-up, blocking or accusation — by PRD §12, never on a detector score alone.
 
 ## Run it

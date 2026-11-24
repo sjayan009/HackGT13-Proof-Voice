@@ -123,7 +123,7 @@ def test_media_stream_rejects_unknown_token(gclient, speechlike):
 def test_engine_metrics_policy_and_prometheus(gclient):
     m = gclient.get("/engine/metrics").json()
     assert m["policy"] == "adaptive" and m["backend"] == "pytorch-fp32" and m["gpu"] is None
-    assert set(m["actions"]) == {"infer", "escalate", "skip_silence", "skip_clear", "shed"}
+    assert set(m["actions"]) == {"infer", "escalate", "screen_only", "skip_silence", "skip_clear", "shed"}
     assert gclient.post("/engine/policy", json={"policy": "fifo"}).json()["policy"] == "fifo"
     assert gclient.post("/engine/policy", json={"policy": "bogus"}).status_code == 422
     assert "proofvoice_hops_total" in gclient.get("/metrics").text

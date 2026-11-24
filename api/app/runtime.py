@@ -13,6 +13,7 @@ class Runtime:
     hub: object = None
     risk_policy: object = None
     calibration: dict = field(default_factory=dict)  # channel -> Calibration
+    screen_calibration: object = None                # two-stage screening student (telephone channel)
     calls: dict = field(default_factory=dict)        # session_id -> CallSession
     pending: dict = field(default_factory=dict)      # stream token -> session spec (from /twilio/consent or simulate)
 

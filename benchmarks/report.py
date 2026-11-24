@@ -93,6 +93,24 @@ def main():
                    ("Δ false alerts", lambda r: pct(r["delta_false_alert"])),
                    ("Δ detection", lambda r: pct(r["delta_detection"])), ("Δ first alert s", "delta_first_alert_s_p50")]), ""]
 
+    sr, cr = load(B / "screen_ratio.json"), load(B / "cascade_replay.json")
+    if cr:
+        md += ["## Two-stage screening (distilled 4-layer student → 12-layer model)", "",
+               f"Measured {cr['created'][:16]}Z. Student `{cr['student']}`; cost ratio student/main = "
+               f"{cr['cost_ratio']} per window" + (f" (from `screen_ratio.json`: " + ", ".join(
+                   f"batch {r['batch']}: {r['ratio']}" for r in sr["results"]) + "; other GPU work: "
+                   + ("yes — training job" if sr["other_gpu_processes"] != "none" else "none") + ")" if sr else "")
+               + ". Cost is relative to fixed-rate inference on every hop.", "",
+               table([r for r in cr["results"] if r["channel"] in ("telephone", "clean")], [
+                   ("channel", "channel"), ("student clear threshold (llr)", "screen_clear_llr"),
+                   ("genuine false alerts", lambda r: pct(r["genuine_false_alert_rate"])),
+                   ("synthetic detected", lambda r: pct(r["synthetic_detection_rate"])),
+                   ("first alert s p50", "first_alert_s_p50"), ("main-model windows", "main_windows"),
+                   ("student windows", "student_windows"), ("cost", "cost_vs_fixed_rate")]), "",
+               "Negative result: every cascade setting costs more than adaptive gating alone, because the student "
+               "shares the full convolutional front end (it is only ~1/3 cheaper) and is rarely confident on "
+               "narrowband speech. Two-stage screening stays off by default (`AEGIS_SCREEN_MODEL_DIR` unset).", ""]
+
     te = load(ROOT / "outputs" / "results" / "telephony_eval.json")
     if te:
         md += ["## Window-level detector on simulated channels", "",
