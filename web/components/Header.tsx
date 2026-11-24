@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { apiBase, isApiOverridden } from "@/lib/api";
 import { useHealth } from "@/lib/useHealth";
 import Icon from "./Icon";
@@ -50,7 +52,26 @@ function HealthPill() {
   );
 }
 
-export default function Header({ onOpenEval }: { onOpenEval: () => void }) {
+const NAV = [
+  { href: "/", label: "Lab" },
+  { href: "/guardian", label: "Guardian" },
+  { href: "/engine", label: "Control Center" },
+];
+
+function SiteNav() {
+  const path = usePathname();
+  return (
+    <nav className="site-nav" aria-label="Sections">
+      {NAV.map((n) => (
+        <Link key={n.href} href={n.href} aria-current={path === n.href ? "page" : undefined}>
+          {n.label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+export default function Header({ onOpenEval }: { onOpenEval?: () => void }) {
   return (
     <header className="app-header">
       <div className="brand">
@@ -62,13 +83,16 @@ export default function Header({ onOpenEval }: { onOpenEval: () => void }) {
           <div className="tagline">A real-time evidence layer for synthetic speech</div>
         </div>
       </div>
+      <SiteNav />
       <div className="header-actions">
         <HealthPill />
         <ThemeSwitch />
-        <button className="btn" onClick={onOpenEval} aria-haspopup="dialog">
-          <Icon name="chart" size={15} />
-          <span className="vh-sm">Evaluation</span>
-        </button>
+        {onOpenEval && (
+          <button className="btn" onClick={onOpenEval} aria-haspopup="dialog">
+            <Icon name="chart" size={15} />
+            <span className="vh-sm">Evaluation</span>
+          </button>
+        )}
       </div>
     </header>
   );

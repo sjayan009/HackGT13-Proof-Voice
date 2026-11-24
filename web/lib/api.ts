@@ -4,6 +4,13 @@
 import type {
   AnalysisReport,
   ApiErrorBody,
+  BenchmarkReport,
+  EngineMetrics,
+  EnginePolicy,
+  LoadTestRequest,
+  SimulateRequest,
+  SimulateResponse,
+  VerificationRequest,
   EvalSummary,
   ExplainRequest,
   ExplainResponse,
@@ -167,4 +174,48 @@ export function analyzeStreamUrl(): string {
 
 export function redteamStreamUrl(): string {
   return `${wsBase()}/redteam/stream`;
+}
+
+// ---------------- v2: Guardian + engine ----------------
+
+function postJson<T>(path: string, body: unknown, token?: string | null, ms = 15_000): Promise<T> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return fetch(`${apiBase()}${path}`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+    signal: timeoutSignal(ms),
+  }).then((res) => parseJsonOrThrow<T>(res));
+}
+
+/** WS /guardian/live; browsers can't set WS headers, so the contract puts the token in the query. */
+export function guardianLiveUrl(token: string | null): string {
+  return `${wsBase()}/guardian/live${token ? `?token=${encodeURIComponent(token)}` : ""}`;
+}
+
+export function simulateCall(req: SimulateRequest, token: string | null) {
+  return postJson<SimulateResponse>("/guardian/simulate", req, token);
+}
+
+export function recordVerification(sessionId: string, req: VerificationRequest, token: string | null) {
+  return postJson<{ ok: boolean }>(`/guardian/sessions/${encodeURIComponent(sessionId)}/verification`, req, token);
+}
+
+export async function getEngineMetrics(signal?: AbortSignal): Promise<EngineMetrics> {
+  const res = await fetch(`${apiBase()}/engine/metrics`, { cache: "no-store", signal: timeoutSignal(3000, signal) });
+  return parseJsonOrThrow<EngineMetrics>(res);
+}
+
+export function setEnginePolicy(policy: EnginePolicy) {
+  return postJson<EngineMetrics>("/engine/policy", { policy });
+}
+
+export function startLoadTest(req: LoadTestRequest) {
+  return postJson<{ started: number }>("/engine/loadtest", req);
+}
+
+export async function getBenchmarks(): Promise<{ reports: BenchmarkReport[] }> {
+  const res = await fetch(`${apiBase()}/engine/benchmarks`, { cache: "no-store", signal: timeoutSignal(10_000) });
+  return parseJsonOrThrow<{ reports: BenchmarkReport[] }>(res);
 }
