@@ -11,6 +11,7 @@ SR = 16000
 FRAME = 320  # 20 ms
 SILENCE_DBFS = -50.0
 VAD_MARGIN_DB = 10.0
+DIGITAL_ZERO_DB = -100.0  # zero-filled lost packets / digital silence: not a measurement of the noise floor
 
 
 def frame_db(x: np.ndarray) -> np.ndarray:
@@ -27,7 +28,10 @@ def window_quality(x: np.ndarray, floor_db: float | None = None) -> dict:
     db = frame_db(x)
     if db.size == 0:
         return {"speech_s": 0.0, "snr_db": 0.0, "level_dbfs": -120.0, "clip_ratio": 0.0, "floor_db": -120.0}
-    floor = float(np.percentile(db, 10)) if floor_db is None else float(floor_db)
+    real = db[db > DIGITAL_ZERO_DB]
+    if floor_db is None and real.size == 0:
+        return {"speech_s": 0.0, "snr_db": 0.0, "level_dbfs": -120.0, "clip_ratio": 0.0, "floor_db": -120.0}
+    floor = float(np.percentile(real, 10)) if floor_db is None else float(floor_db)
     speech = db > max(floor + VAD_MARGIN_DB, SILENCE_DBFS)
     snr = float(np.median(db[speech]) - floor) if speech.any() else 0.0
     rms = float(np.sqrt(np.mean(np.asarray(x, np.float32) ** 2)))
@@ -44,6 +48,7 @@ class FloorTracker:
 
     def update(self, hop: np.ndarray) -> float | None:
         db = frame_db(hop)
+        db = db[db > DIGITAL_ZERO_DB]  # lost packets are zero-filled upstream; they must not drag the floor down
         if db.size == 0:
             return self.floor
         p10 = float(np.percentile(db, 10))
@@ -58,4 +63,13 @@ if __name__ == "__main__":
     q = window_quality(tone + 0.003 * rng.standard_normal(len(t)))
     assert 1.2 < q["speech_s"] < 1.8 and q["snr_db"] > 25, q
     assert window_quality(np.zeros(3 * SR))["speech_s"] == 0.0
+    noisy = tone + 0.003 * rng.standard_normal(len(t))
+    lossy = noisy.copy()
+    for k in range(0, len(lossy), 3200):  # 10 % of 20 ms frames zero-filled (lost packets)
+        lossy[k:k + 320] = 0
+    ft = FloorTracker()
+    for k in range(0, len(lossy), 8000):
+        ft.update(lossy[k:k + 8000])
+    q2 = window_quality(lossy, ft.floor)
+    assert abs(q2["snr_db"] - q["snr_db"]) < 5 and ft.floor > -70, (q2, ft.floor)
     print("realtime quality ok", q)
