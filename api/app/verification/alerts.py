@@ -27,8 +27,8 @@ class Hub:
     def __init__(self):
         self.subs: dict[str, set[asyncio.Queue]] = {}
 
-    def subscribe(self, user_id: str) -> asyncio.Queue:
-        q: asyncio.Queue = asyncio.Queue(maxsize=500)
+    def subscribe(self, user_id: str, maxsize: int = 500) -> asyncio.Queue:
+        q: asyncio.Queue = asyncio.Queue(maxsize=maxsize)
         self.subs.setdefault(user_id, set()).add(q)
         return q
 
@@ -37,7 +37,7 @@ class Hub:
 
     def publish(self, user_id: str | None, event: dict) -> None:
         for q in self.subs.get(user_id or "", ()):
-            if q.full():  # a stalled dashboard drops its oldest event instead of blocking calls
+            if q.maxsize and q.full():  # a stalled dashboard drops its oldest event instead of blocking calls
                 q.get_nowait()
             q.put_nowait(event)
 

@@ -6,7 +6,7 @@ and memory (NVML), compute actually spent, shedding, and call-level outcomes und
 
     .venv/Scripts/python.exe benchmarks/load_test.py --calls 1 10 20 30 40 --seconds 20
 
-Writes outputs/benchmarks/load_test.json. Numbers are from this machine at this time; other GPU work running
+Writes outputs/benchmarks/load_test_<backend>.json. Numbers are from this machine at this time; other GPU work running
 concurrently is recorded in the output ("gpu_baseline") and invalidates absolute latency comparisons.
 """
 from __future__ import annotations
@@ -30,6 +30,9 @@ from app import config  # noqa: E402
 from app.runtime import RT  # noqa: E402
 
 
+BACKEND = "pytorch"
+
+
 def setup(policy: str):
     from engine.aegis import Aegis
     from engine.backends import TorchBackend
@@ -44,7 +47,13 @@ def setup(policy: str):
         RT.detector = PrimaryDetector(config.MODEL_DIR, config.resolve_device())
         RT.detector.score(np.zeros(16000, np.float32))
         RT.telemetry = Telemetry(gpu=Gpu(period_s=0.25))
-        RT.aegis = Aegis(TorchBackend(RT.detector), RT.telemetry, policy, config.AEGIS_MAX_BATCH,
+        if BACKEND == "tensorrt":
+            from engine.backends import TensorRTBackend
+
+            backend = TensorRTBackend(config.MODEL_DIR)
+        else:
+            backend = TorchBackend(RT.detector)
+        RT.aegis = Aegis(backend, RT.telemetry, policy, config.AEGIS_MAX_BATCH,
                          config.AEGIS_MAX_WAIT_MS, config.AEGIS_DEADLINE_MS)
         RT.calibration = {ch: Calibration.load(config.MODEL_DIR, ch) for ch in ("clean", "telephone")}
         RT.risk_policy = RiskPolicy.load(config.MODEL_DIR)
@@ -69,7 +78,7 @@ async def run_config(policy: str, calls: list[tuple[str, np.ndarray]]) -> dict:
 
     setup(policy)
     torch.cuda.reset_peak_memory_stats()
-    q = RT.hub.subscribe("bench")
+    q = RT.hub.subscribe("bench", maxsize=0)  # unbounded: the benchmark must see every event
     util, mem = [], []
     stop = False
 
@@ -156,7 +165,7 @@ async def main(a):
                        "backend": RT.aegis.backend.name, "max_batch": RT.aegis.max_batch,
                        "max_wait_ms": RT.aegis.max_wait * 1000, "deadline_ms": RT.aegis.deadline * 1000},
            "call_seconds": a.seconds, "gpu_baseline": base, "results": rows}
-    p = config.OUTPUT_DIR / "benchmarks" / "load_test.json"
+    p = config.OUTPUT_DIR / "benchmarks" / f"load_test_{BACKEND}.json"
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(out, indent=2))
     print("wrote", p)
@@ -167,4 +176,7 @@ if __name__ == "__main__":
     ap.add_argument("--calls", type=int, nargs="+", default=[1, 10, 20, 30, 40])
     ap.add_argument("--policies", nargs="+", default=["fifo", "dynamic", "edf", "adaptive"])
     ap.add_argument("--seconds", type=float, default=20.0)
-    asyncio.run(main(ap.parse_args()))
+    ap.add_argument("--backend", choices=["pytorch", "tensorrt"], default="pytorch")
+    args = ap.parse_args()
+    BACKEND = args.backend
+    asyncio.run(main(args))

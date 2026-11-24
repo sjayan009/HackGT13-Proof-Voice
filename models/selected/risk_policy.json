@@ -1,0 +1,18 @@
+{
+  "H": 6.0,
+  "max_llr": 4.0,
+  "min_speech_s": 1.0,
+  "min_snr_db": 12.0,
+  "full_snr_db": 30.0,
+  "max_packet_loss": 0.1,
+  "clear_speech_s": 6.0,
+  "persist": 2,
+  "rho": 0.16666666666666666,
+  "fitted_on": "simulated calls, calib split (speaker-disjoint from eval), telephone-family channels",
+  "constraints": {
+    "max_genuine_false_alert_rate": 0.01,
+    "max_synthetic_abstain_rate": 0.1
+  },
+  "selection": "meets constraints on calib",
+  "created": "2026-11-24T22:14:47.413574+00:00"
+}

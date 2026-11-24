@@ -85,7 +85,7 @@ class Aegis:
     async def infer(self, call_id: str, clip: np.ndarray, escalate: bool = False) -> float | None:
         """Logit for one window, or None if the request was shed/superseded. Raises if the backend fails."""
         self._loop = self._loop or asyncio.get_running_loop()
-        now = time.monotonic()
+        now = time.perf_counter()
         fut = self._loop.create_future()
         req = _Req(now + self.deadline * (0.5 if escalate else 1.0), now, call_id, clip, fut)
         with self._cv:
@@ -116,11 +116,11 @@ class Aegis:
                 return []
             if self.policy != "fifo":  # wait (bounded) for the batch to fill, measured from the oldest arrival
                 while len(self._q) < self.max_batch and not self._stop:
-                    left = self.max_wait - (time.monotonic() - min(r.submitted for r in self._q))
+                    left = self.max_wait - (time.perf_counter() - min(r.submitted for r in self._q))
                     if left <= 0:
                         break
                     self._cv.wait(left)
-            now = time.monotonic()
+            now = time.perf_counter()
             if self.policy in ("edf", "adaptive"):
                 for r in [r for r in self._q if r.deadline < now]:
                     self._q.remove(r)
@@ -137,14 +137,14 @@ class Aegis:
             batch = self._take()
             if not batch:
                 continue
-            t0 = time.monotonic()
+            t0 = time.perf_counter()
             try:
                 logits = self.backend.logits([r.clip for r in batch])
             except Exception as e:  # noqa: BLE001 - surfaced to the call as analysis_unavailable
                 for r in batch:
                     self._resolve(r.fut, exc=e)
                 continue
-            t1 = time.monotonic()
+            t1 = time.perf_counter()
             self.tm.batch_done(len(batch), (t1 - t0) * 1000)
             for r, lg in zip(batch, logits):
                 self.tm.request_done((t1 - r.submitted) * 1000, (t0 - r.submitted) * 1000)

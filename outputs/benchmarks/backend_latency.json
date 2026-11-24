@@ -1,0 +1,298 @@
+{
+  "created": "2026-11-24T22:16:58+00:00",
+  "machine": {
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "driver": "581.32",
+    "torch": "2.6.0+cu124",
+    "cuda_runtime": "12.4",
+    "tensorrt": "11.5.0.63",
+    "python": "3.11.9",
+    "os": "Windows-10-10.0.26300-SP0"
+  },
+  "setup": {
+    "window_samples": 48000,
+    "sample_rate": 16000,
+    "warmup": 10,
+    "iters": 100,
+    "timing": "end-to-end backend.logits(list[np.ndarray]) incl. H2D/D2H, CUDA-synchronised",
+    "model": "models/selected (XLS-R 300M, 12 layers)"
+  },
+  "contention": "none observed (no other compute processes; GPU idle before measuring)",
+  "gpu_snapshots": [
+    {
+      "processes": "none",
+      "util_pct_mean": 0.0,
+      "util_pct_max": 0,
+      "mem_used_mib": 0,
+      "at": "before run"
+    },
+    {
+      "processes": "none",
+      "util_pct_mean": 33.0,
+      "util_pct_max": 33,
+      "mem_used_mib": 2305,
+      "at": "batch 1"
+    },
+    {
+      "processes": "none",
+      "util_pct_mean": 12.0,
+      "util_pct_max": 18,
+      "mem_used_mib": 2321,
+      "at": "batch 2"
+    },
+    {
+      "processes": "none",
+      "util_pct_mean": 8.3,
+      "util_pct_max": 25,
+      "mem_used_mib": 2321,
+      "at": "batch 4"
+    },
+    {
+      "processes": "none",
+      "util_pct_mean": 29.3,
+      "util_pct_max": 88,
+      "mem_used_mib": 2475,
+      "at": "batch 8"
+    },
+    {
+      "processes": "none",
+      "util_pct_mean": 45.0,
+      "util_pct_max": 97,
+      "mem_used_mib": 2775,
+      "at": "batch 16"
+    }
+  ],
+  "results": [
+    {
+      "backend": "pytorch-fp32",
+      "batch": 1,
+      "iters": 100,
+      "p50_ms": 40.89,
+      "p95_ms": 64.46,
+      "p99_ms": 78.22,
+      "mean_ms": 42.64,
+      "ms_per_window": 40.89,
+      "windows_per_s": 24.5,
+      "peak_vram_mib": 705,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "pytorch-fp16",
+      "batch": 1,
+      "iters": 100,
+      "p50_ms": 42.51,
+      "p95_ms": 63.74,
+      "p99_ms": 67.86,
+      "mean_ms": 43.91,
+      "ms_per_window": 42.51,
+      "windows_per_s": 23.5,
+      "peak_vram_mib": 355,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "tensorrt-fp16",
+      "batch": 1,
+      "iters": 100,
+      "p50_ms": 9.79,
+      "p95_ms": 12.34,
+      "p99_ms": 13.43,
+      "mean_ms": 10.02,
+      "ms_per_window": 9.79,
+      "windows_per_s": 102.1,
+      "peak_vram_mib": 1048,
+      "vram_source": "nvml_delta"
+    },
+    {
+      "backend": "pytorch-fp32",
+      "batch": 2,
+      "iters": 100,
+      "p50_ms": 49.55,
+      "p95_ms": 71.35,
+      "p99_ms": 77.42,
+      "mean_ms": 51.88,
+      "ms_per_window": 24.77,
+      "windows_per_s": 40.4,
+      "peak_vram_mib": 772,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "pytorch-fp16",
+      "batch": 2,
+      "iters": 100,
+      "p50_ms": 51.3,
+      "p95_ms": 72.44,
+      "p99_ms": 83.81,
+      "mean_ms": 52.68,
+      "ms_per_window": 25.65,
+      "windows_per_s": 39.0,
+      "peak_vram_mib": 393,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "tensorrt-fp16",
+      "batch": 2,
+      "iters": 100,
+      "p50_ms": 16.8,
+      "p95_ms": 19.0,
+      "p99_ms": 20.35,
+      "mean_ms": 16.87,
+      "ms_per_window": 8.4,
+      "windows_per_s": 119.0,
+      "peak_vram_mib": 1048,
+      "vram_source": "nvml_delta"
+    },
+    {
+      "backend": "pytorch-fp32",
+      "batch": 4,
+      "iters": 100,
+      "p50_ms": 77.7,
+      "p95_ms": 95.87,
+      "p99_ms": 138.25,
+      "mean_ms": 79.79,
+      "ms_per_window": 19.43,
+      "windows_per_s": 51.5,
+      "peak_vram_mib": 905,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "pytorch-fp16",
+      "batch": 4,
+      "iters": 100,
+      "p50_ms": 31.08,
+      "p95_ms": 54.74,
+      "p99_ms": 66.79,
+      "mean_ms": 35.17,
+      "ms_per_window": 7.77,
+      "windows_per_s": 128.7,
+      "peak_vram_mib": 470,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "tensorrt-fp16",
+      "batch": 4,
+      "iters": 100,
+      "p50_ms": 26.85,
+      "p95_ms": 33.63,
+      "p99_ms": 44.53,
+      "mean_ms": 28.08,
+      "ms_per_window": 6.71,
+      "windows_per_s": 149.0,
+      "peak_vram_mib": 1048,
+      "vram_source": "nvml_delta"
+    },
+    {
+      "backend": "pytorch-fp32",
+      "batch": 8,
+      "iters": 100,
+      "p50_ms": 148.28,
+      "p95_ms": 154.97,
+      "p99_ms": 157.27,
+      "mean_ms": 148.41,
+      "ms_per_window": 18.54,
+      "windows_per_s": 54.0,
+      "peak_vram_mib": 1170,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "pytorch-fp16",
+      "batch": 8,
+      "iters": 100,
+      "p50_ms": 58.62,
+      "p95_ms": 63.16,
+      "p99_ms": 69.71,
+      "mean_ms": 59.24,
+      "ms_per_window": 7.33,
+      "windows_per_s": 136.5,
+      "peak_vram_mib": 621,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "tensorrt-fp16",
+      "batch": 8,
+      "iters": 100,
+      "p50_ms": 49.8,
+      "p95_ms": 51.63,
+      "p99_ms": 52.9,
+      "mean_ms": 49.76,
+      "ms_per_window": 6.23,
+      "windows_per_s": 160.6,
+      "peak_vram_mib": 1048,
+      "vram_source": "nvml_delta"
+    },
+    {
+      "backend": "pytorch-fp32",
+      "batch": 16,
+      "iters": 100,
+      "p50_ms": 313.4,
+      "p95_ms": 319.47,
+      "p99_ms": 322.24,
+      "mean_ms": 313.4,
+      "ms_per_window": 19.59,
+      "windows_per_s": 51.1,
+      "peak_vram_mib": 1701,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "pytorch-fp16",
+      "batch": 16,
+      "iters": 100,
+      "p50_ms": 113.82,
+      "p95_ms": 119.34,
+      "p99_ms": 127.34,
+      "mean_ms": 114.54,
+      "ms_per_window": 7.11,
+      "windows_per_s": 140.6,
+      "peak_vram_mib": 925,
+      "vram_source": "torch"
+    },
+    {
+      "backend": "tensorrt-fp16",
+      "batch": 16,
+      "iters": 100,
+      "p50_ms": 105.08,
+      "p95_ms": 109.43,
+      "p99_ms": 111.58,
+      "mean_ms": 105.28,
+      "ms_per_window": 6.57,
+      "windows_per_s": 152.3,
+      "peak_vram_mib": 1048,
+      "vram_source": "nvml_delta"
+    }
+  ],
+  "parity": {
+    "threshold": 0.25372197088405857,
+    "windows": "class-balanced centre-cropped 3.0 s windows from outputs/manifests/val.csv (seed 0)",
+    "rows": [
+      {
+        "candidate": "tensorrt-fp16",
+        "reference": "pytorch-fp16",
+        "n_windows": 256,
+        "max_abs_diff": 0.2012,
+        "mean_abs_diff": 0.0215,
+        "p99_abs_diff": 0.1385,
+        "decision_agreement": 0.9961,
+        "decision_flips": 1
+      },
+      {
+        "candidate": "tensorrt-fp16",
+        "reference": "pytorch-fp32",
+        "n_windows": 256,
+        "max_abs_diff": 0.2357,
+        "mean_abs_diff": 0.023,
+        "p99_abs_diff": 0.1384,
+        "decision_agreement": 0.9961,
+        "decision_flips": 1
+      },
+      {
+        "candidate": "pytorch-fp16",
+        "reference": "pytorch-fp32",
+        "n_windows": 256,
+        "max_abs_diff": 0.0446,
+        "mean_abs_diff": 0.0058,
+        "p99_abs_diff": 0.0366,
+        "decision_agreement": 1.0,
+        "decision_flips": 0
+      }
+    ]
+  }
+}

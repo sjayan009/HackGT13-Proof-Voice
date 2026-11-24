@@ -47,7 +47,7 @@ class CallSession:
         self.sheds = 0
         self.inferred = self.skipped = 0
         self.alerted = False
-        self.t0 = time.monotonic()
+        self.t0 = time.perf_counter()
         self._new = asyncio.Event()
         self._ended = False
         RT.calls[self.id] = self
@@ -117,14 +117,14 @@ class CallSession:
         if action not in ("infer", "escalate"):
             self.hops_since_infer += 1
             return self._hop_skipped(action)
-        t = time.monotonic()
+        t = time.perf_counter()
         try:
             logit = await RT.aegis.infer(self.id, win.copy(), escalate=action == "escalate")
         except Exception as e:  # noqa: BLE001
             log.exception("inference failed")
             logit, action = None, "shed"
             self.risk.set_unavailable(f"Analysis unavailable: inference error ({type(e).__name__}). The call continues.")
-        lat = round((time.monotonic() - t) * 1000, 1)
+        lat = round((time.perf_counter() - t) * 1000, 1)
         window = None
         if logit is None:
             action = "shed"
