@@ -8,11 +8,13 @@ import json
 import logging
 import re
 import tempfile
+import time
+from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 import numpy as np
-from fastapi import FastAPI, File, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -63,7 +65,7 @@ async def lifespan(app: FastAPI):
     except Exception as e:  # noqa: BLE001
         STATE["detector_error"] = f"{type(e).__name__}: {e}"
         log.exception("detector failed to load")
-    if STATE.get("detector"):
+    if STATE.get("detector") and not config.PUBLIC_MODE:
         _start_runtime(STATE["detector"])
     yield
     for s in list(RT.calls.values()):
@@ -117,6 +119,43 @@ app.add_middleware(CORSMiddleware, allow_origins=config.CORS_ORIGINS + ["*"], al
                    allow_headers=["*"])
 
 
+class PublicOnly:
+    """PUBLIC_MODE: 404 for every HTTP/WebSocket path outside config.PUBLIC_PATHS (Guardian, engine, streaming, Grok)."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] in ("http", "websocket") and scope["path"] not in config.PUBLIC_PATHS:
+            if scope["type"] == "websocket":
+                await send({"type": "websocket.close", "code": 1008})
+                return
+            await JSONResponse({"detail": "Not Found"}, status_code=404)(scope, receive, send)
+            return
+        await self.app(scope, receive, send)
+
+
+if config.PUBLIC_MODE:
+    app.add_middleware(PublicOnly)
+
+# ponytail: in-memory per-IP window, per process; move to Redis/Upstash if this ever runs on several replicas.
+_recent: dict[str, deque] = defaultdict(deque)
+_analyze_slots = asyncio.Semaphore(config.ANALYZE_CONCURRENCY)
+
+
+def _rate_limit(request: Request) -> None:
+    if not config.PUBLIC_MODE:
+        return
+    ip = (request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+          or (request.client.host if request.client else "?"))
+    q, now = _recent[ip], time.monotonic()
+    while q and now - q[0] > 600:
+        q.popleft()
+    if len(q) >= config.RATE_LIMIT_PER_10MIN:
+        raise HTTPException(429, f"Too many checks from your connection. Try again in {int(600 - (now - q[0])) // 60 + 1} min.")
+    q.append(now)
+
+
 def _grok_available() -> bool:
     import os
 
@@ -147,7 +186,8 @@ def _analyze_array(audio: np.ndarray, **kw) -> dict:
 
 
 @app.post("/analyze/file")
-async def analyze_file(file: UploadFile = File(...)):
+async def analyze_file(request: Request, file: UploadFile = File(...)):
+    _rate_limit(request)
     data = await file.read()
     if not data:
         raise HTTPException(400, "empty upload")
@@ -164,8 +204,9 @@ async def analyze_file(file: UploadFile = File(...)):
             raise HTTPException(400, str(e)) from e
         if len(audio) < 1600:
             raise HTTPException(400, "audio shorter than 0.1 s")
-        return await asyncio.to_thread(_analyze_array, audio, path=tmp, file_name=file.filename,
-                                       orig_sr=sr if sr > 0 else None)
+        async with _analyze_slots:
+            return await asyncio.to_thread(_analyze_array, audio, path=tmp, file_name=file.filename,
+                                           orig_sr=sr if sr > 0 else None)
     finally:
         Path(tmp).unlink(missing_ok=True)
 

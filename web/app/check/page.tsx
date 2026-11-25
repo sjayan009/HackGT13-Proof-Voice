@@ -188,8 +188,13 @@ export default function CheckPage() {
 
         <p className="panel-sub">
           ProofVoice gives evidence, not proof. It has been tested on research data and simulated phone audio, not yet
-          on a large set of real voice messages, so it can be wrong in both directions. Want the technical breakdown?{" "}
-          <Link href="/">Open the file in the Lab</Link>.
+          on a large set of real voice messages, so it can be wrong in both directions.
+          {process.env.NEXT_PUBLIC_SITE_MODE !== "public" && (
+            <>
+              {" "}
+              Want the technical breakdown? <Link href="/">Open the file in the Lab</Link>.
+            </>
+          )}
         </p>
       </main>
       <Footer />

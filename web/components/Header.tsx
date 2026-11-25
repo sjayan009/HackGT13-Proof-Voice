@@ -52,12 +52,14 @@ function HealthPill() {
   );
 }
 
+// NEXT_PUBLIC_SITE_MODE=public (the hosted checker): only /check exists; next.config.mjs redirects the rest.
+const PUBLIC_SITE = process.env.NEXT_PUBLIC_SITE_MODE === "public";
 const NAV = [
   { href: "/", label: "Lab" },
   { href: "/check", label: "Check" },
   { href: "/guardian", label: "Guardian" },
   { href: "/engine", label: "Control Center" },
-];
+].filter((n) => !PUBLIC_SITE || n.href === "/check");
 
 function SiteNav() {
   const path = usePathname();

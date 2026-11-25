@@ -53,6 +53,12 @@ AEGIS_MAX_BATCH = int(os.getenv("AEGIS_MAX_BATCH", "16"))
 AEGIS_MAX_WAIT_MS = float(os.getenv("AEGIS_MAX_WAIT_MS", "5"))
 AEGIS_DEADLINE_MS = float(os.getenv("AEGIS_DEADLINE_MS", "1000"))
 CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
+# Public deployment (the voice-message checker, deploy/modal_app.py): only the endpoints in PUBLIC_PATHS are
+# reachable, Guardian/telephony/engine are not started, uploads are rate-limited per client IP.
+PUBLIC_MODE = os.getenv("PROOFVOICE_PUBLIC", "") == "1"
+PUBLIC_PATHS = {"/health", "/analyze/file"}
+RATE_LIMIT_PER_10MIN = int(os.getenv("RATE_LIMIT_PER_10MIN", "10"))
+ANALYZE_CONCURRENCY = int(os.getenv("ANALYZE_CONCURRENCY", "4"))
 
 
 def resolve_device() -> str:
