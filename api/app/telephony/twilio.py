@@ -14,6 +14,7 @@ import base64
 import hashlib
 import hmac
 import json
+import re
 import logging
 import secrets
 from xml.sax.saxutils import escape, quoteattr
@@ -60,6 +61,12 @@ def twiml(body: str) -> Response:
     return Response(f'<?xml version="1.0" encoding="UTF-8"?><Response>{body}</Response>', media_type="text/xml")
 
 
+def same_phone(a: str, b: str) -> bool:
+    """Same phone number, ignoring formatting (+1 (404) 555-0123 == 4045550123)."""
+    da, db = (re.sub(r"\D", "", x)[-10:] for x in (a, b))
+    return len(da) == 10 and da == db
+
+
 async def line_for(number: str) -> dict | None:
     line = await RT.store.line_by_number(number) if number else None
     if line is None and dev_mode() and config.GUARDIAN_RECIPIENT_NUMBER:
@@ -89,6 +96,11 @@ async def consent(request: Request):
             "consent": "granted" if granted else "declined"}
     # no callerId: Twilio passes the original caller's number through, so the recipient sees who is calling
     dial = f'<Dial action="/twilio/status" method="POST"><Number>{escape(line["recipient_phone"])}</Number></Dial>'
+    if same_phone(f.get("From", ""), line["recipient_phone"]):
+        # self-test: the protected person is calling their own line, so there is nobody to connect to. Keep the
+        # line open and analyse the caller; the stream's stop event ends the session when they hang up.
+        dial = ("<Say>Self test mode. Talk, or play a recording into the phone. Hang up when you are done.</Say>"
+                '<Pause length="600"/><Hangup/>')
     if not granted:
         from app.telephony.media import CallSession
 

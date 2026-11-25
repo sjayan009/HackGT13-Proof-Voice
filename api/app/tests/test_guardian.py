@@ -60,6 +60,16 @@ def test_consent_forks_stream_and_dials_recipient(gclient):
     RT.pending.clear()
 
 
+def test_self_test_call_streams_without_dialing(gclient):
+    """One-phone setup: the protected phone calls its own line -> analysed, nobody dialed."""
+    from app.runtime import RT
+
+    r = gclient.post("/twilio/consent", data={"To": "+15550000001", "From": "+1 (555) 000-0002", "CallSid": "CA9",
+                                              "Digits": "1"})
+    assert "<Stream" in r.text and "<Dial" not in r.text and "Self test" in r.text
+    RT.pending.clear()
+
+
 def test_declined_consent_connects_without_analysis(gclient):
     with gclient.websocket_connect("/guardian/live") as live:
         assert live.receive_json()["type"] == "hello"
