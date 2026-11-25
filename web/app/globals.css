@@ -2676,3 +2676,64 @@ html.theme-changing *::after {
   font: inherit;
   font-size: 0.8125rem;
 }
+
+/* ---------- Voice-message checker (/check) ---------- */
+
+.check-howto summary {
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 0.875rem;
+}
+
+.check-howto ul,
+.check-todo ul {
+  margin: 10px 0 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.check-howto li {
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+}
+
+.check-todo li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.check-todo h3 {
+  margin: 0 0 6px;
+}
+
+.check-verdict h3 {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+}
+
+.check-verdict p {
+  font-size: 0.9375rem;
+  margin: 0 0 6px;
+}
+
+.check-verdict {
+  border-left: 4px solid var(--border-strong);
+}
+
+.check-verdict.tone-bad {
+  border-left-color: var(--red);
+  background: var(--red-bg);
+}
+
+.check-verdict.tone-warn {
+  border-left-color: var(--amber);
+  background: var(--amber-bg);
+}
+
+.check-verdict.tone-ok {
+  border-left-color: var(--green);
+}

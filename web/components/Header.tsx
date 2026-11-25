@@ -54,6 +54,7 @@ function HealthPill() {
 
 const NAV = [
   { href: "/", label: "Lab" },
+  { href: "/check", label: "Check" },
   { href: "/guardian", label: "Guardian" },
   { href: "/engine", label: "Control Center" },
 ];
