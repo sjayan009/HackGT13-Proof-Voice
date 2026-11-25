@@ -65,7 +65,7 @@ All "measured" detection values are on **simulated** calls (`ml/telephony_eval`,
 | Simultaneous calls on one RTX 4060 | ≥ 20 | 40 (TensorRT, all policies), 30 (PyTorch with batching); serial FIFO collapses at 30 | met |
 | GPU memory | within 8 GB | 2.8 GB peak (40 calls) | met |
 | Adaptive compute reduction | ≥ 30 % | 20–29 % on telephone channels with unchanged detection (+0.5–2 s delay); 24 % in load test | **not met** |
-| Controlled evaluation calls | ≥ 300 | 514 simulated calls; 0 consented human calls yet | partial |
+| Controlled evaluation calls | ≥ 300 | 514 simulated calls; 2 real consented phone calls (see below) | partial |
 | Persistent raw-audio retention | zero | 8 s in-memory ring buffer, dropped at call end; schema has no audio column | met by design |
 
 What the gaps say: the detector, not the call policy, is the bottleneck. Window-level false alarms on narrowband
@@ -76,6 +76,22 @@ replacement for v3: codec-only augmentation lost on clean validation in both see
 is within run-to-run spread. One lead: training **without PlayHT** gave 7.4 % phone EER, 0.047 pooled minDCF and
 better ElevenLabs detection than v3, but regressed on 20 dB noise and is a single seed — a second seed comes
 before any promotion. A real, consented telephone evaluation set is still missing.
+
+## First real phone calls (Nov 25, 2026)
+
+Two consented self-test calls over the public telephone network into a Twilio number, through the full
+production path: signed webhooks, consent prompt, Media Streams over a Cloudflare tunnel, Aegis on the RTX 4060,
+the risk engine, the live dashboard, and Supabase (call times and state changes only, no audio).
+
+| call | what was on the line | final state | notes |
+|---|---|---|---|
+| 1 (39 s) | the protected person talking normally | no suspicious evidence | flickered to *inconclusive* twice for 1–2 s, then settled |
+| 2 (78 s) | a synthetic voice played from a laptop speaker into the phone | **suspicious** | warning 73 s after the call started; this includes the consent menu and the time to start playback |
+
+The same session also ran three simulated synthetic calls from the dashboard (all *suspicious* within 9–11 s), and an
+offline batch of 30 simulated genuine calls through the same media path flagged 0/30. Two calls from one speaker
+show the system works end to end on real telephone audio; they are not an accuracy estimate. The calls used
+**self-test mode** (the protected phone calls its own line, so nothing is dialed), which exists for one-phone setups.
 
 ## Not built (by design or deferred)
 

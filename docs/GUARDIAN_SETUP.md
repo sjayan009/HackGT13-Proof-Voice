@@ -31,6 +31,14 @@ The public Supabase values are already filled in. Add these:
 ngrok http 8000
 ```
 
+No ngrok account? A Cloudflare quick tunnel needs no account or token (`winget install Cloudflare.cloudflared`):
+
+```powershell
+& "C:\Program Files (x86)\cloudflared\cloudflared.exe" tunnel --url http://127.0.0.1:8000
+```
+
+Either tunnel gets a new random URL every time it restarts; update `PUBLIC_BASE_URL` and the Twilio webhook when it does.
+
 Put the ngrok `https://` URL into `PUBLIC_BASE_URL` and restart the backend. `GET /health` should show
 `"guardian": {"dev_mode": false, "store": "supabase", "twilio": true, "public_base_url": true}`.
 
@@ -55,7 +63,9 @@ then:
 
 ## 5. Make the call
 
-From a *different* phone, call your Twilio number. You hear the disclosure; press **1**. Your recipient phone
+**Only one phone?** Call your Twilio number from the phone you set as the recipient. ProofVoice detects that the protected person is calling their own line, says "Self test mode", dials nobody, and analyses what it hears until you hang up.
+
+With two phones: from a *different* phone, call your Twilio number. You hear the disclosure; press **1**. Your recipient phone
 rings; talk normally. The dashboard shows the live call card within ~3 s of speech. To see a warning, play
 synthetic speech into the calling phone (for example the Grok samples in `data/grok_samples/`), only with
 everyone on the call aware that it is a test.
