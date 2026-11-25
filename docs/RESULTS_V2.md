@@ -143,4 +143,23 @@ Negative result: every cascade setting costs more than adaptive gating alone, be
 
 See `docs/research/telephony_eval.md` for the method, per-speaker spread, calibration and quality gates; raw numbers in `outputs/results/telephony_eval.json`.
 
-* Training experiment result available: `outputs/results/telephony_eval_exp_student_l4.json`
+## Training experiments (Workstream A)
+
+Each run is the v3 recipe plus one controlled change (`ml/experiments/queue.py`). *val minDCF* is the pooled HEARSAY validation split; *channel suite* is the fixed 1,400-clip robustness subset (`ml/robustness.py`); *phone EER* is window-level on the simulated eval calls. EER and minDCF are threshold-free, so runs are compared without re-fitting each one's phone calibration. Gate = MODEL_STRATEGY rule 1: beat v3 on val minDCF and do not regress on MP3, µ-law or noise.
+
+| run | val minDCF | LJ genuine p95 p(synth) | suite clean | suite mp3_64k | suite telephone_mulaw_8k | suite noise_20dB | phone EER telephone | phone EER opus_telephone | phone EER replay_sim | phone minDCF | gate |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| v3 (selected) | 0.0656 | 0.0071 | 0.0543 | 0.1229 | 0.1329 | 0.1529 | 10.5% | 9.9% | 35.9% | 0.4203 | reference |
+| codec_only_s0 | 0.1135 | 0.098 | 0.1057 | 0.1471 | 0.15 | 0.1843 | 9.8% | 9.7% | 32.5% | 0.4069 | fails: val minDCF 0.1135 ≥ 0.0656 |
+| codec_only_s1 | 0.1453 | 0.0072 | 0.1329 | 0.1786 | 0.1229 | 0.1529 | 9.7% | 9.6% | 33.1% | 0.3951 | fails: val minDCF 0.1453 ≥ 0.0656 |
+| logo_elevenlabs | 0.0853 | 0.0119 | 0.0729 | 0.1643 | 0.1643 | 0.2357 | 8.9% | 8.8% | 34.2% | 0.4002 | fails: val minDCF 0.0853 ≥ 0.0656 (one generator held out of training) |
+| logo_playht | 0.0467 | 0.0326 | 0.0271 | 0.0771 | 0.0871 | 0.1829 | 7.4% | 6.8% | 30.6% | 0.3171 | fails: beats v3 on val minDCF but worse on noise_20dB (one generator held out of training) |
+| student_l4 | 0.1171 | 0.9895 | 0.1171 | 0.3686 | 0.3529 | 0.3071 | 18.7% | 19.4% | 47.5% | 0.7464 | fails: val minDCF 0.1171 ≥ 0.0656 |
+
+Leave-one-generator-out (minDCF on the held-out generator's validation clips):
+
+| run | held-out generator | trained without it | v3, trained with it |
+|---|---|---|---|
+| models/exp_logo_elevenlabs | elevenlabs | 0.2428 | 0.2068 |
+| models/exp_logo_playht | playht | 0.086 | 0.0623 |
+

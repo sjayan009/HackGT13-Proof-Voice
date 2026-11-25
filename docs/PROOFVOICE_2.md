@@ -57,7 +57,7 @@ All "measured" detection values are on **simulated** calls (`ml/telephony_eval`,
 
 | target | MVP target | measured | status |
 |---|---|---|---|
-| Telephony EER on independent data | ≤ 3 % | 10.5 % window-level, simulated telephone channel | **not met**; no independent real-phone set yet |
+| Telephony EER on independent data | ≤ 3 % | 10.5 % window-level, simulated telephone channel (best experimental run 7.4 %, not promoted) | **not met**; no independent real-phone set yet |
 | Genuine-call false alerts | ≤ 1 % | 0.8 % on calib calls; **4.5 % (fixed) / 2.7 % (adaptive)** on eval telephone calls; 0/20 in load tests | **not met** on held-out voices (LJ voice drives it) |
 | Synthetic-call detection | ≥ 90 % | 90.8 % telephone, 94.6 % clean, 87–88 % noisy, 17 % crude replay proxy | met on clean/telephone only |
 | First warning, p95 | ≤ 5 s usable speech | p50 5.0 s, **p95 8.5 s** usable speech (telephone) | **not met** at p95 |
@@ -70,9 +70,12 @@ All "measured" detection values are on **simulated** calls (`ml/telephony_eval`,
 
 What the gaps say: the detector, not the call policy, is the bottleneck. Window-level false alarms on narrowband
 speech from unseen voices (20 % on telephone, up to 67 % for the LJ voice) cannot be fully fixed by persistence
-or calibration (monotone calibration cannot change EER). That points to Workstream A — the controlled
-codec-only and leave-one-generator-out training runs queued in `ml/experiments/queue.py` — and to collecting a
-real, consented telephone evaluation set.
+or calibration (monotone calibration cannot change EER). Workstream A's five controlled training runs
+(`ml/experiments/queue.py`, results in RESULTS_V2 → *Training experiments* and `MODEL_STRATEGY.md`) found no
+replacement for v3: codec-only augmentation lost on clean validation in both seeds, and its small phone-EER gain
+is within run-to-run spread. One lead: training **without PlayHT** gave 7.4 % phone EER, 0.047 pooled minDCF and
+better ElevenLabs detection than v3, but regressed on 20 dB noise and is a single seed — a second seed comes
+before any promotion. A real, consented telephone evaluation set is still missing.
 
 ## Not built (by design or deferred)
 

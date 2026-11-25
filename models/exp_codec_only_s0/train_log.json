@@ -1,0 +1,38 @@
+[
+ {
+  "step": 500,
+  "val_minDCF": 0.1956,
+  "selection_scope": "all_validation",
+  "elapsed_s": 655
+ },
+ {
+  "step": 1000,
+  "val_minDCF": 0.1665,
+  "selection_scope": "all_validation",
+  "elapsed_s": 1327
+ },
+ {
+  "step": 1500,
+  "val_minDCF": 0.1184,
+  "selection_scope": "all_validation",
+  "elapsed_s": 2026
+ },
+ {
+  "step": 2000,
+  "val_minDCF": 0.1211,
+  "selection_scope": "all_validation",
+  "elapsed_s": 2673
+ },
+ {
+  "step": 2500,
+  "val_minDCF": 0.1135,
+  "selection_scope": "all_validation",
+  "elapsed_s": 3543
+ },
+ {
+  "step": 3000,
+  "val_minDCF": 0.1166,
+  "selection_scope": "all_validation",
+  "elapsed_s": 4272
+ }
+]

@@ -1,0 +1,89 @@
+{
+  "experiment": "models/exp_logo_playht",
+  "excluded_generators": [
+    "playht"
+  ],
+  "rows": [
+    {
+      "generator": "playht",
+      "seen_in_training": false,
+      "minDCF_model_without_it": 0.086,
+      "minDCF_model_trained_on_all": 0.0623,
+      "minDCF_exp_model": 0.086
+    }
+  ],
+  "all_rows": [
+    {
+      "generator": "diffgan_tts",
+      "seen_in_training": true,
+      "minDCF_model_without_it": null,
+      "minDCF_model_trained_on_all": 0.0,
+      "minDCF_exp_model": 0.0
+    },
+    {
+      "generator": "elevenlabs",
+      "seen_in_training": true,
+      "minDCF_model_without_it": null,
+      "minDCF_model_trained_on_all": 0.2068,
+      "minDCF_exp_model": 0.115
+    },
+    {
+      "generator": "grad_tts",
+      "seen_in_training": true,
+      "minDCF_model_without_it": null,
+      "minDCF_model_trained_on_all": 0.0,
+      "minDCF_exp_model": 0.0
+    },
+    {
+      "generator": "openvoicev2",
+      "seen_in_training": true,
+      "minDCF_model_without_it": null,
+      "minDCF_model_trained_on_all": 0.0,
+      "minDCF_exp_model": 0.0
+    },
+    {
+      "generator": "playht",
+      "seen_in_training": false,
+      "minDCF_model_without_it": 0.086,
+      "minDCF_model_trained_on_all": 0.0623,
+      "minDCF_exp_model": 0.086
+    },
+    {
+      "generator": "pro_diff",
+      "seen_in_training": true,
+      "minDCF_model_without_it": null,
+      "minDCF_model_trained_on_all": 0.0,
+      "minDCF_exp_model": 0.0
+    },
+    {
+      "generator": "unit_speech",
+      "seen_in_training": true,
+      "minDCF_model_without_it": null,
+      "minDCF_model_trained_on_all": 0.0067,
+      "minDCF_exp_model": 0.0027
+    },
+    {
+      "generator": "wavegrad2",
+      "seen_in_training": true,
+      "minDCF_model_without_it": null,
+      "minDCF_model_trained_on_all": 0.0,
+      "minDCF_exp_model": 0.0
+    },
+    {
+      "generator": "xtts_v2",
+      "seen_in_training": true,
+      "minDCF_model_without_it": null,
+      "minDCF_model_trained_on_all": 0.0,
+      "minDCF_exp_model": 0.0
+    },
+    {
+      "generator": "your_tts",
+      "seen_in_training": true,
+      "minDCF_model_without_it": null,
+      "minDCF_model_trained_on_all": 0.0,
+      "minDCF_exp_model": 0.0009
+    }
+  ],
+  "pooled_seen_only_exp": 0.0391,
+  "pooled_unseen_only_exp": 0.086
+}

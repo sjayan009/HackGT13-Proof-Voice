@@ -42,3 +42,22 @@ The fixed 1,400-clip channel suite shows that v4 did not buy robustness:
 | Clipping | 0.1271 | 0.1600 | 2.00% | 2.57% |
 
 Full results are in `outputs/results/robustness_xlsr12_v4_codec_hard.json`. v3 stays selected; its TSV was not regenerated. This one failed recipe does not establish that codec augmentation cannot help. It changed codec exposure, noise, and generator sampling together, and the current validation set is small in the hardest strata. The next controlled experiment is matched genuine speech for the eight training clone speakers, with identity-balanced training and a speaker-disjoint validation split. Separately, test codec-only augmentation against a fixed clean/channel holdout, using multiple seeds before choosing a checkpoint. Obtain a new bona fide recording set before treating any validation improvement as a generalization result.
+
+## Workstream A queue (ProofVoice 2.0, Nov 2026)
+
+Five controlled runs, each the v3 recipe plus one change (`ml/experiments/queue.py`), evaluated on the same protocols as v3: pooled validation, the fixed 1,400-clip channel suite, and window-level EER on simulated phone calls (`ml/telephony_eval`). Full table: `docs/RESULTS_V2.md` → *Training experiments*. v3 stays selected; no TSV was regenerated.
+
+| run | val minDCF | MP3 64k | µ-law 8k | noise 20 dB | phone EER | ElevenLabs minDCF | rule 1 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| v3 | 0.0656 | 0.1229 | 0.1329 | 0.1529 | 10.5% | 0.2068 | reference |
+| codec-only, seed 0 | 0.1135 | 0.1471 | 0.1500 | 0.1843 | 9.8% | — | fails |
+| codec-only, seed 1 | 0.1453 | 0.1786 | 0.1229 | 0.1529 | 9.7% | — | fails |
+| distilled 4-layer student | 0.1171 | 0.3686 | 0.3529 | 0.3071 | 18.7% | — | fails |
+| without ElevenLabs | 0.0853 | 0.1643 | 0.1643 | 0.2357 | 8.9% | 0.2428 (unseen) | fails |
+| without PlayHT | **0.0467** | **0.0771** | **0.0871** | 0.1829 | **7.4%** | **0.1150** | fails on noise 20 dB |
+
+* **Codec-only augmentation does not help.** Both seeds lose ~0.05–0.08 pooled minDCF, and the ~0.7-point phone-EER gain is smaller than the run-to-run spread seen across this queue (8.9–9.8% for 12-layer runs with no codec change). The two seeds also disagree on µ-law and noise, so seed variance is large at this training length.
+* **ElevenLabs detection mostly transfers.** Never seeing ElevenLabs raises its minDCF only from 0.207 to 0.243; never seeing PlayHT raises PlayHT from 0.062 to 0.086.
+* **Dropping PlayHT from training improved nearly everything else**: pooled minDCF 0.0467 (with PlayHT clips counted as unseen), ElevenLabs 0.115 vs 0.207, MP3/µ-law/Opus/AAC, and phone EER 7.4% (95% CI 5.8–9.1%) vs 10.5%. It regresses on 20 dB noise (0.183 vs 0.153) and clipping (0.149 vs 0.127), and the LJ bona fide p95 rises from 0.007 to 0.033. This is **one seed**; the codec seeds above differ by 0.03 pooled minDCF, so this needs a second seed before it means anything. A plausible hypothesis to test, not a finding: PlayHT training clips give the model a shortcut that hurts other cloned voices.
+
+Next, in order: (1) a second seed of the no-PlayHT recipe; (2) if it holds, the ElevenLabs/2061 subgroup audit (`ml/audit_generalization.py`), a phone channel calibration fitted on the calib split, and a call-level policy replay; (3) only then consider promotion, with the noise regression stated.

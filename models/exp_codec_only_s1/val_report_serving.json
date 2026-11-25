@@ -1,0 +1,51 @@
+{
+  "pooled": {
+    "minDCF": 0.14466012488849242,
+    "EER": 0.03394915254237288,
+    "CLLR": 0.7544216168902365,
+    "actDCF": 1.0,
+    "minDCF_threshold": 0.818661396316219,
+    "AUC": 0.9957421201308355,
+    "log_loss": 0.08800648258606567,
+    "brier": 0.02834480648949511,
+    "FRR_bonafide_at_minDCF": 0.060660124888492414,
+    "FAR_spoof_at_minDCF": 0.021,
+    "p_synth_threshold_at_minDCF": 0.18133860368378096,
+    "n_bonafide": 1121,
+    "n_spoof": 6000
+  },
+  "per_generator_minDCF": {
+    "diffgan_tts": 0.0,
+    "elevenlabs": 0.3467,
+    "grad_tts": 0.0,
+    "openvoicev2": 0.0067,
+    "playht": 0.117,
+    "pro_diff": 0.0,
+    "unit_speech": 0.0847,
+    "wavegrad2": 0.0,
+    "xtts_v2": 0.0,
+    "your_tts": 0.0
+  },
+  "lj_bonafide_vs_lj_voice_spoofs_minDCF": 0.0,
+  "libri_bonafide_vs_cloned_spoofs_minDCF": 0.1573,
+  "bonafide_p_by_source": {
+    "librispeech": [
+      0.0055,
+      0.0815,
+      0.4978
+    ],
+    "ljreal": [
+      0.1629,
+      0.6319,
+      0.8592
+    ]
+  },
+  "calibration": {
+    "a": 1.4197276264367154,
+    "b": 8.830087239336708,
+    "decision_threshold": 0.18133860368378096,
+    "val_minDCF": 0.14466012488849242,
+    "fitted_on": "validation manifest, test-like crops, class-balanced (equal priors)",
+    "val_ECE_10bin": 0.030404865974958974
+  }
+}

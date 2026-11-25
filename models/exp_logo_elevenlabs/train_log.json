@@ -1,0 +1,38 @@
+[
+ {
+  "step": 500,
+  "val_minDCF": 0.0435,
+  "selection_scope": "seen_generators_only",
+  "elapsed_s": 423
+ },
+ {
+  "step": 1000,
+  "val_minDCF": 0.0343,
+  "selection_scope": "seen_generators_only",
+  "elapsed_s": 842
+ },
+ {
+  "step": 1500,
+  "val_minDCF": 0.03,
+  "selection_scope": "seen_generators_only",
+  "elapsed_s": 1261
+ },
+ {
+  "step": 2000,
+  "val_minDCF": 0.0157,
+  "selection_scope": "seen_generators_only",
+  "elapsed_s": 1680
+ },
+ {
+  "step": 2500,
+  "val_minDCF": 0.0264,
+  "selection_scope": "seen_generators_only",
+  "elapsed_s": 2099
+ },
+ {
+  "step": 3000,
+  "val_minDCF": 0.022,
+  "selection_scope": "seen_generators_only",
+  "elapsed_s": 2522
+ }
+]
