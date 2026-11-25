@@ -93,7 +93,28 @@ offline batch of 30 simulated genuine calls through the same media path flagged 
 show the system works end to end on real telephone audio; they are not an accuracy estimate. The calls used
 **self-test mode** (the protected phone calls its own line, so nothing is dialed), which exists for one-phone setups.
 
-## Not built (by design or deferred)
+## Voice-message checker (public site)
+
+`web/app/check` is a consumer page: upload a voice message (WhatsApp/Telegram Opus, iPhone M4A, MP3, voicemail…)
+and get a plain-language verdict, the seconds that looked synthetic, and what to do before sending money. It uses
+`POST /analyze/file`; audio is deleted after the request. Verified with Opus, AAC and MP3 encodings of real and
+synthetic speech (correct in every case; a real voice as MP3 came back *can't tell*, the cautious answer).
+
+Hosting:
+
+* **Web:** Vercel project `proofvoice-check` (https://proofvoice-check.vercel.app), built with
+  `NEXT_PUBLIC_SITE_MODE=public` so only `/check` is shown and the other pages redirect to it.
+* **Backend:** `deploy/modal_app.py` on Modal with `PROOFVOICE_PUBLIC=1`: only `/health` and `/analyze/file`,
+  Guardian/telephony/engine off, 10 checks per IP per 10 min, 20 MB / 60 s limits, one container at most,
+  scales to zero after 2 min. On 8 CPUs a 14 s voice note takes 5–7 s (about 17 s from cold); `GPU = "T4"` in
+  the file makes it ~1–2 s once the Modal account has a payment method.
+* **Status:** the Modal app is **stopped** (Nov 25, 2026), so the site loads but cannot check messages. Restart with
+  `.venv/Scripts/modal deploy deploy/modal_app.py`.
+
+Not yet done before wider use: an accuracy benchmark on real voice messages and current-generation AI voices, a
+privacy/accuracy page, and a custom domain.
+
+
 
 * **Fraud analyst dashboard (P2)** and **developer SDK (P2)**: Shield/Engine expansions; the streaming protocol is
   documented in the contract and `app.telephony.sim` doubles as a reference client.
