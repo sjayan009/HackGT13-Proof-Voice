@@ -1,0 +1,8 @@
+{
+  "a": 1.4197276264367154,
+  "b": 8.830087239336708,
+  "decision_threshold": 0.18133860368378096,
+  "val_minDCF": 0.14466012488849242,
+  "fitted_on": "validation manifest, test-like crops, class-balanced (equal priors)",
+  "val_ECE_10bin": 0.030404865974958974
+}

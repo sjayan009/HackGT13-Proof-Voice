@@ -1,0 +1,113 @@
+{
+  "pooled": {
+    "minDCF": 0.11345703241153732,
+    "EER": 0.026797576568539996,
+    "CLLR": 0.7839064947048687,
+    "actDCF": 1.0,
+    "minDCF_threshold": 0.9953544423915446,
+    "AUC": 0.9966686738031519,
+    "log_loss": 0.3888065128375567,
+    "brier": 0.09241507637579113,
+    "FRR_bonafide_at_minDCF": 0.03479036574487065,
+    "FAR_spoof_at_minDCF": 0.019666666666666666,
+    "p_synth_threshold_at_minDCF": 0.0046455576084554195,
+    "n_bonafide": 1121,
+    "n_spoof": 6000
+  },
+  "per_generator_minDCF": {
+    "diffgan_tts": 0.0,
+    "elevenlabs": 0.2683,
+    "grad_tts": 0.0071,
+    "openvoicev2": 0.0027,
+    "playht": 0.1762,
+    "pro_diff": 0.0,
+    "unit_speech": 0.0881,
+    "wavegrad2": 0.0,
+    "xtts_v2": 0.0018,
+    "your_tts": 0.0
+  },
+  "lj_bonafide_vs_lj_voice_spoofs_minDCF": 0.0083,
+  "libri_bonafide_vs_cloned_spoofs_minDCF": 0.1389,
+  "bonafide_p_by_source": {
+    "librispeech": [
+      0.0001,
+      0.0013,
+      0.0122
+    ],
+    "ljreal": [
+      0.0009,
+      0.0094,
+      0.098
+    ]
+  },
+  "best_step": 2500,
+  "log": [
+    {
+      "step": 500,
+      "val_minDCF": 0.1956,
+      "selection_scope": "all_validation",
+      "elapsed_s": 655
+    },
+    {
+      "step": 1000,
+      "val_minDCF": 0.1665,
+      "selection_scope": "all_validation",
+      "elapsed_s": 1327
+    },
+    {
+      "step": 1500,
+      "val_minDCF": 0.1184,
+      "selection_scope": "all_validation",
+      "elapsed_s": 2026
+    },
+    {
+      "step": 2000,
+      "val_minDCF": 0.1211,
+      "selection_scope": "all_validation",
+      "elapsed_s": 2673
+    },
+    {
+      "step": 2500,
+      "val_minDCF": 0.1135,
+      "selection_scope": "all_validation",
+      "elapsed_s": 3543
+    },
+    {
+      "step": 3000,
+      "val_minDCF": 0.1166,
+      "selection_scope": "all_validation",
+      "elapsed_s": 4272
+    }
+  ],
+  "args": {
+    "backbone": "facebook/wav2vec2-xls-r-300m",
+    "out": "models/exp_codec_only_s0",
+    "steps": 3000,
+    "bs": 8,
+    "accum": 2,
+    "lr": 1e-05,
+    "head_lr": 0.0005,
+    "eval_every": 500,
+    "aug": 1.0,
+    "seed": 0,
+    "exclude_generators": [],
+    "grad_ckpt": false,
+    "lj_share": 0.3,
+    "extra_train": [
+      "train_extra"
+    ],
+    "crop_min": 2.5,
+    "crop_max": 6.0,
+    "num_layers": 12,
+    "init_from": null,
+    "codec_prob": 0.5,
+    "min_noise_snr": 12.0,
+    "noise_prob": 0.35,
+    "hard_generators": [],
+    "hard_share": 0.5,
+    "warmup_steps": 200,
+    "teacher": null,
+    "kd_weight": 0.5,
+    "kd_temp": 2.0
+  }
+}

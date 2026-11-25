@@ -1,0 +1,57 @@
+measured: v3 recipe 0.70 s/step, codec-prob 0.5 3.44 s/step with serial ffmpeg (now threaded: ~2.26 s/step), validation pass 102 s
+
+[codec_only_s0] est 2.8 h
+  train      run: ml/train.py --backbone facebook/wav2vec2-xls-r-300m --steps 3000 --bs 8 --accum 2 --lr 1e-05 --head-lr 0.0005 --eval-every 500 --aug 1.0 --lj-share 0.3 --extra-train train_extra --crop-min 2.5 --crop-max 6.0 --num-layers 12 --codec-prob 0.5 --seed 0 --out models/exp_codec_only_s0
+  train finished in 71.8 min
+  calibrate  run: ml/calibrate.py --model-dir models/exp_codec_only_s0
+  calibrate finished in 2.7 min
+  robustness run: ml/robustness.py --model-dir models/exp_codec_only_s0 --bs 8 --output outputs/results/robustness_exp_codec_only_s0.json
+  robustness finished in 6.5 min
+  traces     run: ml/telephony_eval/score_traces.py --model-dir models/exp_codec_only_s0 --split eval --out-dir outputs/telephony_eval/exp_codec_only_s0
+  traces finished in 18.4 min
+  telephony  run: ml/telephony_eval/analyze.py --traces outputs/telephony_eval/exp_codec_only_s0 --output outputs/results/telephony_eval_exp_codec_only_s0.json
+  telephony finished in 0.8 min
+
+[codec_only_s1] est 2.8 h
+  train      run: ml/train.py --backbone facebook/wav2vec2-xls-r-300m --steps 3000 --bs 8 --accum 2 --lr 1e-05 --head-lr 0.0005 --eval-every 500 --aug 1.0 --lj-share 0.3 --extra-train train_extra --crop-min 2.5 --crop-max 6.0 --num-layers 12 --codec-prob 0.5 --seed 1 --out models/exp_codec_only_s1
+  train finished in 65.1 min
+  calibrate  run: ml/calibrate.py --model-dir models/exp_codec_only_s1
+  calibrate finished in 2.0 min
+  robustness run: ml/robustness.py --model-dir models/exp_codec_only_s1 --bs 8 --output outputs/results/robustness_exp_codec_only_s1.json
+  robustness finished in 10.7 min
+  traces     run: ml/telephony_eval/score_traces.py --model-dir models/exp_codec_only_s1 --split eval --out-dir outputs/telephony_eval/exp_codec_only_s1
+  traces finished in 16.3 min
+  telephony  run: ml/telephony_eval/analyze.py --traces outputs/telephony_eval/exp_codec_only_s1 --output outputs/results/telephony_eval_exp_codec_only_s1.json
+  telephony finished in 0.4 min
+
+[student_l4] est 1.2 h (done, skipped)
+
+[logo_elevenlabs] est 1.6 h
+  train      run: ml/train.py --backbone facebook/wav2vec2-xls-r-300m --steps 3000 --bs 8 --accum 2 --lr 1e-05 --head-lr 0.0005 --eval-every 500 --aug 1.0 --lj-share 0.3 --extra-train train_extra --crop-min 2.5 --crop-max 6.0 --num-layers 12 --exclude-generators elevenlabs --out models/exp_logo_elevenlabs
+  train finished in 42.4 min
+  calibrate  run: ml/calibrate.py --model-dir models/exp_logo_elevenlabs
+  calibrate finished in 1.7 min
+  robustness run: ml/robustness.py --model-dir models/exp_logo_elevenlabs --bs 8 --output outputs/results/robustness_exp_logo_elevenlabs.json
+  robustness finished in 7.9 min
+  traces     run: ml/telephony_eval/score_traces.py --model-dir models/exp_logo_elevenlabs --split eval --out-dir outputs/telephony_eval/exp_logo_elevenlabs
+  traces finished in 22.5 min
+  telephony  run: ml/telephony_eval/analyze.py --traces outputs/telephony_eval/exp_logo_elevenlabs --output outputs/results/telephony_eval_exp_logo_elevenlabs.json
+  telephony finished in 0.7 min
+  unseen     run: ml/unseen.py --exp models/exp_logo_elevenlabs --ref models/selected
+  unseen finished in 0.0 min
+
+[logo_playht] est 1.6 h
+  train      run: ml/train.py --backbone facebook/wav2vec2-xls-r-300m --steps 3000 --bs 8 --accum 2 --lr 1e-05 --head-lr 0.0005 --eval-every 500 --aug 1.0 --lj-share 0.3 --extra-train train_extra --crop-min 2.5 --crop-max 6.0 --num-layers 12 --exclude-generators playht --out models/exp_logo_playht
+  train finished in 47.6 min
+  calibrate  run: ml/calibrate.py --model-dir models/exp_logo_playht
+  calibrate finished in 1.8 min
+  robustness run: ml/robustness.py --model-dir models/exp_logo_playht --bs 8 --output outputs/results/robustness_exp_logo_playht.json
+  robustness finished in 10.7 min
+  traces     run: ml/telephony_eval/score_traces.py --model-dir models/exp_logo_playht --split eval --out-dir outputs/telephony_eval/exp_logo_playht
+  traces finished in 19.2 min
+  telephony  run: ml/telephony_eval/analyze.py --traces outputs/telephony_eval/exp_logo_playht --output outputs/results/telephony_eval_exp_logo_playht.json
+  telephony finished in 0.6 min
+  unseen     run: ml/unseen.py --exp models/exp_logo_playht --ref models/selected
+  unseen finished in 0.0 min
+
+estimated wall-clock for pending runs: 8.8 h (single RTX 4060 Laptop, nothing else on the GPU)

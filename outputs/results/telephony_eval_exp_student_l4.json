@@ -1,0 +1,1850 @@
+{
+  "protocol": {
+    "calls": "outputs/telephony_eval/calls.json",
+    "split_reported": "eval (speaker-disjoint from calib)",
+    "window_s": 3.0,
+    "hop_s": 0.5,
+    "n_bootstrap": 1000,
+    "bootstrap_unit": "call, stratified by kind",
+    "minDCF_costs": "Pspoof 0.5, Cmiss 1, Cfa 4 (HEARSAY)",
+    "gate": "speech_s>=1.0,snr_db>=20,loss_frac<=0.1",
+    "note": "Simulated calls and channels from the validation set; not real telephone data."
+  },
+  "models": {
+    "exp_student_l4": {
+      "traces": "outputs\\telephony_eval\\exp_student_l4",
+      "model_version": "2000",
+      "all_windows": {
+        "clean": {
+          "n_windows": 16651,
+          "n_genuine_windows": 7693,
+          "n_calls": 270,
+          "EER": 0.0935,
+          "genuine_FA_at_serving_thr": 0.1648,
+          "spoof_miss_at_serving_thr": 0.0601,
+          "AUC": 0.9704,
+          "minDCF": 0.3802,
+          "actDCF_at_serving_thr": 0.4051,
+          "ci95": {
+            "EER": [
+              0.0744,
+              0.1153
+            ],
+            "genuine_FA_at_serving_thr": [
+              0.1292,
+              0.2022
+            ],
+            "spoof_miss_at_serving_thr": [
+              0.0397,
+              0.0831
+            ]
+          },
+          "genuine_FA_by_speaker": {
+            "LJ": 0.5702,
+            "libri_1580": 0.3085,
+            "libri_174": 0.0012,
+            "libri_2277": 0.0377,
+            "libri_2300": 0.4944,
+            "libri_3853": 0.0369,
+            "libri_4970": 0.1512,
+            "libri_6930": 0.0429,
+            "libri_8455": 0.0055
+          },
+          "call_level_illustrative": {
+            "genuine_calls_alarmed": {
+              "n": 112,
+              "any_window": 0.6786,
+              "3_consecutive_windows": 0.5
+            },
+            "synthetic_calls_detected": {
+              "n": 130,
+              "any_window": 1.0,
+              "3_consecutive_windows": 1.0
+            }
+          }
+        },
+        "telephone": {
+          "n_windows": 16651,
+          "n_genuine_windows": 7693,
+          "n_calls": 270,
+          "EER": 0.1871,
+          "genuine_FA_at_serving_thr": 0.3598,
+          "spoof_miss_at_serving_thr": 0.1013,
+          "AUC": 0.8902,
+          "minDCF": 0.7464,
+          "actDCF_at_serving_thr": 0.7648,
+          "ci95": {
+            "EER": [
+              0.1594,
+              0.218
+            ],
+            "genuine_FA_at_serving_thr": [
+              0.3124,
+              0.4152
+            ],
+            "spoof_miss_at_serving_thr": [
+              0.0718,
+              0.1377
+            ]
+          },
+          "genuine_FA_by_speaker": {
+            "LJ": 0.7868,
+            "libri_1580": 0.6047,
+            "libri_174": 0.0267,
+            "libri_2277": 0.1497,
+            "libri_2300": 0.8836,
+            "libri_3853": 0.2119,
+            "libri_4970": 0.4012,
+            "libri_6930": 0.3143,
+            "libri_8455": 0.0451
+          },
+          "call_level_illustrative": {
+            "genuine_calls_alarmed": {
+              "n": 112,
+              "any_window": 0.9196,
+              "3_consecutive_windows": 0.7768
+            },
+            "synthetic_calls_detected": {
+              "n": 130,
+              "any_window": 1.0,
+              "3_consecutive_windows": 1.0
+            }
+          }
+        },
+        "telephone_noise30": {
+          "n_windows": 16651,
+          "n_genuine_windows": 7693,
+          "n_calls": 270,
+          "EER": 0.2121,
+          "genuine_FA_at_serving_thr": 0.3979,
+          "spoof_miss_at_serving_thr": 0.0985,
+          "AUC": 0.8738,
+          "minDCF": 0.7373,
+          "actDCF_at_serving_thr": 0.7917,
+          "ci95": {
+            "EER": [
+              0.1822,
+              0.2425
+            ],
+            "genuine_FA_at_serving_thr": [
+              0.347,
+              0.4525
+            ],
+            "spoof_miss_at_serving_thr": [
+              0.0694,
+              0.1291
+            ]
+          },
+          "genuine_FA_by_speaker": {
+            "LJ": 0.8718,
+            "libri_1580": 0.6149,
+            "libri_174": 0.0174,
+            "libri_2277": 0.2178,
+            "libri_2300": 0.8986,
+            "libri_3853": 0.3488,
+            "libri_4970": 0.4547,
+            "libri_6930": 0.3297,
+            "libri_8455": 0.0341
+          },
+          "call_level_illustrative": {
+            "genuine_calls_alarmed": {
+              "n": 112,
+              "any_window": 0.8839,
+              "3_consecutive_windows": 0.7857
+            },
+            "synthetic_calls_detected": {
+              "n": 130,
+              "any_window": 1.0,
+              "3_consecutive_windows": 1.0
+            }
+          }
+        },
+        "telephone_noise20": {
+          "n_windows": 16651,
+          "n_genuine_windows": 7693,
+          "n_calls": 270,
+          "EER": 0.2123,
+          "genuine_FA_at_serving_thr": 0.507,
+          "spoof_miss_at_serving_thr": 0.052,
+          "AUC": 0.869,
+          "minDCF": 0.7108,
+          "actDCF_at_serving_thr": 0.715,
+          "ci95": {
+            "EER": [
+              0.1858,
+              0.2409
+            ],
+            "genuine_FA_at_serving_thr": [
+              0.4538,
+              0.5667
+            ],
+            "spoof_miss_at_serving_thr": [
+              0.0379,
+              0.0675
+            ]
+          },
+          "genuine_FA_by_speaker": {
+            "LJ": 0.9116,
+            "libri_1580": 0.7865,
+            "libri_174": 0.0487,
+            "libri_2277": 0.3257,
+            "libri_2300": 0.9324,
+            "libri_3853": 0.6655,
+            "libri_4970": 0.5163,
+            "libri_6930": 0.433,
+            "libri_8455": 0.1198
+          },
+          "call_level_illustrative": {
+            "genuine_calls_alarmed": {
+              "n": 112,
+              "any_window": 0.9643,
+              "3_consecutive_windows": 0.8661
+            },
+            "synthetic_calls_detected": {
+              "n": 130,
+              "any_window": 1.0,
+              "3_consecutive_windows": 1.0
+            }
+          }
+        },
+        "telephone_loss5": {
+          "n_windows": 16651,
+          "n_genuine_windows": 7693,
+          "n_calls": 270,
+          "EER": 0.1932,
+          "genuine_FA_at_serving_thr": 0.483,
+          "spoof_miss_at_serving_thr": 0.0675,
+          "AUC": 0.885,
+          "minDCF": 0.7453,
+          "actDCF_at_serving_thr": 0.7532,
+          "ci95": {
+            "EER": [
+              0.1684,
+              0.2225
+            ],
+            "genuine_FA_at_serving_thr": [
+              0.4343,
+              0.5345
+            ],
+            "spoof_miss_at_serving_thr": [
+              0.0454,
+              0.0938
+            ]
+          },
+          "genuine_FA_by_speaker": {
+            "LJ": 0.8752,
+            "libri_1580": 0.7222,
+            "libri_174": 0.0985,
+            "libri_2277": 0.2702,
+            "libri_2300": 0.9374,
+            "libri_3853": 0.3857,
+            "libri_4970": 0.5326,
+            "libri_6930": 0.5308,
+            "libri_8455": 0.1615
+          },
+          "call_level_illustrative": {
+            "genuine_calls_alarmed": {
+              "n": 112,
+              "any_window": 0.9821,
+              "3_consecutive_windows": 0.8929
+            },
+            "synthetic_calls_detected": {
+              "n": 130,
+              "any_window": 1.0,
+              "3_consecutive_windows": 1.0
+            }
+          }
+        },
+        "opus_telephone": {
+          "n_windows": 16651,
+          "n_genuine_windows": 7693,
+          "n_calls": 270,
+          "EER": 0.194,
+          "genuine_FA_at_serving_thr": 0.4123,
+          "spoof_miss_at_serving_thr": 0.088,
+          "AUC": 0.884,
+          "minDCF": 0.7479,
+          "actDCF_at_serving_thr": 0.7642,
+          "ci95": {
+            "EER": [
+              0.1656,
+              0.2207
+            ],
+            "genuine_FA_at_serving_thr": [
+              0.357,
+              0.4687
+            ],
+            "spoof_miss_at_serving_thr": [
+              0.0608,
+              0.1161
+            ]
+          },
+          "genuine_FA_by_speaker": {
+            "LJ": 0.8839,
+            "libri_1580": 0.6639,
+            "libri_174": 0.0382,
+            "libri_2277": 0.1916,
+            "libri_2300": 0.9312,
+            "libri_3853": 0.2845,
+            "libri_4970": 0.4988,
+            "libri_6930": 0.3484,
+            "libri_8455": 0.0736
+          },
+          "call_level_illustrative": {
+            "genuine_calls_alarmed": {
+              "n": 112,
+              "any_window": 0.9375,
+              "3_consecutive_windows": 0.8482
+            },
+            "synthetic_calls_detected": {
+              "n": 130,
+              "any_window": 1.0,
+              "3_consecutive_windows": 1.0
+            }
+          }
+        },
+        "replay_sim": {
+          "n_windows": 16651,
+          "n_genuine_windows": 7693,
+          "n_calls": 270,
+          "EER": 0.4751,
+          "genuine_FA_at_serving_thr": 0.0048,
+          "spoof_miss_at_serving_thr": 0.9202,
+          "AUC": 0.5529,
+          "minDCF": 1.0,
+          "actDCF_at_serving_thr": 3.6855,
+          "ci95": {
+            "EER": [
+              0.441,
+              0.508
+            ],
+            "genuine_FA_at_serving_thr": [
+              0.0021,
+              0.0079
+            ],
+            "spoof_miss_at_serving_thr": [
+              0.8899,
+              0.9459
+            ]
+          },
+          "genuine_FA_by_speaker": {
+            "LJ": 0.0225,
+            "libri_1580": 0.0061,
+            "libri_174": 0.0,
+            "libri_2277": 0.0,
+            "libri_2300": 0.0188,
+            "libri_3853": 0.0,
+            "libri_4970": 0.0035,
+            "libri_6930": 0.0,
+            "libri_8455": 0.0
+          },
+          "call_level_illustrative": {
+            "genuine_calls_alarmed": {
+              "n": 112,
+              "any_window": 0.0893,
+              "3_consecutive_windows": 0.0357
+            },
+            "synthetic_calls_detected": {
+              "n": 130,
+              "any_window": 0.3077,
+              "3_consecutive_windows": 0.2154
+            }
+          }
+        }
+      },
+      "gated": {
+        "clean": {
+          "coverage": 0.99,
+          "EER": 0.0935,
+          "genuine_FA_at_serving_thr": 0.1673,
+          "spoof_miss_at_serving_thr": 0.0596,
+          "AUC": 0.9702,
+          "minDCF": 0.3825,
+          "actDCF_at_serving_thr": 0.4059
+        },
+        "telephone": {
+          "coverage": 0.9889,
+          "EER": 0.1883,
+          "genuine_FA_at_serving_thr": 0.3613,
+          "spoof_miss_at_serving_thr": 0.1011,
+          "AUC": 0.8898,
+          "minDCF": 0.7463,
+          "actDCF_at_serving_thr": 0.7655
+        },
+        "telephone_noise30": {
+          "coverage": 0.978,
+          "EER": 0.2117,
+          "genuine_FA_at_serving_thr": 0.3929,
+          "spoof_miss_at_serving_thr": 0.0974,
+          "AUC": 0.8742,
+          "minDCF": 0.7299,
+          "actDCF_at_serving_thr": 0.7824
+        },
+        "telephone_noise20": {
+          "coverage": 0.7298,
+          "EER": 0.2,
+          "genuine_FA_at_serving_thr": 0.4603,
+          "spoof_miss_at_serving_thr": 0.0497,
+          "AUC": 0.8804,
+          "minDCF": 0.6533,
+          "actDCF_at_serving_thr": 0.6593
+        },
+        "telephone_loss5": {
+          "coverage": 0.8941,
+          "EER": 0.1931,
+          "genuine_FA_at_serving_thr": 0.4713,
+          "spoof_miss_at_serving_thr": 0.0702,
+          "AUC": 0.8851,
+          "minDCF": 0.7458,
+          "actDCF_at_serving_thr": 0.752
+        },
+        "opus_telephone": {
+          "coverage": 0.9893,
+          "EER": 0.1944,
+          "genuine_FA_at_serving_thr": 0.4128,
+          "spoof_miss_at_serving_thr": 0.0876,
+          "AUC": 0.8836,
+          "minDCF": 0.7475,
+          "actDCF_at_serving_thr": 0.7634
+        },
+        "replay_sim": {
+          "coverage": 0.9766,
+          "EER": 0.4785,
+          "genuine_FA_at_serving_thr": 0.0048,
+          "spoof_miss_at_serving_thr": 0.9229,
+          "AUC": 0.5485,
+          "minDCF": 1.0,
+          "actDCF_at_serving_thr": 3.6964
+        }
+      }
+    }
+  },
+  "abstention": {
+    "exp_student_l4": {
+      "eval": {
+        "clean": {
+          "speech_s": [
+            {
+              "gate": "speech_s>=0.0",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=0.5",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=1.0",
+              "coverage": 0.9956,
+              "EER": 0.0934,
+              "genuine_FA_at_serving_thr": 0.1658,
+              "spoof_miss_at_serving_thr": 0.0597,
+              "balanced_error": 0.1127,
+              "genuine_coverage": 0.9917
+            },
+            {
+              "gate": "speech_s>=1.5",
+              "coverage": 0.935,
+              "EER": 0.0958,
+              "genuine_FA_at_serving_thr": 0.1713,
+              "spoof_miss_at_serving_thr": 0.0604,
+              "balanced_error": 0.1159,
+              "genuine_coverage": 0.8922
+            },
+            {
+              "gate": "speech_s>=2.0",
+              "coverage": 0.7516,
+              "EER": 0.0933,
+              "genuine_FA_at_serving_thr": 0.1759,
+              "spoof_miss_at_serving_thr": 0.0579,
+              "balanced_error": 0.1169,
+              "genuine_coverage": 0.6748
+            },
+            {
+              "gate": "speech_s>=2.5",
+              "coverage": 0.3809,
+              "EER": 0.0927,
+              "genuine_FA_at_serving_thr": 0.2023,
+              "spoof_miss_at_serving_thr": 0.0518,
+              "balanced_error": 0.1271,
+              "genuine_coverage": 0.3129
+            }
+          ],
+          "snr_db": [
+            {
+              "gate": "snr_db>=-inf",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=5",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=10",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=15",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=20",
+              "coverage": 0.9945,
+              "EER": 0.0938,
+              "genuine_FA_at_serving_thr": 0.1663,
+              "spoof_miss_at_serving_thr": 0.06,
+              "balanced_error": 0.1132,
+              "genuine_coverage": 0.9895
+            },
+            {
+              "gate": "snr_db>=25",
+              "coverage": 0.9619,
+              "EER": 0.0928,
+              "genuine_FA_at_serving_thr": 0.1675,
+              "spoof_miss_at_serving_thr": 0.0572,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 0.9554
+            },
+            {
+              "gate": "snr_db>=30",
+              "coverage": 0.8396,
+              "EER": 0.0873,
+              "genuine_FA_at_serving_thr": 0.1689,
+              "spoof_miss_at_serving_thr": 0.0498,
+              "balanced_error": 0.1094,
+              "genuine_coverage": 0.8412
+            }
+          ],
+          "loss_frac": [
+            {
+              "gate": "loss_frac<=1.0",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.2",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.1",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.05",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.02",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.0",
+              "coverage": 1.0,
+              "EER": 0.0935,
+              "genuine_FA_at_serving_thr": 0.1648,
+              "spoof_miss_at_serving_thr": 0.0601,
+              "balanced_error": 0.1124,
+              "genuine_coverage": 1.0
+            }
+          ]
+        },
+        "telephone": {
+          "speech_s": [
+            {
+              "gate": "speech_s>=0.0",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=0.5",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=1.0",
+              "coverage": 0.993,
+              "EER": 0.1877,
+              "genuine_FA_at_serving_thr": 0.3617,
+              "spoof_miss_at_serving_thr": 0.1011,
+              "balanced_error": 0.2314,
+              "genuine_coverage": 0.9891
+            },
+            {
+              "gate": "speech_s>=1.5",
+              "coverage": 0.9157,
+              "EER": 0.1925,
+              "genuine_FA_at_serving_thr": 0.3679,
+              "spoof_miss_at_serving_thr": 0.1037,
+              "balanced_error": 0.2358,
+              "genuine_coverage": 0.8746
+            },
+            {
+              "gate": "speech_s>=2.0",
+              "coverage": 0.6948,
+              "EER": 0.197,
+              "genuine_FA_at_serving_thr": 0.3725,
+              "spoof_miss_at_serving_thr": 0.1057,
+              "balanced_error": 0.2391,
+              "genuine_coverage": 0.6389
+            },
+            {
+              "gate": "speech_s>=2.5",
+              "coverage": 0.2826,
+              "EER": 0.2263,
+              "genuine_FA_at_serving_thr": 0.419,
+              "spoof_miss_at_serving_thr": 0.1151,
+              "balanced_error": 0.2671,
+              "genuine_coverage": 0.2649
+            }
+          ],
+          "snr_db": [
+            {
+              "gate": "snr_db>=-inf",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=5",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=10",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=15",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=20",
+              "coverage": 0.9959,
+              "EER": 0.1879,
+              "genuine_FA_at_serving_thr": 0.3594,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2303,
+              "genuine_coverage": 0.991
+            },
+            {
+              "gate": "snr_db>=25",
+              "coverage": 0.9735,
+              "EER": 0.1876,
+              "genuine_FA_at_serving_thr": 0.3571,
+              "spoof_miss_at_serving_thr": 0.0992,
+              "balanced_error": 0.2281,
+              "genuine_coverage": 0.9535
+            },
+            {
+              "gate": "snr_db>=30",
+              "coverage": 0.8745,
+              "EER": 0.1787,
+              "genuine_FA_at_serving_thr": 0.3585,
+              "spoof_miss_at_serving_thr": 0.0897,
+              "balanced_error": 0.2241,
+              "genuine_coverage": 0.8504
+            }
+          ],
+          "loss_frac": [
+            {
+              "gate": "loss_frac<=1.0",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.2",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.1",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.05",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.02",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.0",
+              "coverage": 1.0,
+              "EER": 0.1871,
+              "genuine_FA_at_serving_thr": 0.3598,
+              "spoof_miss_at_serving_thr": 0.1013,
+              "balanced_error": 0.2305,
+              "genuine_coverage": 1.0
+            }
+          ]
+        },
+        "telephone_noise30": {
+          "speech_s": [
+            {
+              "gate": "speech_s>=0.0",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=0.5",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=1.0",
+              "coverage": 0.9909,
+              "EER": 0.2129,
+              "genuine_FA_at_serving_thr": 0.4,
+              "spoof_miss_at_serving_thr": 0.0976,
+              "balanced_error": 0.2488,
+              "genuine_coverage": 0.9856
+            },
+            {
+              "gate": "speech_s>=1.5",
+              "coverage": 0.8887,
+              "EER": 0.2198,
+              "genuine_FA_at_serving_thr": 0.4222,
+              "spoof_miss_at_serving_thr": 0.0955,
+              "balanced_error": 0.2588,
+              "genuine_coverage": 0.8402
+            },
+            {
+              "gate": "speech_s>=2.0",
+              "coverage": 0.5917,
+              "EER": 0.2257,
+              "genuine_FA_at_serving_thr": 0.461,
+              "spoof_miss_at_serving_thr": 0.0904,
+              "balanced_error": 0.2757,
+              "genuine_coverage": 0.5532
+            },
+            {
+              "gate": "speech_s>=2.5",
+              "coverage": 0.078,
+              "EER": 0.2926,
+              "genuine_FA_at_serving_thr": 0.6009,
+              "spoof_miss_at_serving_thr": 0.0801,
+              "balanced_error": 0.3405,
+              "genuine_coverage": 0.112
+            }
+          ],
+          "snr_db": [
+            {
+              "gate": "snr_db>=-inf",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=5",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=10",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=15",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=20",
+              "coverage": 0.9871,
+              "EER": 0.2108,
+              "genuine_FA_at_serving_thr": 0.3908,
+              "spoof_miss_at_serving_thr": 0.0983,
+              "balanced_error": 0.2445,
+              "genuine_coverage": 0.9726
+            },
+            {
+              "gate": "snr_db>=25",
+              "coverage": 0.8401,
+              "EER": 0.2027,
+              "genuine_FA_at_serving_thr": 0.3722,
+              "spoof_miss_at_serving_thr": 0.0914,
+              "balanced_error": 0.2318,
+              "genuine_coverage": 0.7359
+            },
+            {
+              "gate": "snr_db>=30",
+              "coverage": 0.1654,
+              "EER": 0.1777,
+              "genuine_FA_at_serving_thr": 0.3182,
+              "spoof_miss_at_serving_thr": 0.0663,
+              "balanced_error": 0.1922,
+              "genuine_coverage": 0.103
+            }
+          ],
+          "loss_frac": [
+            {
+              "gate": "loss_frac<=1.0",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.2",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.1",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.05",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.02",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.0",
+              "coverage": 1.0,
+              "EER": 0.2121,
+              "genuine_FA_at_serving_thr": 0.3979,
+              "spoof_miss_at_serving_thr": 0.0985,
+              "balanced_error": 0.2482,
+              "genuine_coverage": 1.0
+            }
+          ]
+        },
+        "telephone_noise20": {
+          "speech_s": [
+            {
+              "gate": "speech_s>=0.0",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=0.5",
+              "coverage": 0.9993,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 0.9988
+            },
+            {
+              "gate": "speech_s>=1.0",
+              "coverage": 0.9561,
+              "EER": 0.2137,
+              "genuine_FA_at_serving_thr": 0.5146,
+              "spoof_miss_at_serving_thr": 0.0507,
+              "balanced_error": 0.2827,
+              "genuine_coverage": 0.9282
+            },
+            {
+              "gate": "speech_s>=1.5",
+              "coverage": 0.7158,
+              "EER": 0.2254,
+              "genuine_FA_at_serving_thr": 0.5488,
+              "spoof_miss_at_serving_thr": 0.0427,
+              "balanced_error": 0.2958,
+              "genuine_coverage": 0.6395
+            },
+            {
+              "gate": "speech_s>=2.0",
+              "coverage": 0.2152,
+              "EER": 0.2894,
+              "genuine_FA_at_serving_thr": 0.6855,
+              "spoof_miss_at_serving_thr": 0.0286,
+              "balanced_error": 0.3571,
+              "genuine_coverage": 0.1976
+            },
+            {
+              "gate": "speech_s>=2.5",
+              "coverage": 0.0034
+            }
+          ],
+          "snr_db": [
+            {
+              "gate": "snr_db>=-inf",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=5",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=10",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=15",
+              "coverage": 0.9985,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.5059,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2789,
+              "genuine_coverage": 0.9968
+            },
+            {
+              "gate": "snr_db>=20",
+              "coverage": 0.7615,
+              "EER": 0.1964,
+              "genuine_FA_at_serving_thr": 0.4498,
+              "spoof_miss_at_serving_thr": 0.0513,
+              "balanced_error": 0.2506,
+              "genuine_coverage": 0.6025
+            },
+            {
+              "gate": "snr_db>=25",
+              "coverage": 0.0077,
+              "EER": 0.1793,
+              "genuine_FA_at_serving_thr": 0.2394,
+              "spoof_miss_at_serving_thr": 0.1228,
+              "balanced_error": 0.1811,
+              "genuine_coverage": 0.0092
+            },
+            {
+              "gate": "snr_db>=30",
+              "coverage": 0.0
+            }
+          ],
+          "loss_frac": [
+            {
+              "gate": "loss_frac<=1.0",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.2",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.1",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.05",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.02",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.0",
+              "coverage": 1.0,
+              "EER": 0.2123,
+              "genuine_FA_at_serving_thr": 0.507,
+              "spoof_miss_at_serving_thr": 0.052,
+              "balanced_error": 0.2795,
+              "genuine_coverage": 1.0
+            }
+          ]
+        },
+        "telephone_loss5": {
+          "speech_s": [
+            {
+              "gate": "speech_s>=0.0",
+              "coverage": 1.0,
+              "EER": 0.1932,
+              "genuine_FA_at_serving_thr": 0.483,
+              "spoof_miss_at_serving_thr": 0.0675,
+              "balanced_error": 0.2753,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=0.5",
+              "coverage": 1.0,
+              "EER": 0.1932,
+              "genuine_FA_at_serving_thr": 0.483,
+              "spoof_miss_at_serving_thr": 0.0675,
+              "balanced_error": 0.2753,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=1.0",
+              "coverage": 0.9894,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4855,
+              "spoof_miss_at_serving_thr": 0.0671,
+              "balanced_error": 0.2763,
+              "genuine_coverage": 0.9834
+            },
+            {
+              "gate": "speech_s>=1.5",
+              "coverage": 0.8897,
+              "EER": 0.1989,
+              "genuine_FA_at_serving_thr": 0.4949,
+              "spoof_miss_at_serving_thr": 0.0688,
+              "balanced_error": 0.2819,
+              "genuine_coverage": 0.84
+            },
+            {
+              "gate": "speech_s>=2.0",
+              "coverage": 0.6282,
+              "EER": 0.209,
+              "genuine_FA_at_serving_thr": 0.5149,
+              "spoof_miss_at_serving_thr": 0.0719,
+              "balanced_error": 0.2934,
+              "genuine_coverage": 0.5753
+            },
+            {
+              "gate": "speech_s>=2.5",
+              "coverage": 0.2003,
+              "EER": 0.2546,
+              "genuine_FA_at_serving_thr": 0.5829,
+              "spoof_miss_at_serving_thr": 0.0834,
+              "balanced_error": 0.3332,
+              "genuine_coverage": 0.1951
+            }
+          ],
+          "snr_db": [
+            {
+              "gate": "snr_db>=-inf",
+              "coverage": 1.0,
+              "EER": 0.1932,
+              "genuine_FA_at_serving_thr": 0.483,
+              "spoof_miss_at_serving_thr": 0.0675,
+              "balanced_error": 0.2753,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=5",
+              "coverage": 1.0,
+              "EER": 0.1932,
+              "genuine_FA_at_serving_thr": 0.483,
+              "spoof_miss_at_serving_thr": 0.0675,
+              "balanced_error": 0.2753,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=10",
+              "coverage": 1.0,
+              "EER": 0.1932,
+              "genuine_FA_at_serving_thr": 0.483,
+              "spoof_miss_at_serving_thr": 0.0675,
+              "balanced_error": 0.2753,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=15",
+              "coverage": 1.0,
+              "EER": 0.1932,
+              "genuine_FA_at_serving_thr": 0.483,
+              "spoof_miss_at_serving_thr": 0.0675,
+              "balanced_error": 0.2753,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=20",
+              "coverage": 0.9978,
+              "EER": 0.1936,
+              "genuine_FA_at_serving_thr": 0.4827,
+              "spoof_miss_at_serving_thr": 0.0675,
+              "balanced_error": 0.2751,
+              "genuine_coverage": 0.9953
+            },
+            {
+              "gate": "snr_db>=25",
+              "coverage": 0.9844,
+              "EER": 0.1938,
+              "genuine_FA_at_serving_thr": 0.4817,
+              "spoof_miss_at_serving_thr": 0.0666,
+              "balanced_error": 0.2741,
+              "genuine_coverage": 0.971
+            },
+            {
+              "gate": "snr_db>=30",
+              "coverage": 0.9132,
+              "EER": 0.1845,
+              "genuine_FA_at_serving_thr": 0.4825,
+              "spoof_miss_at_serving_thr": 0.0602,
+              "balanced_error": 0.2713,
+              "genuine_coverage": 0.8944
+            }
+          ],
+          "loss_frac": [
+            {
+              "gate": "loss_frac<=1.0",
+              "coverage": 1.0,
+              "EER": 0.1932,
+              "genuine_FA_at_serving_thr": 0.483,
+              "spoof_miss_at_serving_thr": 0.0675,
+              "balanced_error": 0.2753,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.2",
+              "coverage": 0.9985,
+              "EER": 0.1932,
+              "genuine_FA_at_serving_thr": 0.4827,
+              "spoof_miss_at_serving_thr": 0.0676,
+              "balanced_error": 0.2751,
+              "genuine_coverage": 0.9991
+            },
+            {
+              "gate": "loss_frac<=0.1",
+              "coverage": 0.9047,
+              "EER": 0.1928,
+              "genuine_FA_at_serving_thr": 0.4692,
+              "spoof_miss_at_serving_thr": 0.0706,
+              "balanced_error": 0.2699,
+              "genuine_coverage": 0.8957
+            },
+            {
+              "gate": "loss_frac<=0.05",
+              "coverage": 0.574,
+              "EER": 0.1938,
+              "genuine_FA_at_serving_thr": 0.4356,
+              "spoof_miss_at_serving_thr": 0.081,
+              "balanced_error": 0.2583,
+              "genuine_coverage": 0.5619
+            },
+            {
+              "gate": "loss_frac<=0.02",
+              "coverage": 0.2846,
+              "EER": 0.1891,
+              "genuine_FA_at_serving_thr": 0.4136,
+              "spoof_miss_at_serving_thr": 0.0918,
+              "balanced_error": 0.2527,
+              "genuine_coverage": 0.2904
+            },
+            {
+              "gate": "loss_frac<=0.0",
+              "coverage": 0.0725,
+              "EER": 0.1748,
+              "genuine_FA_at_serving_thr": 0.364,
+              "spoof_miss_at_serving_thr": 0.0842,
+              "balanced_error": 0.2241,
+              "genuine_coverage": 0.0736
+            }
+          ]
+        },
+        "opus_telephone": {
+          "speech_s": [
+            {
+              "gate": "speech_s>=0.0",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=0.5",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=1.0",
+              "coverage": 0.9918,
+              "EER": 0.1942,
+              "genuine_FA_at_serving_thr": 0.4133,
+              "spoof_miss_at_serving_thr": 0.0876,
+              "balanced_error": 0.2505,
+              "genuine_coverage": 0.987
+            },
+            {
+              "gate": "speech_s>=1.5",
+              "coverage": 0.9058,
+              "EER": 0.1989,
+              "genuine_FA_at_serving_thr": 0.4203,
+              "spoof_miss_at_serving_thr": 0.0899,
+              "balanced_error": 0.2551,
+              "genuine_coverage": 0.8613
+            },
+            {
+              "gate": "speech_s>=2.0",
+              "coverage": 0.674,
+              "EER": 0.2058,
+              "genuine_FA_at_serving_thr": 0.4264,
+              "spoof_miss_at_serving_thr": 0.0934,
+              "balanced_error": 0.2599,
+              "genuine_coverage": 0.6207
+            },
+            {
+              "gate": "speech_s>=2.5",
+              "coverage": 0.2548,
+              "EER": 0.2383,
+              "genuine_FA_at_serving_thr": 0.4839,
+              "spoof_miss_at_serving_thr": 0.1059,
+              "balanced_error": 0.2949,
+              "genuine_coverage": 0.2509
+            }
+          ],
+          "snr_db": [
+            {
+              "gate": "snr_db>=-inf",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=5",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=10",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=15",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=20",
+              "coverage": 0.9975,
+              "EER": 0.1944,
+              "genuine_FA_at_serving_thr": 0.4118,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2499,
+              "genuine_coverage": 0.9945
+            },
+            {
+              "gate": "snr_db>=25",
+              "coverage": 0.9791,
+              "EER": 0.1948,
+              "genuine_FA_at_serving_thr": 0.409,
+              "spoof_miss_at_serving_thr": 0.0868,
+              "balanced_error": 0.2479,
+              "genuine_coverage": 0.9604
+            },
+            {
+              "gate": "snr_db>=30",
+              "coverage": 0.9037,
+              "EER": 0.1881,
+              "genuine_FA_at_serving_thr": 0.4111,
+              "spoof_miss_at_serving_thr": 0.0788,
+              "balanced_error": 0.245,
+              "genuine_coverage": 0.8815
+            }
+          ],
+          "loss_frac": [
+            {
+              "gate": "loss_frac<=1.0",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.2",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.1",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.05",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.02",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.0",
+              "coverage": 1.0,
+              "EER": 0.194,
+              "genuine_FA_at_serving_thr": 0.4123,
+              "spoof_miss_at_serving_thr": 0.088,
+              "balanced_error": 0.2501,
+              "genuine_coverage": 1.0
+            }
+          ]
+        },
+        "replay_sim": {
+          "speech_s": [
+            {
+              "gate": "speech_s>=0.0",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=0.5",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=1.0",
+              "coverage": 0.9981,
+              "EER": 0.4749,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 0.9971
+            },
+            {
+              "gate": "speech_s>=1.5",
+              "coverage": 0.9544,
+              "EER": 0.4758,
+              "genuine_FA_at_serving_thr": 0.0046,
+              "spoof_miss_at_serving_thr": 0.9194,
+              "balanced_error": 0.462,
+              "genuine_coverage": 0.9279
+            },
+            {
+              "gate": "speech_s>=2.0",
+              "coverage": 0.7988,
+              "EER": 0.4803,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9184,
+              "balanced_error": 0.4616,
+              "genuine_coverage": 0.7283
+            },
+            {
+              "gate": "speech_s>=2.5",
+              "coverage": 0.541,
+              "EER": 0.5017,
+              "genuine_FA_at_serving_thr": 0.0051,
+              "spoof_miss_at_serving_thr": 0.9296,
+              "balanced_error": 0.4673,
+              "genuine_coverage": 0.4583
+            }
+          ],
+          "snr_db": [
+            {
+              "gate": "snr_db>=-inf",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=5",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=10",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=15",
+              "coverage": 0.9957,
+              "EER": 0.4764,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 0.9987
+            },
+            {
+              "gate": "snr_db>=20",
+              "coverage": 0.9783,
+              "EER": 0.4788,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9228,
+              "balanced_error": 0.4638,
+              "genuine_coverage": 0.9835
+            },
+            {
+              "gate": "snr_db>=25",
+              "coverage": 0.9326,
+              "EER": 0.4775,
+              "genuine_FA_at_serving_thr": 0.0046,
+              "spoof_miss_at_serving_thr": 0.9224,
+              "balanced_error": 0.4635,
+              "genuine_coverage": 0.9328
+            },
+            {
+              "gate": "snr_db>=30",
+              "coverage": 0.7902,
+              "EER": 0.4733,
+              "genuine_FA_at_serving_thr": 0.0049,
+              "spoof_miss_at_serving_thr": 0.9205,
+              "balanced_error": 0.4627,
+              "genuine_coverage": 0.7983
+            }
+          ],
+          "loss_frac": [
+            {
+              "gate": "loss_frac<=1.0",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.2",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.1",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.05",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.02",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.0",
+              "coverage": 1.0,
+              "EER": 0.4751,
+              "genuine_FA_at_serving_thr": 0.0048,
+              "spoof_miss_at_serving_thr": 0.9202,
+              "balanced_error": 0.4625,
+              "genuine_coverage": 1.0
+            }
+          ]
+        },
+        "telephone_family": {
+          "speech_s": [
+            {
+              "gate": "speech_s>=0.0",
+              "coverage": 1.0,
+              "EER": 0.2016,
+              "genuine_FA_at_serving_thr": 0.432,
+              "spoof_miss_at_serving_thr": 0.0814,
+              "balanced_error": 0.2567,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "speech_s>=0.5",
+              "coverage": 0.9999,
+              "EER": 0.2017,
+              "genuine_FA_at_serving_thr": 0.432,
+              "spoof_miss_at_serving_thr": 0.0815,
+              "balanced_error": 0.2567,
+              "genuine_coverage": 0.9998
+            },
+            {
+              "gate": "speech_s>=1.0",
+              "coverage": 0.9843,
+              "EER": 0.2017,
+              "genuine_FA_at_serving_thr": 0.434,
+              "spoof_miss_at_serving_thr": 0.0809,
+              "balanced_error": 0.2575,
+              "genuine_coverage": 0.9747
+            },
+            {
+              "gate": "speech_s>=1.5",
+              "coverage": 0.8631,
+              "EER": 0.2063,
+              "genuine_FA_at_serving_thr": 0.4451,
+              "spoof_miss_at_serving_thr": 0.0815,
+              "balanced_error": 0.2633,
+              "genuine_coverage": 0.8111
+            },
+            {
+              "gate": "speech_s>=2.0",
+              "coverage": 0.5608,
+              "EER": 0.2153,
+              "genuine_FA_at_serving_thr": 0.46,
+              "spoof_miss_at_serving_thr": 0.086,
+              "balanced_error": 0.273,
+              "genuine_coverage": 0.5171
+            },
+            {
+              "gate": "speech_s>=2.5",
+              "coverage": 0.1638,
+              "EER": 0.2479,
+              "genuine_FA_at_serving_thr": 0.5059,
+              "spoof_miss_at_serving_thr": 0.1021,
+              "balanced_error": 0.304,
+              "genuine_coverage": 0.1659
+            }
+          ],
+          "snr_db": [
+            {
+              "gate": "snr_db>=-inf",
+              "coverage": 1.0,
+              "EER": 0.2016,
+              "genuine_FA_at_serving_thr": 0.432,
+              "spoof_miss_at_serving_thr": 0.0814,
+              "balanced_error": 0.2567,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=5",
+              "coverage": 1.0,
+              "EER": 0.2016,
+              "genuine_FA_at_serving_thr": 0.432,
+              "spoof_miss_at_serving_thr": 0.0814,
+              "balanced_error": 0.2567,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=10",
+              "coverage": 1.0,
+              "EER": 0.2016,
+              "genuine_FA_at_serving_thr": 0.432,
+              "spoof_miss_at_serving_thr": 0.0814,
+              "balanced_error": 0.2567,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "snr_db>=15",
+              "coverage": 0.9997,
+              "EER": 0.2016,
+              "genuine_FA_at_serving_thr": 0.4317,
+              "spoof_miss_at_serving_thr": 0.0814,
+              "balanced_error": 0.2566,
+              "genuine_coverage": 0.9994
+            },
+            {
+              "gate": "snr_db>=20",
+              "coverage": 0.948,
+              "EER": 0.1991,
+              "genuine_FA_at_serving_thr": 0.4164,
+              "spoof_miss_at_serving_thr": 0.0819,
+              "balanced_error": 0.2492,
+              "genuine_coverage": 0.9112
+            },
+            {
+              "gate": "snr_db>=25",
+              "coverage": 0.757,
+              "EER": 0.1974,
+              "genuine_FA_at_serving_thr": 0.4069,
+              "spoof_miss_at_serving_thr": 0.0859,
+              "balanced_error": 0.2464,
+              "genuine_coverage": 0.726
+            },
+            {
+              "gate": "snr_db>=30",
+              "coverage": 0.5714,
+              "EER": 0.1863,
+              "genuine_FA_at_serving_thr": 0.4146,
+              "spoof_miss_at_serving_thr": 0.0753,
+              "balanced_error": 0.245,
+              "genuine_coverage": 0.5458
+            }
+          ],
+          "loss_frac": [
+            {
+              "gate": "loss_frac<=1.0",
+              "coverage": 1.0,
+              "EER": 0.2016,
+              "genuine_FA_at_serving_thr": 0.432,
+              "spoof_miss_at_serving_thr": 0.0814,
+              "balanced_error": 0.2567,
+              "genuine_coverage": 1.0
+            },
+            {
+              "gate": "loss_frac<=0.2",
+              "coverage": 0.9997,
+              "EER": 0.2016,
+              "genuine_FA_at_serving_thr": 0.4319,
+              "spoof_miss_at_serving_thr": 0.0815,
+              "balanced_error": 0.2567,
+              "genuine_coverage": 0.9998
+            },
+            {
+              "gate": "loss_frac<=0.1",
+              "coverage": 0.9809,
+              "EER": 0.2013,
+              "genuine_FA_at_serving_thr": 0.4284,
+              "spoof_miss_at_serving_thr": 0.0823,
+              "balanced_error": 0.2553,
+              "genuine_coverage": 0.9791
+            },
+            {
+              "gate": "loss_frac<=0.05",
+              "coverage": 0.9148,
+              "EER": 0.2015,
+              "genuine_FA_at_serving_thr": 0.4213,
+              "spoof_miss_at_serving_thr": 0.0844,
+              "balanced_error": 0.2528,
+              "genuine_coverage": 0.9124
+            },
+            {
+              "gate": "loss_frac<=0.02",
+              "coverage": 0.8569,
+              "EER": 0.2014,
+              "genuine_FA_at_serving_thr": 0.4189,
+              "spoof_miss_at_serving_thr": 0.0854,
+              "balanced_error": 0.2521,
+              "genuine_coverage": 0.8581
+            },
+            {
+              "gate": "loss_frac<=0.0",
+              "coverage": 0.8145,
+              "EER": 0.2017,
+              "genuine_FA_at_serving_thr": 0.4182,
+              "spoof_miss_at_serving_thr": 0.0849,
+              "balanced_error": 0.2516,
+              "genuine_coverage": 0.8147
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -40,9 +40,16 @@ class Augment:
         self.min_noise_snr = min_noise_snr
         self.noise_prob = noise_prob
 
-    def __call__(self, x: np.ndarray) -> np.ndarray:
+    def draw_codec(self):
+        """Codec choice only (main thread), so the slow ffmpeg round trips can run in parallel threads."""
+        from robustness import AAC, MP3, OPUS, ULAW
+        if self.rng.random() < self.codec_prob:
+            return [MP3, MP3, OPUS, AAC, ULAW][int(self.rng.integers(5))]
+        return None
+
+    def __call__(self, x: np.ndarray, codec: bool = True) -> np.ndarray:
         r = self.rng
-        if self.codec_prob and r.random() < self.codec_prob:
+        if codec and self.codec_prob and r.random() < self.codec_prob:
             # A real encode/decode path, sampled independently of the class. The
             # old low-pass approximation did not reproduce MP3/Opus artifacts.
             from robustness import AAC, MP3, OPUS, ULAW, codec_roundtrip
@@ -129,6 +136,10 @@ def main():
                     help="generators to oversample within the spoof half of each batch")
     ap.add_argument("--hard-share", type=float, default=0.5)
     ap.add_argument("--warmup-steps", type=int, default=200)
+    ap.add_argument("--teacher", default=None,
+                    help="detector dir whose logits are distilled into this model (e.g. models/selected)")
+    ap.add_argument("--kd-weight", type=float, default=0.5, help="loss = (1-w)*BCE(label) + w*T^2*BCE(teacher)")
+    ap.add_argument("--kd-temp", type=float, default=2.0)
     a = ap.parse_args()
 
     torch.manual_seed(a.seed)
@@ -202,6 +213,13 @@ def main():
     scaler = torch.amp.GradScaler()
     aug = Augment(rng, a.aug, a.codec_prob, a.min_noise_snr, a.noise_prob)
     lossf = torch.nn.BCEWithLogitsLoss()
+    teacher = None
+    if a.teacher:  # frozen teacher sees the same augmented batch as the student
+        teacher, _ = load_detector(ROOT / a.teacher, dev)
+        teacher.eval().requires_grad_(False)
+
+    from concurrent.futures import ThreadPoolExecutor
+    codec_pool = ThreadPoolExecutor(8)
 
     def sample_batch():
         clips, ys = [], []
@@ -220,8 +238,15 @@ def main():
             if len(x) > n:
                 o = int(rng.integers(0, len(x) - n))
                 x = x[o:o + n]
-            clips.append(aug(x))
+            if a.codec_prob:
+                clips.append((x, aug.draw_codec()))
+            else:
+                clips.append(aug(x))
             ys.append(y)
+        if a.codec_prob:  # same codec distribution as Augment, ffmpeg round trips in parallel
+            from robustness import codec_roundtrip
+            xs = list(codec_pool.map(lambda t: codec_roundtrip(t[0], [t[1]]) if t[1] else t[0], clips))
+            clips = [aug(x, codec=False) for x in xs]
         return clips, torch.tensor(ys, dtype=torch.float32, device=dev)
 
     log, best = [], (9.0, -1)
@@ -233,7 +258,13 @@ def main():
             xb, lens = batchify(clips, dev)
             with torch.autocast("cuda", dtype=torch.float16):
                 logit = model(xb, lens)
-            loss = lossf(logit.float(), yb) / a.accum
+            loss = lossf(logit.float(), yb)
+            if teacher is not None:
+                with torch.no_grad(), torch.autocast("cuda", dtype=torch.float16):
+                    soft = torch.sigmoid(teacher(xb, lens).float() / a.kd_temp)
+                kd = torch.nn.functional.binary_cross_entropy_with_logits(logit.float() / a.kd_temp, soft)
+                loss = (1 - a.kd_weight) * loss + a.kd_weight * a.kd_temp ** 2 * kd
+            loss = loss / a.accum
             scaler.scale(loss).backward()
         scaler.unscale_(opt)
         torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)

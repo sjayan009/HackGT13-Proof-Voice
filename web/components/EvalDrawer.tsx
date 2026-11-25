@@ -125,7 +125,7 @@ function KvTable({ obj }: { obj: Record<string, unknown> }) {
   );
 }
 
-function GenericSection({ name, value }: { name: string; value: unknown }) {
+export function GenericSection({ name, value }: { name: string; value: unknown }) {
   if (isHistogram(value)) return <HistogramChart hist={value} title={name} />;
   if (isStringArray(value)) {
     return (

@@ -6,6 +6,9 @@
 //
 // Implements: GET /health, POST /analyze/file, WS /analyze/stream,
 // POST /redteam/grok, WS /redteam/stream, GET /eval/summary, POST /explain.
+// v2: WS /guardian/live, POST /guardian/simulate, POST /guardian/sessions/{id}/verification,
+// GET/POST /engine/metrics, /engine/policy, /engine/loadtest, /engine/benchmarks.
+// MOCK_GPU=null makes /engine/metrics report gpu: null (the "NVML unavailable" path).
 // All numbers are synthetic/random — never treat this as real detection output.
 
 import http from "node:http";
@@ -223,14 +226,281 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (await handleV2(req, res)) return;
+
   res.writeHead(404, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ detail: "not found (mock server)" }));
 });
 
+// ------------------------------------------------------------------
+// v2 mock: Guardian + engine. Fake numbers for UI development only.
+// ------------------------------------------------------------------
+
+const guardianClients = new Set();
+const broadcast = (evt) => {
+  const msg = JSON.stringify(evt);
+  for (const ws of guardianClients) if (ws.readyState === 1) ws.send(msg);
+};
+
+function readJson(req) {
+  return new Promise((resolve) => {
+    let body = "";
+    req.on("data", (c) => (body += c));
+    req.on("end", () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch {
+        resolve({});
+      }
+    });
+  });
+}
+
+function sendJson(res, status, obj) {
+  res.writeHead(status, { "Content-Type": "application/json" });
+  res.end(JSON.stringify(obj));
+  return true;
+}
+
+const engine = {
+  policy: "adaptive",
+  actions: { infer: 0, escalate: 0, skip_silence: 0, skip_clear: 0, shed: 0 },
+  batchHist: {},
+  liveCalls: 0, // simulated guardian calls
+  loadCalls: [], // [{ until }]
+  lat: 22,
+};
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const gauss = () => (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+
+function activeCalls() {
+  const now = Date.now();
+  engine.loadCalls = engine.loadCalls.filter((c) => c.until > now);
+  return engine.liveCalls + engine.loadCalls.length;
+}
+
+function countAction(a) {
+  engine.actions[a] = (engine.actions[a] || 0) + 1;
+  if (a === "infer" || a === "escalate") {
+    const b = String(1 + Math.floor(Math.random() * Math.min(8, 1 + activeCalls())));
+    engine.batchHist[b] = (engine.batchHist[b] || 0) + 1;
+  }
+}
+
+// Load-test callers each produce one hop per 0.5 s.
+setInterval(() => {
+  const n = engine.loadCalls.filter((c) => c.until > Date.now()).length;
+  for (let i = 0; i < n; i++) {
+    const r = Math.random();
+    countAction(r < 0.45 ? "infer" : r < 0.5 ? "escalate" : r < 0.75 ? "skip_silence" : "skip_clear");
+  }
+}, 500);
+
+function engineMetrics() {
+  const calls = activeCalls();
+  engine.lat = clamp(engine.lat + gauss() * 2 + (18 + calls * 1.5 - engine.lat) * 0.2, 8, 400);
+  const p50 = engine.lat;
+  const demand = calls * 2;
+  const total = Object.values(engine.actions).reduce((a, b) => a + b, 0);
+  let sum = 0, cnt = 0, max = 0;
+  for (const [k, v] of Object.entries(engine.batchHist)) {
+    sum += Number(k) * v;
+    cnt += v;
+    max = Math.max(max, Number(k));
+  }
+  return {
+    policy: engine.policy,
+    backend: "mock-backend",
+    device: "MOCK DEVICE (synthetic data)",
+    active_calls: calls,
+    queue_depth: Math.max(0, Math.round(calls / 4 + gauss())),
+    window_s: 3.0,
+    hop_s: 0.5,
+    deadline_ms: 1000,
+    latency_ms: { p50, p95: p50 * 1.6, p99: p50 * 2.2, n: Math.min(2000, total) },
+    compute_ms: { p50: p50 * 0.8, p95: p50 * 1.1 },
+    queue_wait_ms: { p50: p50 * 0.1, p95: p50 * 0.4 },
+    windows_per_s: { demand, inferred: engine.policy === "adaptive" ? demand * 0.55 : demand },
+    actions: engine.actions,
+    batch_size: { mean: cnt ? sum / cnt : null, max: cnt ? max : null, hist: engine.batchHist },
+    gpu:
+      process.env.MOCK_GPU === "null"
+        ? null
+        : {
+            util_pct: Math.round(clamp(5 + calls * 6 + gauss() * 4, 0, 100)),
+            mem_used_mb: 2900 + calls * 20,
+            mem_total_mb: 8188,
+            power_w: Number((12 + calls * 3 + gauss()).toFixed(1)),
+            temp_c: 50 + Math.min(30, calls),
+          },
+    t: Date.now() / 1000,
+  };
+}
+
+const logit = (p) => {
+  const q = clamp(p, 1e-3, 1 - 1e-3);
+  return Math.log(q / (1 - q));
+};
+
+function runSimulation(scenario) {
+  const session_id = crypto.randomUUID();
+  const hops = 60; // 30 s of caller audio
+  let S = 0, usableS = 0, inferred = 0, skipped = 0, peak = 0, over = 0, hop = 0;
+  let suspicious = false;
+  engine.liveCalls++;
+  broadcast({
+    type: "call.started",
+    session_id,
+    call_sid: "CAmock" + session_id.slice(0, 8),
+    caller: "+14045550123",
+    consent: "simulated",
+    started_at: new Date().toISOString(),
+    scenario,
+  });
+  const timer = setInterval(() => {
+    hop++;
+    const t_ms = hop * 500;
+    const synthNow = scenario === "synthetic" || (scenario === "mixed" && t_ms > 12000);
+    const r = Math.random();
+    let window = null;
+    let action;
+    if (hop < 4 || r < 0.15) action = "skip_silence";
+    else if (r < 0.3 && usableS > 4 && !synthNow) action = "skip_clear";
+    else {
+      action = r > 0.92 ? "escalate" : "infer";
+      const p = clamp((synthNow ? 0.85 : 0.15) + gauss() * 0.12, 0, 1);
+      const usable = Math.random() > 0.12;
+      const weight = usable ? 0.6 + Math.random() * 0.4 : 0;
+      if (usable) usableS += 0.5;
+      S = Math.max(0, S + weight * (logit(p) - logit(0.5)) * 0.06);
+      window = {
+        start_ms: Math.max(0, t_ms - 3000),
+        end_ms: t_ms,
+        synthetic_probability: p,
+        usable,
+        weight,
+        speech_s: Number((1.5 + Math.random() * 1.4).toFixed(1)),
+        snr_db: Number((usable ? 18 + Math.random() * 10 : 4 + Math.random() * 4).toFixed(1)),
+        level_dbfs: Number((-30 + Math.random() * 14).toFixed(1)),
+        packet_loss: usable ? 0 : 0.08,
+      };
+    }
+    countAction(action);
+    if (window) inferred++;
+    else skipped++;
+    const evidence = Math.min(1.5, S);
+    peak = Math.max(peak, evidence);
+    over = evidence >= 1 ? over + 1 : 0;
+    let state, reason;
+    if (suspicious || over >= 2) {
+      state = "suspicious";
+      reason = "Synthetic-speech evidence stayed above the alert line across several stretches of speech.";
+    } else if (usableS < 3) {
+      state = "inconclusive";
+      reason = "Not enough clear speech from the caller yet.";
+    } else if (evidence < 0.5) {
+      state = "no_suspicious_evidence";
+      reason = "Enough clear speech, and no strong synthetic signal so far.";
+    } else {
+      state = "inconclusive";
+      reason = "Some windows look unusual, but the evidence is not persistent yet.";
+    }
+    broadcast({
+      type: "call.update",
+      session_id,
+      t_ms,
+      state,
+      evidence,
+      reason,
+      window,
+      compute: { policy: engine.policy, action, latency_ms: window ? Number((engine.lat + gauss() * 3).toFixed(1)) : null },
+    });
+    if (state === "suspicious" && !suspicious) {
+      suspicious = true;
+      broadcast({
+        type: "call.alert",
+        session_id,
+        t_ms,
+        evidence,
+        message: "Potential synthetic speech detected. Verify independently before sharing information or sending money.",
+        sms_sent: false,
+      });
+    }
+    if (hop >= hops) {
+      clearInterval(timer);
+      engine.liveCalls--;
+      broadcast({
+        type: "call.ended",
+        session_id,
+        final_state: state,
+        peak_evidence: peak,
+        duration_ms: t_ms,
+        usable_speech_s: usableS,
+        windows_inferred: inferred,
+        windows_skipped: skipped,
+      });
+    }
+  }, 500);
+  return session_id;
+}
+
+async function handleV2(req, res) {
+  const path = new URL(req.url, "http://x").pathname;
+  if (req.method === "POST" && path === "/guardian/simulate") {
+    const { scenario } = await readJson(req);
+    if (!["genuine", "synthetic", "mixed"].includes(scenario)) return sendJson(res, 422, { detail: "bad scenario" });
+    return sendJson(res, 200, { session_id: runSimulation(scenario) });
+  }
+  const v = path.match(/^\/guardian\/sessions\/([^/]+)\/verification$/);
+  if (req.method === "POST" && v) {
+    console.log("[mock] verification", v[1], await readJson(req));
+    return sendJson(res, 200, { ok: true });
+  }
+  if (req.method === "GET" && path === "/engine/metrics") return sendJson(res, 200, engineMetrics());
+  if (req.method === "POST" && path === "/engine/policy") {
+    const { policy } = await readJson(req);
+    if (!["fifo", "dynamic", "edf", "adaptive"].includes(policy)) return sendJson(res, 422, { detail: "bad policy" });
+    engine.policy = policy;
+    return sendJson(res, 200, engineMetrics());
+  }
+  if (req.method === "POST" && path === "/engine/loadtest") {
+    const { calls = 10, seconds = 30 } = await readJson(req);
+    const until = Date.now() + seconds * 1000;
+    for (let i = 0; i < calls; i++) engine.loadCalls.push({ until });
+    return sendJson(res, 200, { started: calls });
+  }
+  if (req.method === "GET" && path === "/engine/benchmarks") {
+    return sendJson(res, 200, {
+      reports: [
+        {
+          name: "mock_policy_comparison",
+          created: new Date(Date.now() - 3600_000).toISOString(),
+          data: {
+            note: "MOCK SERVER: synthetic numbers for UI development, not measurements",
+            policies: [
+              { policy: "fifo", calls: 16, p95_ms: 410.2, deadline_miss_rate: 0.12 },
+              { policy: "dynamic", calls: 16, p95_ms: 120.5, deadline_miss_rate: 0.01 },
+              { policy: "edf", calls: 16, p95_ms: 88.1, deadline_miss_rate: 0.0 },
+              { policy: "adaptive", calls: 16, p95_ms: 41.7, deadline_miss_rate: 0.0 },
+            ],
+          },
+        },
+      ],
+    });
+  }
+  return false;
+}
+
 const wss = new WebSocketServer({ noServer: true });
 
 server.on("upgrade", (req, socket, head) => {
-  if (req.url === "/analyze/stream") {
+  if (new URL(req.url, "http://x").pathname === "/guardian/live") {
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      guardianClients.add(ws);
+      ws.send(JSON.stringify({ type: "hello", user_id: "mock-user", dev_mode: true }));
+      ws.on("close", () => guardianClients.delete(ws));
+    });
+  } else if (req.url === "/analyze/stream") {
     wss.handleUpgrade(req, socket, head, (ws) => handleAnalyzeStream(ws));
   } else if (req.url === "/redteam/stream") {
     wss.handleUpgrade(req, socket, head, (ws) => handleRedteamStream(ws));

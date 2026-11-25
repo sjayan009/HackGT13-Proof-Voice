@@ -1,0 +1,18 @@
+telephony_eval clean {'EER': 0.0712, 'genuine_FA_at_serving_thr': 0.121, 'minDCF': 0.2913}
+telephony_eval telephone {'EER': 0.1046, 'genuine_FA_at_serving_thr': 0.2023, 'minDCF': 0.4203}
+telephony_eval telephone_noise30 {'EER': 0.1348, 'genuine_FA_at_serving_thr': 0.1891, 'minDCF': 0.5458}
+telephony_eval telephone_noise20 {'EER': 0.1682, 'genuine_FA_at_serving_thr': 0.3615, 'minDCF': 0.6466}
+telephony_eval telephone_loss5 {'EER': 0.1045, 'genuine_FA_at_serving_thr': 0.3328, 'minDCF': 0.4565}
+telephony_eval opus_telephone {'EER': 0.0991, 'genuine_FA_at_serving_thr': 0.2193, 'minDCF': 0.4254}
+telephony_eval replay_sim {'EER': 0.3585, 'genuine_FA_at_serving_thr': 0.0962, 'minDCF': 0.959}
+xlsr12_v4_codec_hard clean {'EER': 0.0826, 'genuine_FA_at_serving_thr': 0.1301, 'minDCF': 0.33}
+xlsr12_v4_codec_hard telephone {'EER': 0.1087, 'genuine_FA_at_serving_thr': 0.2411, 'minDCF': 0.4353}
+xlsr12_v4_codec_hard telephone_noise30 {'EER': 0.1422, 'genuine_FA_at_serving_thr': 0.2238, 'minDCF': 0.5539}
+xlsr12_v4_codec_hard telephone_noise20 {'EER': 0.1742, 'genuine_FA_at_serving_thr': 0.4061, 'minDCF': 0.6562}
+xlsr12_v4_codec_hard telephone_loss5 {'EER': 0.1047, 'genuine_FA_at_serving_thr': 0.3702, 'minDCF': 0.4634}
+xlsr12_v4_codec_hard opus_telephone {'EER': 0.1013, 'genuine_FA_at_serving_thr': 0.2528, 'minDCF': 0.4321}
+xlsr12_v4_codec_hard replay_sim {'EER': 0.3653, 'genuine_FA_at_serving_thr': 0.1293, 'minDCF': 0.9639}
+ablation_nofloor clean {'EER': 0.0521, 'genuine_FA_at_serving_thr': 0.0611, 'minDCF': 0.2254}
+ablation_nofloor telephone {'EER': 0.1061, 'genuine_FA_at_serving_thr': 0.1833, 'minDCF': 0.4606}
+wrote models/selected/channel_calibration.json
+wrote outputs/results/telephony_eval.json

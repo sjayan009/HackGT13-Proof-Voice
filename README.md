@@ -15,6 +15,14 @@
 
 Everything is also summarized on one page: **[00_NSA_HEARSAY_SUBMISSION/README.md](00_NSA_HEARSAY_SUBMISSION/README.md)**.
 
+## ProofVoice 2.0 (post-hackathon): Guardian + Aegis
+
+Live, consent-based phone protection on top of the same detector: Twilio calls → streaming GPU inference with an
+uncertainty-aware scheduler → call-level risk with abstention → warning + trusted-contact verification.
+Start at **[docs/PROOFVOICE_2.md](docs/PROOFVOICE_2.md)** (architecture, PRD targets vs measured),
+**[docs/RESULTS_V2.md](docs/RESULTS_V2.md)** (generated numbers) and **[docs/GUARDIAN_SETUP.md](docs/GUARDIAN_SETUP.md)**
+(first real call). The HEARSAY submission below is unchanged.
+
 ---
 
 **▶ [Watch the 1:40 demo video](https://youtu.be/hpHuJdQuLgU)**

@@ -1,0 +1,36 @@
+8/270 calls, 1004 windows in chunk, 21s
+16/270 calls, 1020 windows in chunk, 37s
+24/270 calls, 974 windows in chunk, 57s
+32/270 calls, 1044 windows in chunk, 79s
+40/270 calls, 1018 windows in chunk, 99s
+48/270 calls, 982 windows in chunk, 116s
+56/270 calls, 954 windows in chunk, 135s
+64/270 calls, 1016 windows in chunk, 156s
+72/270 calls, 910 windows in chunk, 172s
+80/270 calls, 1016 windows in chunk, 191s
+88/270 calls, 1156 windows in chunk, 215s
+96/270 calls, 990 windows in chunk, 234s
+104/270 calls, 1002 windows in chunk, 248s
+112/270 calls, 962 windows in chunk, 269s
+120/270 calls, 892 windows in chunk, 287s
+128/270 calls, 956 windows in chunk, 306s
+136/270 calls, 984 windows in chunk, 321s
+144/270 calls, 924 windows in chunk, 340s
+152/270 calls, 960 windows in chunk, 359s
+160/270 calls, 1074 windows in chunk, 378s
+168/270 calls, 1054 windows in chunk, 396s
+176/270 calls, 1076 windows in chunk, 416s
+184/270 calls, 1000 windows in chunk, 434s
+192/270 calls, 1138 windows in chunk, 452s
+200/270 calls, 1030 windows in chunk, 466s
+208/270 calls, 914 windows in chunk, 482s
+216/270 calls, 938 windows in chunk, 498s
+224/270 calls, 986 windows in chunk, 513s
+232/270 calls, 966 windows in chunk, 527s
+240/270 calls, 982 windows in chunk, 544s
+248/270 calls, 968 windows in chunk, 561s
+256/270 calls, 930 windows in chunk, 574s
+264/270 calls, 1004 windows in chunk, 590s
+270/270 calls, 814 windows in chunk, 603s
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\ablation_nofloor\traces_clean.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\ablation_nofloor\traces_telephone.npz 16819 windows

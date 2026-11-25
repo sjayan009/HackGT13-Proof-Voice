@@ -227,3 +227,28 @@ def test_validator_catches_problems(tmp_path):
         p = tmp_path / "bad.tsv"
         p.write_bytes(bad.encode())
         assert validate(p, t, expected_rows=None), bad
+
+
+def test_public_mode_exposes_only_the_checker(monkeypatch):
+    import pytest
+    from fastapi import HTTPException
+    from starlette.requests import Request
+    from starlette.testclient import TestClient
+
+    from app import config, main
+
+    c = TestClient(main.PublicOnly(main.app))  # no lifespan: routing only
+    assert c.get("/health").status_code == 200
+    for path in ("/engine/metrics", "/guardian/sessions/x/verification", "/twilio/voice", "/redteam/grok"):
+        assert c.get(path).status_code == 404, path
+
+    monkeypatch.setattr(config, "PUBLIC_MODE", True)
+    monkeypatch.setattr(config, "RATE_LIMIT_PER_10MIN", 2)
+    main._recent.clear()
+    req = lambda ip: Request({"type": "http", "headers": [(b"x-forwarded-for", ip.encode())], "client": ("1.1.1.1", 1)})
+    main._rate_limit(req("9.9.9.9"))
+    main._rate_limit(req("9.9.9.9"))
+    with pytest.raises(HTTPException) as e:
+        main._rate_limit(req("9.9.9.9"))
+    assert e.value.status_code == 429
+    main._rate_limit(req("8.8.8.8"))  # other clients unaffected

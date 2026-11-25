@@ -16,6 +16,11 @@ const nextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  // Hosted public checker: the Lab, Guardian and Control Center need the full backend, which it does not run.
+  async redirects() {
+    if (process.env.NEXT_PUBLIC_SITE_MODE !== "public") return [];
+    return ["/", "/guardian", "/engine"].map((source) => ({ source, destination: "/check", permanent: false }));
+  },
 };
 
 export default nextConfig;

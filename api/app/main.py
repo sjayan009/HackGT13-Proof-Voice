@@ -6,12 +6,15 @@ import base64
 import io
 import json
 import logging
+import re
 import tempfile
+import time
+from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 import numpy as np
-from fastapi import FastAPI, File, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -19,9 +22,28 @@ from pydantic import BaseModel
 from app import config
 from app.audio.ingest import DecodeError, load_audio, pcm_bytes_to_float
 from app.orchestration.pipeline import analyze
+from app.runtime import RT
 from app.services.stream import StreamAnalyzer
+from app.telephony.twilio import router as twilio_router
+from app.verification.routes import engine as engine_router
+from app.verification.routes import guardian as guardian_router
 
 log = logging.getLogger("proofvoice")
+
+
+class _RedactTokens(logging.Filter):
+    """Access tokens travel in WebSocket query strings (browsers cannot set headers); keep them out of logs."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if isinstance(record.args, tuple):
+            record.args = tuple(re.sub(r"token=[^&\s\"]+", "token=[redacted]", a) if isinstance(a, str) else a
+                                for a in record.args)
+        record.msg = re.sub(r"token=[^&\s\"]+", "token=[redacted]", str(record.msg))
+        return True
+
+
+for _name in ("uvicorn.access", "uvicorn.error"):
+    logging.getLogger(_name).addFilter(_RedactTokens())
 STATE: dict = {}
 
 
@@ -43,12 +65,95 @@ async def lifespan(app: FastAPI):
     except Exception as e:  # noqa: BLE001
         STATE["detector_error"] = f"{type(e).__name__}: {e}"
         log.exception("detector failed to load")
+    if STATE.get("detector") and not config.PUBLIC_MODE:
+        _start_runtime(STATE["detector"])
     yield
+    for s in list(RT.calls.values()):
+        await s.end()
+    if RT.aegis:
+        RT.aegis.stop()
+    if RT.store:
+        await RT.store.drain()
+
+
+def _start_runtime(detector) -> None:
+    """v2: Aegis scheduler + telemetry + Guardian store/hub around the loaded detector."""
+    from engine.aegis import Aegis
+    from engine.backends import TorchBackend
+    from engine.telemetry import Gpu, Telemetry
+
+    from app.risk.engine import Calibration, RiskPolicy
+    from app.verification.alerts import Hub
+    from app.verification.store import Store
+
+    RT.detector = detector
+    RT.telemetry = Telemetry(gpu=Gpu() if str(detector.device).startswith("cuda") else None)
+    backend = TorchBackend(detector)
+    if config.AEGIS_BACKEND == "tensorrt":
+        try:
+            from engine.backends import TensorRTBackend
+            backend = TensorRTBackend(config.MODEL_DIR)
+        except Exception:  # noqa: BLE001
+            log.warning("AEGIS_BACKEND=tensorrt unavailable; falling back to PyTorch", exc_info=True)
+    screen = None
+    if config.AEGIS_SCREEN_MODEL_DIR:  # two-stage screening (adaptive policy only)
+        from app.detectors.primary import PrimaryDetector
+
+        sd = Path(config.AEGIS_SCREEN_MODEL_DIR)
+        sd = sd if sd.is_absolute() else (config.API_DIR / sd).resolve()
+        screen = TorchBackend(PrimaryDetector(sd, str(detector.device)))
+        RT.screen_calibration = Calibration.load(sd, "telephone")
+    RT.aegis = Aegis(backend, RT.telemetry, config.AEGIS_POLICY, config.AEGIS_MAX_BATCH,
+                     config.AEGIS_MAX_WAIT_MS, config.AEGIS_DEADLINE_MS, screen=screen)
+    RT.calibration = {ch: Calibration.load(config.MODEL_DIR, ch) for ch in ("clean", "telephone")}
+    RT.risk_policy = RiskPolicy.load(config.MODEL_DIR)
+    RT.store = Store(config.SUPABASE_URL, config.SUPABASE_SECRET_KEY)
+    RT.hub = Hub()
 
 
 app = FastAPI(title="ProofVoice", version=config.VERSION, lifespan=lifespan)
+app.include_router(twilio_router)
+app.include_router(guardian_router)
+app.include_router(engine_router)
 app.add_middleware(CORSMiddleware, allow_origins=config.CORS_ORIGINS + ["*"], allow_methods=["*"],
                    allow_headers=["*"])
+
+
+class PublicOnly:
+    """PUBLIC_MODE: 404 for every HTTP/WebSocket path outside config.PUBLIC_PATHS (Guardian, engine, streaming, Grok)."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] in ("http", "websocket") and scope["path"] not in config.PUBLIC_PATHS:
+            if scope["type"] == "websocket":
+                await send({"type": "websocket.close", "code": 1008})
+                return
+            await JSONResponse({"detail": "Not Found"}, status_code=404)(scope, receive, send)
+            return
+        await self.app(scope, receive, send)
+
+
+if config.PUBLIC_MODE:
+    app.add_middleware(PublicOnly)
+
+# ponytail: in-memory per-IP window, per process; move to Redis/Upstash if this ever runs on several replicas.
+_recent: dict[str, deque] = defaultdict(deque)
+_analyze_slots = asyncio.Semaphore(config.ANALYZE_CONCURRENCY)
+
+
+def _rate_limit(request: Request) -> None:
+    if not config.PUBLIC_MODE:
+        return
+    ip = (request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+          or (request.client.host if request.client else "?"))
+    q, now = _recent[ip], time.monotonic()
+    while q and now - q[0] > 600:
+        q.popleft()
+    if len(q) >= config.RATE_LIMIT_PER_10MIN:
+        raise HTTPException(429, f"Too many checks from your connection. Try again in {int(600 - (now - q[0])) // 60 + 1} min.")
+    q.append(now)
 
 
 def _grok_available() -> bool:
@@ -63,7 +168,16 @@ def health():
     return {"status": "ok" if det else "degraded", "version": config.VERSION,
             "detector": {"name": det.name, "version": det.version, "device": str(det.device),
                          "decision_threshold": det.threshold} if det else None,
-            "detector_error": STATE.get("detector_error"), "grok_available": _grok_available()}
+            "detector_error": STATE.get("detector_error"), "grok_available": _grok_available(),
+            "guardian": _guardian_status()}
+
+
+def _guardian_status() -> dict:
+    from app.verification.alerts import dev_mode, twilio_configured
+
+    return {"dev_mode": dev_mode(), "store": "supabase" if RT.store and RT.store.enabled else "memory",
+            "twilio": twilio_configured(), "public_base_url": bool(config.PUBLIC_BASE_URL),
+            "policy": RT.aegis.policy if RT.aegis else None}
 
 
 def _analyze_array(audio: np.ndarray, **kw) -> dict:
@@ -72,7 +186,8 @@ def _analyze_array(audio: np.ndarray, **kw) -> dict:
 
 
 @app.post("/analyze/file")
-async def analyze_file(file: UploadFile = File(...)):
+async def analyze_file(request: Request, file: UploadFile = File(...)):
+    _rate_limit(request)
     data = await file.read()
     if not data:
         raise HTTPException(400, "empty upload")
@@ -89,8 +204,9 @@ async def analyze_file(file: UploadFile = File(...)):
             raise HTTPException(400, str(e)) from e
         if len(audio) < 1600:
             raise HTTPException(400, "audio shorter than 0.1 s")
-        return await asyncio.to_thread(_analyze_array, audio, path=tmp, file_name=file.filename,
-                                       orig_sr=sr if sr > 0 else None)
+        async with _analyze_slots:
+            return await asyncio.to_thread(_analyze_array, audio, path=tmp, file_name=file.filename,
+                                           orig_sr=sr if sr > 0 else None)
     finally:
         Path(tmp).unlink(missing_ok=True)
 

@@ -1,0 +1,237 @@
+
+=== 2026-11-24 18:52:37 $ C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\.venv\Scripts\python.exe ml/train.py --backbone facebook/wav2vec2-xls-r-300m --steps 3000 --bs 8 --accum 2 --lr 1e-05 --head-lr 0.0005 --eval-every 500 --aug 1.0 --lj-share 0.3 --extra-train train_extra --crop-min 2.5 --crop-max 6.0 --num-layers 12 --codec-prob 0.5 --seed 0 --out models/exp_codec_only_s0
+Loading weights:   0%|          | 0/230 [00:00<?, ?it/s]Loading weights: 100%|██████████| 230/230 [00:00<?, ?it/s]
+[transformers] [1mWav2Vec2Model LOAD REPORT[0m from: facebook/wav2vec2-xls-r-300m
+Key                                                                      | Status     |  | 
+-------------------------------------------------------------------------+------------+--+-
+wav2vec2.encoder.layers.{12...23}.attention.k_proj.bias                  | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.v_proj.weight                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.feed_forward.intermediate_dense.weight | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.final_layer_norm.bias                  | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.v_proj.bias                  | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.k_proj.weight                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.final_layer_norm.weight                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.out_proj.bias                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.out_proj.weight              | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.feed_forward.output_dense.bias         | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.layer_norm.weight                      | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.layer_norm.bias                        | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.q_proj.weight                | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.feed_forward.intermediate_dense.bias   | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.feed_forward.output_dense.weight       | UNEXPECTED |  | 
+quantizer.weight_proj.weight                                             | UNEXPECTED |  | 
+project_q.weight                                                         | UNEXPECTED |  | 
+wav2vec2.encoder.layers.{12...23}.attention.q_proj.bias                  | UNEXPECTED |  | 
+quantizer.codevectors                                                    | UNEXPECTED |  | 
+project_q.bias                                                           | UNEXPECTED |  | 
+project_hid.weight                                                       | UNEXPECTED |  | 
+project_hid.bias                                                         | UNEXPECTED |  | 
+quantizer.weight_proj.bias                                               | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+step 50 loss 0.6679 50s
+step 100 loss 0.6688 100s
+step 150 loss 0.2653 149s
+step 200 loss 0.1034 201s
+step 250 loss 0.0216 256s
+step 300 loss 0.0480 330s
+step 350 loss 0.0250 390s
+step 400 loss 0.1668 449s
+step 450 loss 0.0510 507s
+step 500 loss 0.0020 562s
+EVAL {'step': 500, 'val_minDCF': 0.1956, 'selection_scope': 'all_validation', 'elapsed_s': 655}
+step 550 loss 0.1039 710s
+step 600 loss 0.0017 770s
+step 650 loss 0.0034 830s
+step 700 loss 0.0005 896s
+step 750 loss 0.0054 961s
+step 800 loss 0.0351 1018s
+step 850 loss 0.0100 1071s
+step 900 loss 0.0070 1126s
+step 950 loss 0.0391 1180s
+step 1000 loss 0.0032 1234s
+EVAL {'step': 1000, 'val_minDCF': 0.1665, 'selection_scope': 'all_validation', 'elapsed_s': 1327}
+step 1050 loss 0.0586 1383s
+step 1100 loss 0.0062 1439s
+step 1150 loss 0.1613 1494s
+step 1200 loss 0.0019 1558s
+step 1250 loss 0.1062 1617s
+step 1300 loss 0.0001 1686s
+step 1350 loss 0.0001 1744s
+step 1400 loss 0.0006 1811s
+step 1450 loss 0.0001 1868s
+step 1500 loss 0.0012 1931s
+EVAL {'step': 1500, 'val_minDCF': 0.1184, 'selection_scope': 'all_validation', 'elapsed_s': 2026}
+step 1550 loss 0.0004 2089s
+step 1600 loss 0.0293 2144s
+step 1650 loss 0.0390 2198s
+step 1700 loss 0.0001 2254s
+step 1750 loss 0.0000 2308s
+step 1800 loss 0.0084 2363s
+step 1850 loss 0.0030 2418s
+step 1900 loss 0.0000 2472s
+step 1950 loss 0.0000 2525s
+step 2000 loss 0.0031 2577s
+EVAL {'step': 2000, 'val_minDCF': 0.1211, 'selection_scope': 'all_validation', 'elapsed_s': 2673}
+step 2050 loss 0.0002 2745s
+step 2100 loss 0.0000 2821s
+step 2150 loss 0.0013 2905s
+step 2200 loss 0.0001 3010s
+step 2250 loss 0.0001 3082s
+step 2300 loss 0.0079 3161s
+step 2350 loss 0.0261 3231s
+step 2400 loss 0.0010 3306s
+step 2450 loss 0.2440 3370s
+step 2500 loss 0.0006 3440s
+EVAL {'step': 2500, 'val_minDCF': 0.1135, 'selection_scope': 'all_validation', 'elapsed_s': 3543}
+step 2550 loss 0.0048 3618s
+step 2600 loss 0.0052 3675s
+step 2650 loss 0.0024 3729s
+step 2700 loss 0.0006 3782s
+step 2750 loss 0.0006 3837s
+step 2800 loss 0.0042 3896s
+step 2850 loss 0.0001 3965s
+step 2900 loss 0.0028 4039s
+step 2950 loss 0.8123 4104s
+step 3000 loss 0.0001 4164s
+EVAL {'step': 3000, 'val_minDCF': 0.1166, 'selection_scope': 'all_validation', 'elapsed_s': 4272}
+{
+ "best": [
+  0.11345703241153732,
+  2500
+ ],
+ "pooled": {
+  "minDCF": 0.11345703241153732,
+  "EER": 0.026797576568539996,
+  "CLLR": 0.7839064947048687,
+  "actDCF": 1.0,
+  "minDCF_threshold": 0.9953544423915446,
+  "AUC": 0.9966686738031519,
+  "log_loss": 0.3888065128375567,
+  "brier": 0.09241507637579113,
+  "FRR_bonafide_at_minDCF": 0.03479036574487065,
+  "FAR_spoof_at_minDCF": 0.019666666666666666,
+  "p_synth_threshold_at_minDCF": 0.0046455576084554195,
+  "n_bonafide": 1121,
+  "n_spoof": 6000
+ },
+ "per_gen": {
+  "diffgan_tts": 0.0,
+  "elevenlabs": 0.2683,
+  "grad_tts": 0.0071,
+  "openvoicev2": 0.0027,
+  "playht": 0.1762,
+  "pro_diff": 0.0,
+  "unit_speech": 0.0881,
+  "wavegrad2": 0.0,
+  "xtts_v2": 0.0018,
+  "your_tts": 0.0
+ }
+}
+
+=== 2026-11-24 20:04:24 $ C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\.venv\Scripts\python.exe ml/calibrate.py --model-dir models/exp_codec_only_s0
+{
+ "calibration": {
+  "a": 1.250623561224829,
+  "b": 5.737983766370578,
+  "decision_threshold": 0.2730440737830311,
+  "val_minDCF": 0.11279036574487064,
+  "fitted_on": "validation manifest, test-like crops, class-balanced (equal priors)",
+  "val_ECE_10bin": 0.02632220135821855
+ },
+ "pooled": {
+  "minDCF": 0.11279036574487064,
+  "EER": 0.026797576568539996,
+  "CLLR": 0.7505228966185851,
+  "actDCF": 1.0,
+  "minDCF_threshold": 0.7269559262169689,
+  "AUC": 0.9966667410050549,
+  "log_loss": 0.07589236449793593,
+  "brier": 0.02298959753619028,
+  "FRR_bonafide_at_minDCF": 0.03479036574487065,
+  "FAR_spoof_at_minDCF": 0.02,
+  "p_synth_threshold_at_minDCF": 0.2730440737830311,
+  "n_bonafide": 1121,
+  "n_spoof": 6000
+ },
+ "per_gen": {
+  "diffgan_tts": 0.0,
+  "elevenlabs": 0.2683,
+  "grad_tts": 0.0071,
+  "openvoicev2": 0.0027,
+  "playht": 0.1762,
+  "pro_diff": 0.0,
+  "unit_speech": 0.0881,
+  "wavegrad2": 0.0,
+  "xtts_v2": 0.0018,
+  "your_tts": 0.0
+ },
+ "lj": 0.0083,
+ "libri": 0.1389
+}
+
+=== 2026-11-24 20:07:03 $ C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\.venv\Scripts\python.exe ml/robustness.py --model-dir models/exp_codec_only_s0 --bs 8 --output outputs/results/robustness_exp_codec_only_s0.json
+clean {'minDCF': 0.1057, 'EER': 0.0257, 'AUC': 0.9974, 'FRR_bonafide_at_clean_thr': 0.0314, 'FAR_spoof_at_clean_thr': 0.0186, 'mean_abs_score_drift': 0.0, 'bonafide_mean_p': 0.0399, 'spoof_mean_p': 0.9629}
+mp3_64k {'minDCF': 0.1471, 'EER': 0.0343, 'AUC': 0.9955, 'FRR_bonafide_at_clean_thr': 0.0857, 'FAR_spoof_at_clean_thr': 0.0171, 'mean_abs_score_drift': 0.0227, 'bonafide_mean_p': 0.0792, 'spoof_mean_p': 0.9688}
+opus_24k {'minDCF': 0.1357, 'EER': 0.0314, 'AUC': 0.9965, 'FRR_bonafide_at_clean_thr': 0.0457, 'FAR_spoof_at_clean_thr': 0.0243, 'mean_abs_score_drift': 0.0117, 'bonafide_mean_p': 0.0462, 'spoof_mean_p': 0.9595}
+aac_48k {'minDCF': 0.12, 'EER': 0.0271, 'AUC': 0.9966, 'FRR_bonafide_at_clean_thr': 0.06, 'FAR_spoof_at_clean_thr': 0.02, 'mean_abs_score_drift': 0.0156, 'bonafide_mean_p': 0.0529, 'spoof_mean_p': 0.9713}
+mp3_opus_mp3_chain {'minDCF': 0.1486, 'EER': 0.0329, 'AUC': 0.9954, 'FRR_bonafide_at_clean_thr': 0.0886, 'FAR_spoof_at_clean_thr': 0.02, 'mean_abs_score_drift': 0.0251, 'bonafide_mean_p': 0.0781, 'spoof_mean_p': 0.9687}
+telephone_mulaw_8k {'minDCF': 0.15, 'EER': 0.0357, 'AUC': 0.9951, 'FRR_bonafide_at_clean_thr': 0.0943, 'FAR_spoof_at_clean_thr': 0.02, 'mean_abs_score_drift': 0.0285, 'bonafide_mean_p': 0.078, 'spoof_mean_p': 0.9663}
+noise_20dB {'minDCF': 0.1843, 'EER': 0.0543, 'AUC': 0.9915, 'FRR_bonafide_at_clean_thr': 0.5071, 'FAR_spoof_at_clean_thr': 0.0, 'mean_abs_score_drift': 0.1879, 'bonafide_mean_p': 0.3821, 'spoof_mean_p': 0.9898}
+noise_10dB {'minDCF': 0.3571, 'EER': 0.0943, 'AUC': 0.9698, 'FRR_bonafide_at_clean_thr': 0.9043, 'FAR_spoof_at_clean_thr': 0.0, 'mean_abs_score_drift': 0.3656, 'bonafide_mean_p': 0.7346, 'spoof_mean_p': 0.9963}
+gain_-18dB {'minDCF': 0.1057, 'EER': 0.0257, 'AUC': 0.9974, 'FRR_bonafide_at_clean_thr': 0.0314, 'FAR_spoof_at_clean_thr': 0.0186, 'mean_abs_score_drift': 0.0001, 'bonafide_mean_p': 0.0399, 'spoof_mean_p': 0.963}
+clipping {'minDCF': 0.1786, 'EER': 0.0486, 'AUC': 0.9921, 'FRR_bonafide_at_clean_thr': 0.02, 'FAR_spoof_at_clean_thr': 0.0757, 'mean_abs_score_drift': 0.0495, 'bonafide_mean_p': 0.028, 'spoof_mean_p': 0.8829}
+
+=== 2026-11-24 20:13:32 $ C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\.venv\Scripts\python.exe ml/telephony_eval/score_traces.py --model-dir models/exp_codec_only_s0 --split eval --out-dir outputs/telephony_eval/exp_codec_only_s0
+8/270 calls, 3514 windows in chunk, 34s
+16/270 calls, 3570 windows in chunk, 66s
+24/270 calls, 3409 windows in chunk, 97s
+32/270 calls, 3654 windows in chunk, 131s
+40/270 calls, 3563 windows in chunk, 162s
+48/270 calls, 3437 windows in chunk, 194s
+56/270 calls, 3339 windows in chunk, 224s
+64/270 calls, 3556 windows in chunk, 256s
+72/270 calls, 3185 windows in chunk, 284s
+80/270 calls, 3556 windows in chunk, 316s
+88/270 calls, 4046 windows in chunk, 352s
+96/270 calls, 3465 windows in chunk, 384s
+104/270 calls, 3507 windows in chunk, 416s
+112/270 calls, 3367 windows in chunk, 446s
+120/270 calls, 3122 windows in chunk, 474s
+128/270 calls, 3346 windows in chunk, 504s
+136/270 calls, 3444 windows in chunk, 535s
+144/270 calls, 3234 windows in chunk, 565s
+152/270 calls, 3360 windows in chunk, 595s
+160/270 calls, 3759 windows in chunk, 630s
+168/270 calls, 3689 windows in chunk, 664s
+176/270 calls, 3766 windows in chunk, 698s
+184/270 calls, 3500 windows in chunk, 730s
+192/270 calls, 3983 windows in chunk, 766s
+200/270 calls, 3605 windows in chunk, 800s
+208/270 calls, 3199 windows in chunk, 829s
+216/270 calls, 3283 windows in chunk, 860s
+224/270 calls, 3451 windows in chunk, 890s
+232/270 calls, 3381 windows in chunk, 921s
+240/270 calls, 3437 windows in chunk, 952s
+248/270 calls, 3388 windows in chunk, 982s
+256/270 calls, 3255 windows in chunk, 1011s
+264/270 calls, 3514 windows in chunk, 1042s
+270/270 calls, 2849 windows in chunk, 1068s
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\exp_codec_only_s0\traces_clean.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\exp_codec_only_s0\traces_telephone.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\exp_codec_only_s0\traces_telephone_noise30.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\exp_codec_only_s0\traces_telephone_noise20.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\exp_codec_only_s0\traces_telephone_loss5.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\exp_codec_only_s0\traces_opus_telephone.npz 16819 windows
+wrote C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\outputs\telephony_eval\exp_codec_only_s0\traces_replay_sim.npz 16819 windows
+
+=== 2026-11-24 20:31:54 $ C:\Users\jayan\GeorgiaTech\AI Code Completions\HackGT13\.venv\Scripts\python.exe ml/telephony_eval/analyze.py --traces outputs/telephony_eval/exp_codec_only_s0 --output outputs/results/telephony_eval_exp_codec_only_s0.json
+exp_codec_only_s0 clean {'EER': 0.0823, 'genuine_FA_at_serving_thr': 0.1312, 'minDCF': 0.3302}
+exp_codec_only_s0 telephone {'EER': 0.0984, 'genuine_FA_at_serving_thr': 0.1793, 'minDCF': 0.4069}
+exp_codec_only_s0 telephone_noise30 {'EER': 0.116, 'genuine_FA_at_serving_thr': 0.1821, 'minDCF': 0.4919}
+exp_codec_only_s0 telephone_noise20 {'EER': 0.1555, 'genuine_FA_at_serving_thr': 0.318, 'minDCF': 0.62}
+exp_codec_only_s0 telephone_loss5 {'EER': 0.0988, 'genuine_FA_at_serving_thr': 0.2628, 'minDCF': 0.4236}
+exp_codec_only_s0 opus_telephone {'EER': 0.0971, 'genuine_FA_at_serving_thr': 0.1878, 'minDCF': 0.41}
+exp_codec_only_s0 replay_sim {'EER': 0.3254, 'genuine_FA_at_serving_thr': 0.1033, 'minDCF': 0.931}
+wrote outputs/results/telephony_eval_exp_codec_only_s0.json

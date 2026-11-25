@@ -1,0 +1,27 @@
+{
+  "created": "2026-11-24T23:53:00.544360+00:00",
+  "kind": "screen_ratio",
+  "student": "models/exp_student_l4",
+  "other_gpu_processes": "2524, C:\\Users\\jayan\\AppData\\Local\\Programs\\Python\\Python311\\python.exe, [N/A]\n24468, C:\\Users\\jayan\\AppData\\Local\\Programs\\Python\\Python311\\python.exe, [N/A]",
+  "results": [
+    {
+      "batch": 1,
+      "main_p50_ms": 21.12,
+      "student_p50_ms": 12.24,
+      "ratio": 0.58
+    },
+    {
+      "batch": 4,
+      "main_p50_ms": 31.48,
+      "student_p50_ms": 22.19,
+      "ratio": 0.705
+    },
+    {
+      "batch": 8,
+      "main_p50_ms": 59.17,
+      "student_p50_ms": 40.07,
+      "ratio": 0.677
+    }
+  ],
+  "note": "Interleaved measurement; absolute times are inflated if other GPU work was running, the ratio less so."
+}
